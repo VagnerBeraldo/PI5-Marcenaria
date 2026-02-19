@@ -1,0 +1,434 @@
+/* Estilo para envolver toda a aplicação */
+.app-container {
+  min-height: 100vh;
+  font-family: sans-serif;
+}
+
+/* Container e Estrutura */
+.card-principal {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px 5px;
+  background-color: #ffffff;
+  /* border-radius: 12px; */
+  /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); */
+}
+
+.cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.btn-container{
+    display: flex;
+    gap: 15px;
+}
+
+/* Botões */
+.btn-icone {
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  color: black;
+  border: 1px solid black;
+}
+
+.btn-limpar {
+    background-color: transparent;
+}
+
+.btn-imprimir {
+  background-color: transparent;
+}
+
+.btn-remover {
+  background-color: transparent;
+}
+
+
+/* Formulário de Configuração */
+.secao-config-chapa {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 30px;
+  padding: 10px;
+  background-color: #f4f8ff;
+  border-radius: 8px;
+}
+
+/* Formulários e Inputs */
+.secao-config {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  background-color: #f0f7ff;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+
+.grupo-input {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rotulo {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #444;
+  margin-right: 10px;
+}
+
+.input-padrao {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.input-padrao:focus {
+  outline: none; 
+  border-color: black;
+  border: 2px solid black;
+}
+
+/* Lista de Peças */
+.lista-pecas {
+  margin-top: 30px;
+}
+
+
+
+
+
+.item-peca {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px; /* Redução leve no espaçamento para ganhar área */
+  align-items: flex-end;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+
+
+
+.coluna-nome {
+  flex: 1 1 100%;
+}
+
+
+/* Linha 2: Campos de medida e botão */
+.coluna-medida {
+  flex: 1 1 50px; /* Reduzido de 80px para 50px para não quebrar em 320px */
+  min-width: 0;   /* Permite que o flex-box encolha além do conteúdo se necessário */
+}
+
+.coluna-qtd {
+  flex: 0 1 45px; /* Compactado para garantir espaço na linha */
+}
+
+.btn-giro {
+  flex: 0 0 40px; /* Largura fixa para o botão não fugir */
+  padding: 8px !important;
+  margin-left: 0; /* Remove o auto para manter o alinhamento junto aos campos */
+  display: flex;
+  justify-content: center;
+}
+
+
+@media (max-width: 400px) {
+  .sub-rotulo {
+    font-size: 0.8rem; /* Diminui levemente o texto para caber tudo */
+    white-space: nowrap;
+  }
+  
+  .input-padrao {
+    padding: 8px 4px; /* Inputs mais enxutos */
+  }
+}
+
+
+/* Media Query para forçar a organização em celulares */
+@media (max-width: 600px) {
+  .coluna-nome {
+    order: 1; /* Nome sempre no topo */
+  }
+  
+  .coluna-medida, .coluna-qtd, .btn-giro {
+    order: 2; /* Demais campos na linha de baixo */
+  }
+}
+
+.sub-rotulo {
+  font-size: 1rem;
+  color: #444;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.btn-giro {
+  background-color: #f5f5f5;
+  border: 1px solid black;
+  color: black;
+}
+
+.btn-giro.ativo {
+  background-color: black;
+  border-color: 1px solid #f5f5f5;
+  color: #f5f5f5;
+}
+
+.btn-adicionar {
+  width: 100%;
+  padding: 15px!important;
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+
+.controle-zoom {
+  margin: 30px 0;
+  padding: 20px;
+  background-color: #fff3e0;
+  border-radius: 8px;
+}
+
+.zoom-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+}
+
+.zoom-container input[type="range"] {
+  width: 100%;
+  max-width: 400px; /* Aumentado para não ficar pequeno no desktop */
+  cursor: pointer;
+  height: 8px; /* Opcional: deixa o trilho um pouco mais grosso */
+}
+
+
+.input-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.peca-item {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+}
+
+
+.container-visualizador {
+  display: inline-block;
+  min-width: min-content;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.chapa-madeira {
+  /* Removido !important para o React conseguir aplicar a largura/altura da escala */
+  display: block;
+  position: relative; /* Necessário para as peças aparecerem dentro */
+  border: 3px solid #451a03;
+  background-color: #deb887;
+  box-sizing: content-box;
+  margin: 0 auto; /* Reforça a centralização */
+}
+
+.peca-no-plano {
+  position: absolute;
+  box-sizing: border-box;
+  /* Certifique-se de que no JS você está calculando 
+     top, left, width e height em PORCENTAGEM (%) 
+     agora que o zoom fixo sumiu. */
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  background-color: rgba(0, 0, 0, 0.2);
+  /* Novos ajustes para centralizar e separar o texto */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px; /* Espaço entre a medida e o nome */
+  text-align: center;
+  padding: 2px; /* Um pequeno respiro nas bordas */
+}
+
+
+.sobra-disponivel {
+  background-color: rgba(255, 255, 255, 0.1); /* Um leve brilho para destacar o vazio */
+  z-index: 0;
+}
+
+.sobra-disponivel span {
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Seção da Tabela */
+.secao-lista-corte {
+  width: 90%;
+  margin: 40px 20px 10px 25px;
+  
+
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.secao-lista-corte h3 {
+  margin-bottom: 15px;
+  color: #333;
+  padding-left: 10px;
+}
+
+.tabela-corte {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.tabela-corte th {
+  background-color: #f8f9fa;
+  color: #555;
+  text-align: center;
+  padding: 12px;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.tabela-corte td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+  color: #444;
+}
+
+.tabela-corte tr:hover {
+  background-color: #f1f8e9;
+}
+
+/* Alerta de Erro */
+.alerta-erro {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #ffebee;
+  color: #c62828;
+  border-radius: 6px;
+  text-align: center;
+}
+
+
+
+.espaco-impressao {
+  width: 100%;
+  overflow-x: auto;
+  padding: 20px 0;
+  display: block;
+  text-align: center; /* Centraliza o conteúdo horizontalmente */
+  background-color: #f3f4f6;
+  border-radius: 8px;
+}
+
+
+
+
+/* Correção da quebra dos cards de estatísticas */
+.grade-estatisticas {
+  width: 100%;
+  display: grid;
+  /* Cria colunas de no mínimo 120px; se não couber, pula linha */
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
+  gap: 10px;
+  margin-bottom: 25px;
+  box-sizing: border-box;
+}
+
+.card-estatistica {
+  background: white;
+  padding: 12px 8px;
+  border-radius: 6px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  min-width: 0; 
+  overflow: hidden;
+}
+
+.card-estatistica span {
+  display: block;
+  font-size: 10px;
+  font-weight: bold;
+  color: #666;
+  text-transform: uppercase;
+}
+
+.valor-destaque {
+  font-size: 1rem!important;
+  font-weight: 900;
+  margin-top: 5px;
+  white-space: nowrap; 
+}
+
+/* Ajuste específico para telas muito pequenas (abaixo de 400px) */
+@media (max-width: 446px) {
+  .grade-estatisticas {
+    grid-template-columns: 1fr 1fr; /* Força 2 por linha em vez de esmagar 3 */
+  }
+  
+  /* Faz o terceiro card (sobras) ocupar a linha inteira se estiver sozinho */
+  .card-estatistica:last-child:nth-child(odd) {
+    grid-column: span 2;
+  }
+}
+
+
+@media (max-width: 633px) {
+  .zoom-container {
+    flex-direction: column;
+    align-items: center; /* Alinha o rótulo e o slider horizontalmente ao centro */
+  }
+
+  .zoom-container input[type="range"] {
+    max-width: 90%; /* No mobile, ele usa quase toda a largura disponível */
+    margin-top: 10px;
+    height: 12px; /* Deixa mais fácil de clicar com o dedo no celular */
+  }
+}
+
+.valor-destaque { font-size: 20px; font-weight: 900; margin-top: 5px; }
+.cor-azul { color: black; }
+.cor-laranja { color: black; }
+
+
+
+.info-medida { font-size: 9px; font-weight: bold; }
+.info-nome { font-size: 7px; text-transform: uppercase; opacity: 0.9; }
+

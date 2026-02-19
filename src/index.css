@@ -1,0 +1,30 @@
+@media print {
+  /* Força a remoção de margens do navegador */
+  @page {
+    margin: 0;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: white !important;
+    -webkit-print-color-adjust: exact; /* Garante que as cores apareçam */
+  }
+
+  /* Esconde TUDO que não for o componente principal */
+  #root > div > div:not(.max-w-4xl) {
+    display: none !important;
+  }
+
+  /* Garante que o container não tenha sombras ou bordas que ocupem espaço */
+  .shadow-lg {
+    box-shadow: none !important;
+  }
+
+  /* Evita que o navegador crie uma quebra de página */
+  * {
+    break-inside: avoid;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
