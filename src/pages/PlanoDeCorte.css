@@ -1,0 +1,250 @@
+.app-container {
+  min-height: 100vh;
+  font-family: sans-serif;
+}
+
+.card-principal {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px 5px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.btn-container {
+  display: flex;
+  gap: 15px;
+}
+
+/* --- Botões de Ação Superiores --- */
+.btn-icone {
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: black;
+  border: 1px solid black;
+  background-color: transparent;
+  transition: all 0.2s;
+}
+
+.btn-icone:hover {
+  background-color: #f3f4f6;
+}
+
+/* --- Identificação do Serviço --- */
+.secao-nome-servico {
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  border-left: 4px solid #2563eb;
+}
+
+/* --- NAVEGAÇÃO DE CHAPAS (ABAS) --- */
+.navegacao-chapas {
+  margin-bottom: 10px;
+}
+
+.abas-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Container da Aba */
+.tab-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #e2e8f0; /* Cinza para inativa */
+  border: 1px solid #cbd5e1;
+  border-radius: 8px 8px 0 0;
+  transition: all 0.2s ease;
+}
+
+/* Aba Selecionada (Ativa) */
+.tab-wrapper.ativa {
+  background-color: #2563eb; 
+  border-color: #2563eb;
+}
+
+/* Botão de texto da aba */
+.tab-chapa {
+  border: none;
+  background: transparent;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #000000; 
+}
+
+.tab-wrapper.ativa .tab-chapa {
+  color: #ffffff; 
+}
+
+/* Lixeira da Aba */
+.btn-excluir-chapa {
+  background: transparent;
+  border: none;
+  padding: 8px;
+  margin-right: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+  color: #64748b; 
+}
+
+.tab-wrapper.ativa .btn-excluir-chapa {
+  color: #fff; 
+}
+
+.btn-excluir-chapa:hover {
+  transform: scale(1.2);
+}
+
+/* Botão "+ Nova Chapa" */
+.btn-nova-chapa {
+  padding: 8px 16px;
+  background-color: #f8fafc;
+  border: 1px dashed #94a3b8;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.btn-nova-chapa:hover {
+  background-color: #f1f5f9;
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+/* --- Configuração da Chapa e Serra --- */
+.secao-config-chapa {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #f4f8ff;
+  border-radius: 8px;
+}
+
+.grupo-input {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rotulo {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #444;
+}
+
+.input-padrao {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.input-padrao:focus {
+  outline: none; 
+  border: 2px solid black;
+}
+
+/* --- Lista de Peças --- */
+.lista-pecas {
+  margin-top: 30px;
+}
+
+.item-peca {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-end;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+
+.coluna-nome { flex: 1 1 100%; }
+.coluna-medida { flex: 1 1 50px; min-width: 0; }
+.coluna-qtd { flex: 0 1 60px; }
+
+.sub-rotulo {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.btn-remover {
+  background-color: transparent;
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.btn-adicionar {
+  width: 100%;
+  padding: 15px;
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+/* --- Visualização e Zoom --- */
+.controle-zoom {
+  margin: 30px 0;
+  padding: 20px;
+  background-color: #fff3e0;
+  border-radius: 8px;
+}
+
+.zoom-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+}
+
+.espaco-impressao {
+  width: 100%;
+  overflow-x: auto;
+  padding: 20px 0;
+  display: block;
+  text-align: center;
+  background-color: #f3f4f6;
+  border-radius: 8px;
+}
+
+/* --- Responsividade --- */
+@media (max-width: 600px) {
+  .coluna-nome { order: 1; }
+  .coluna-medida, .coluna-qtd, .btn-remover { order: 2; }
+  
+  .secao-config-chapa {
+    grid-template-columns: 1fr;
+  }
+}
