@@ -1,10 +1,22 @@
-/* wrapper-visualizador-impressao"> */
+.wrapper-visualizador-impressao {
+  width: 100%;
+  display: block;
+}
 
 .container-visualizador {
-  display: inline-block;
-  min-width: min-content;
-  margin: 0 auto;
-  padding: 10px;
+  display: block; 
+  width: 100%;    
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.chapa-madeira {
+  display: block;
+  position: relative;
+  border: 3px solid #451a03;
+  background-color: #deb887;
+  margin: 0 auto 20px; 
 }
 
 .grade-estatisticas {
@@ -12,6 +24,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 10px;
+  padding: 8px;
   margin-bottom: 25px;
   box-sizing: border-box;
 }
@@ -46,7 +59,6 @@
     grid-template-columns: 1fr 1fr;
   }
 
-  /* Faz o terceiro card (sobras) ocupar a linha inteira se estiver sozinho */
   .card-estatistica:last-child:nth-child(odd) {
     grid-column: span 2;
   }
@@ -64,15 +76,6 @@
   color: black;
 }
 
-.chapa-madeira {
-  display: block;
-  position: relative; /* Necessário para as peças aparecerem dentro */
-  border: 3px solid #451a03;
-  background-color: #deb887;
-  box-sizing: content-box;
-  margin: 0 auto; /* Reforça a centralização */
-}
-
 .peca-no-plano {
   position: absolute;
   box-sizing: border-box;
@@ -88,20 +91,20 @@
 }
 
 .info-medida {
-  font-size: 9px;
+  font-size: 0.8rem;
   font-weight: bold;
 }
 .info-nome {
-  font-size: 7px;
+  font-size: 0.8rem;
   text-transform: uppercase;
   opacity: 0.9;
 }
 
 /* Seção da Tabela */
 .secao-lista-corte {
-  width: 90%;
-  margin: 40px 20px 10px 25px;
-
+  width: 93%;
+  margin: 40px 10px;
+  min-width: 768px;
   background: white;
   padding: 20px;
   border-radius: 8px;
