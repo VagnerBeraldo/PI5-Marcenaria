@@ -19,7 +19,7 @@ export default function Visualizador({ chapa, pecas, largCorte, escala }) {
   listaParaPosicionar.sort((a, b) => b.h - a.h || b.w - a.w);
 
   const pecasPosicionadas = [];
-  // Começamos com a chapa inteira como um espaço livre
+  // Começa com a chapa inteira como um espaço livre
   let espaçosLivres = [{ x: 0, y: 0, w: chapa.largura, h: chapa.altura }];
   let areaUtilizada = 0;
 
@@ -75,7 +75,7 @@ export default function Visualizador({ chapa, pecas, largCorte, escala }) {
       // Re-ordena para priorizar espaços que preencham a largura primeiro
       espaçosLivres.sort((a, b) => a.x - b.x || a.y - b.y);
     } else {
-      // Se não couber, marcamos erro (NÃO renderizamos sobre as outras)
+      // Se não couber, marca erro 
       pecasPosicionadas.push({
         ...peca,
         largura: peca.w,
@@ -151,7 +151,7 @@ export default function Visualizador({ chapa, pecas, largCorte, escala }) {
             );
           })}
 
-          {/* Renderiza as Sobras (DENTRO da chapa-madeira para o posicionamento funcionar) */}
+          {/* Renderiza as Sobras */}
           {espaçosLivres.map(
             (espaco, index) =>
               espaco.w > 50 &&
@@ -175,7 +175,7 @@ export default function Visualizador({ chapa, pecas, largCorte, escala }) {
                 >
                   <span
                     style={{
-                      fontSize: "8px",
+                      fontSize: "0.8rem",
                       color: "rgba(0,0,0,0.6)",
                       fontWeight: "bold",
                     }}
