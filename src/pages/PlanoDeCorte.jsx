@@ -1,9 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import Visualizador from "./Visualizador";
 import { Printer, Trash2 } from "lucide-react";
-import "./PlanoDeCorte.css";
-import "./Visualizador.css";
-import "./ImpressaoCortes.css";
+import "../styles/PlanoDeCorte.css";
+import "../styles/Visualizador.css";
 
 export default function PlanoDeCorte() {
   const [chapas, setChapas] = useState([

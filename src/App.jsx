@@ -1,6 +1,6 @@
 import PlanoDeCorte from './pages/PlanoDeCorte';
 
-import './pages/PlanoDeCorte.css'; 
+import './App.css'; 
 
 function App() {
   return (
