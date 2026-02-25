@@ -66,7 +66,7 @@
 .tab-wrapper {
   display: flex;
   align-items: center;
-  background-color: #e2e8f0; /* Cinza para inativa */
+  background-color: #e2e8f0; 
   border: 1px solid #cbd5e1;
   border-radius: 8px 8px 0 0;
   transition: all 0.2s ease;
@@ -202,32 +202,24 @@
 }
 
 .btn-adicionar {
-  width: 100%;
-  padding: 15px;
+  display: block;
+  width: fit-content; 
+  min-width: 300px; 
+  padding: 12px 30px !important;
+  margin: 20px auto; 
   background-color: #2e7d32;
   color: white;
   border: none;
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
-  margin-top: 10px;
+  transition: background-color 0.2s;
 }
 
-/* --- Visualização e Zoom --- */
-.controle-zoom {
-  margin: 30px 0;
-  padding: 20px;
-  background-color: #fff3e0;
-  border-radius: 8px;
+.btn-adicionar:hover {
+  background-color: #1b5e20; 
 }
 
-.zoom-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-  width: 100%;
-}
 
 .espaco-impressao {
   width: 100%;
