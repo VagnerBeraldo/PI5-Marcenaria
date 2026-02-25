@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Visualizador from "./Visualizador";
-import { BrushCleaning, Printer, Trash2 } from "lucide-react";
+import { Printer, Trash2 } from "lucide-react";
 import "./PlanoDeCorte.css";
 import "./Visualizador.css";
 import "./ImpressaoCortes.css";
@@ -12,7 +12,8 @@ export default function PlanoDeCorte() {
   const [chapaAtivaId, setChapaAtivaId] = useState(1);
   const [pecas, setPecas] = useState([]);
   const [largCorte, setLargCorte] = useState(3);
-  const [escala, setEscala] = useState(0.2);
+  const containerRef = useRef(null);
+const [escala, setEscala] = useState(0.3);
   const [nomeServico, setNomeServico] = useState("");
 
   const atualizarPeca = (id, campo, valor) => {
@@ -74,125 +75,182 @@ export default function PlanoDeCorte() {
     setChapaAtivaId(novoId);
   };
 
-  const imprimir = () => {
-    const conteudoGabarito =
-      document.querySelector(".espaco-impressao").innerHTML;
-    const janelaImpressao = window.open("", "_blank", "width=900,height=1000");
 
-    janelaImpressao.document.write(`
+const imprimir = () => {
+  // Capturamos o conteúdo total da área técnica
+  const conteudoGabarito = document.querySelector(".espaco-impressao").innerHTML;
+
+  // Cálculo da proporção: A4 tem aprox. 190mm de largura útil.
+  // Se a chapa for muito larga na tela, reduzimos para caber 100% na largura da folha.
+  const larguraChapaReal = chapaAtual.largura * escala;
+  const proporcaoFixa = larguraChapaReal > 700 ? (700 / larguraChapaReal) : 1;
+
+  const janelaImpressao = window.open("", "_blank", "width=900,height=1000");
+
+  janelaImpressao.document.write(`
     <html>
       <head>
-        <title>Plano de Corte - Impressão</title>
+        <title>Plano de Corte - Relatório</title>
         <style>
-          
+          /* 1. Reset e Cores */
           * { 
             box-sizing: border-box !important; 
-            margin: 0; 
-            padding: 0; 
             -webkit-print-color-adjust: exact !important; 
-            print-color-adjust: exact !important; 
+            print-color-adjust: exact !important;
           }
-          
           body { 
-            font-family: sans-serif; 
-            padding: 15mm; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            padding: 10mm; 
             background: white; 
+            color: #333;
+          }
+
+          /* 2. Ajuste de Escala sem Cortes */
+          .wrapper-print {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+
+          .container-visualizador {
+            transform: scale(${proporcaoFixa});
+            transform-origin: top center;
+            /* O segredo para a tabela subir: reduzimos a margem inferior 
+               baseado no quanto o elemento encolheu */
+            margin-bottom: calc(-${100 - (proporcaoFixa * 100)}% + 20px);
             width: 100% !important;
           }
 
-          /* 2. Container de Proteção contra Cortes Laterais */
-          .secao-lista-corte, .espaco-impressao, .wrapper-visualizador-impressao {
-            width: 100% !important;
-            max-width: 100% !important;
-            display: block !important;
-            overflow: visible !important;
+          /* 3. Estilização dos Cards e Chapa (Mantendo Cores) */
+          .grade-estatisticas { 
+            display: flex; 
+            gap: 10px; 
+            margin-bottom: 20px; 
+            width: 100%;
           }
-
-          /* 3. Tabela com Ajuste Forçado (Fit) */
-          table { 
-            width: 100% !important; 
-            border-collapse: collapse; 
-            margin-top: 20px;
-            table-layout: fixed; /* Força o respeito total às larguras */
+          .card-estatistica { 
+            border: 1px solid #ddd; 
+            padding: 10px; 
+            flex: 1; 
+            text-align: center;
+            background-color: #f9f9f9 !important;
+            border-radius: 4px;
           }
+          .valor-destaque { font-size: 16px; font-weight: bold; color: #2563eb; }
 
-          th, td { 
-            border: 1px solid #000; 
-            padding: 5px 2px; 
-            text-align: center; 
-            font-size: 10px; /* Redução estratégica para garantir o fit */
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-          }
-
-          /* Definição de Larguras para evitar que a coluna de Nome empurre as outras */
-          th:nth-child(1) { width: 35px; }  /* Item */
-          th:nth-child(2) { width: auto; }  /* Nome (Flexível) */
-          th:nth-child(3) { width: 90px; }  /* Medidas */
-          th:nth-child(4) { width: 40px; }  /* Qtd */
-          th:nth-child(5) { width: 80px; }  /* Área */
-
-          th { background-color: #eee !important; font-weight: bold; }
-
-          /* 4. Chapa e Visualizador */
           .chapa-madeira { 
-            border: 2px solid #451a03; 
+            border: 3px solid #451a03; 
             background-color: #deb887 !important; 
             position: relative; 
-            margin: 0 auto 20px;
-            max-width: 100% !important; /* Impede a imagem de sair da folha */
-            transform-origin: top center;
+            margin: 0 auto;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
           }
 
           .peca-no-plano { 
             position: absolute; 
             background-color: #2563eb !important; 
-            border: 1px solid #000; 
+            border: 1px solid #1e3a8a; 
             display: flex; 
+            flex-direction: column;
             justify-content: center; 
             align-items: center;
-            color: white;
-            font-size: 8px;
+            color: white; 
+            font-size: 10px;
+            font-weight: bold;
           }
 
-          .grade-estatisticas { display: flex; gap: 5px; margin-bottom: 20px; width: 100%; }
-          .card-estatistica { border: 1px solid #ddd; padding: 5px; flex: 1; text-align: center; }
-          .valor-destaque { font-size: 12px; font-weight: bold; }
+          /* 4. Tabela Profissional */
+          .secao-lista-corte { 
+            width: 100%; 
+            margin-top: 30px;
+            clear: both;
+          }
+          table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 10px;
+          }
+          th { 
+            background-color: #2563eb !important; 
+            color: white !important; 
+            font-size: 12px;
+            padding: 10px;
+            border: 1px solid #1e3a8a;
+          }
+          td { 
+            border: 1px solid #ccc; 
+            padding: 8px; 
+            text-align: center; 
+            font-size: 11px;
+          }
+          tr:nth-child(even) { background-color: #f2f2f2 !important; }
+
+          h1 { color: #1e3a8a; margin-bottom: 5px; }
 
           @media print {
-            @page { size: portrait; margin: 0; }
-            body { padding: 10mm; }
+            @page { size: portrait; margin: 10mm; }
+            body { padding: 0; }
           }
         </style>
       </head>
-     
+      <body>
+        <div class="wrapper-print">
+          <h1 style="text-align:center;">${nomeServico || "Plano de Corte"}</h1>
+          <p style="text-align:center; color: #666; margin-bottom: 25px;">
+            Relatório de Produção - Chapa ${chapas.findIndex(c => c.id === chapaAtivaId) + 1}
+          </p>
 
-<body>
-  <h1 style="text-align:center; font-size: 20px; margin-top: 10px;">
-    ${nomeServico || "Plano de Corte"}
-  </h1>
-  <h2 style="text-align:center; font-size: 14px; color: #666; margin-bottom: 20px;">
-    Relatório Técnico: Chapa ${chapas.findIndex((c) => c.id === chapaAtivaId) + 1}
-  </h2>
-  ${conteudoGabarito}
-  <script>
-    window.onload = () => {
-      window.print();
-      window.close();
-    };
-  </script>
-</body>
+          <div class="container-visualizador">
+            ${conteudoGabarito}
+          </div>
+        </div>
+
+        <script>
+          window.onload = () => {
+            setTimeout(() => {
+              window.print();
+              window.close();
+            }, 600);
+          };
+        </script>
+      </body>
     </html>
   `);
 
-    janelaImpressao.document.close();
-  };
+  janelaImpressao.document.close();
+};
+
 
   const chapaAtual = chapas.find((c) => c.id === chapaAtivaId) || {
     id: 1,
     largura: 2750,
     altura: 1840,
   };
+
+useEffect(() => {
+  const calcularEscala = () => {
+    if (containerRef.current) {
+      // OffsetWidth pega a largura real do card branco na tela
+      const larguraDoCard = containerRef.current.offsetWidth;
+      const larguraRealDaChapa = chapaAtual.largura;
+
+      if (larguraRealDaChapa > 0) {
+        // Deixa apenas 10px de margem total para não encostar no limite do card
+        const novaEscala = (larguraDoCard - 10) / larguraRealDaChapa;
+        setEscala(novaEscala);
+      }
+    }
+  };
+
+  // Executa após o componente montar
+  setTimeout(calcularEscala, 50); 
+
+  window.addEventListener("resize", calcularEscala);
+  return () => window.removeEventListener("resize", calcularEscala);
+}, [chapaAtual.largura, chapaAtivaId, chapas]);
+
+
 
   // Função para atualizar as medidas de uma chapa específica no array
   const atualizarDadosChapa = (campo, valor) => {
@@ -228,7 +286,7 @@ export default function PlanoDeCorte() {
             type="text"
             value={nomeServico}
             className="input-padrao"
-            placeholder="Ex: Armário 6 portas"
+            placeholder="Ex: Armário 6 portas - Cliente: "
             onChange={(e) => setNomeServico(e.target.value)}
           />
         </div>
@@ -360,21 +418,6 @@ export default function PlanoDeCorte() {
         <button onClick={adicionarPeca} className="btn-adicionar">
           + Adicionar Peça
         </button>
-      </div>
-
-      {/* Controles de Visualização */}
-      <div className="controle-zoom ocultar-na-impressao">
-        <div className="zoom-container">
-          <label className="rotulo">Zoom do Gabarito</label>
-          <input
-            type="range"
-            min="0.1"
-            max="0.5"
-            step="0.05"
-            value={escala}
-            onChange={(e) => setEscala(Number(e.target.value))}
-          />
-        </div>
       </div>
 
       {/* Área Técnica de Impressão e Gabarito */}
