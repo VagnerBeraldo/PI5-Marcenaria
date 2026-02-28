@@ -136,7 +136,7 @@ export default function PlanoDeCorte() {
             background-color: #f3f2f2 !important;
             border-radius: 4px;
           }
-          .valor-destaque { font-size: 16px; font-weight: bold; color: #000000; }
+          .valor-cor-primaria { font-size: 16px; font-weight: bold; color: #000000; }
 
           .chapa-madeira { 
             border: 3px solid #451a03; 
@@ -307,7 +307,6 @@ export default function PlanoDeCorte() {
             </button>
           </div>
         </div>
-
         {/* Configurações da Chapa de MDF */}
         <div className="secao-config-chapa ocultar-na-impressao">
           <div className="grupo-input">
@@ -339,7 +338,6 @@ export default function PlanoDeCorte() {
             />
           </div>
         </div>
-
         {/* Listagem de Peças para Produção */}
         <div className="lista-pecas ocultar-na-impressao">
           <div className="linha"></div>
@@ -403,27 +401,27 @@ export default function PlanoDeCorte() {
               </div>
             ))}
           {/* Fim da Listagem de Peças */}
-        <div className="btn-container">
-          <button onClick={adicionarPeca} className="btn-adicionar">
-            + Adicionar Peça
-          </button>
-          <button onClick={imprimir} className="btn-imprimir">
-            <Printer size={18} />
-            <span className="texto-imprimir">Imprimir</span>
-          </button>
-        </div>
-      </div> {/* Fecha .lista-pecas */}
-    </div> 
-    {/* Área Técnica de Impressão e Gabarito - FORA do container-navegacao */}
-    <div className="espaco-impressao">
-      <Visualizador
-        chapa={chapaAtual}
-        pecas={pecas.filter((p) => p.chapaId === chapaAtivaId)}
-        largCorte={largCorte}
-        escala={escala}
-      />
-    </div>
-  </div> // Fecha .card-principal
+          <div className="btn-container">
+            <button onClick={adicionarPeca} className="btn-adicionar">
+              + Adicionar Peça
+            </button>
+            <button onClick={imprimir} className="btn-imprimir">
+              <Printer size={18} />
+              <span className="texto-imprimir">Imprimir</span>
+            </button>
+          </div>
+        </div>{" "}
+        {/* Fecha .lista-pecas */}
+      </div>
+      {/* Área Técnica de Impressão e Gabarito - FORA do container-navegacao */}
+      <div className="espaco-impressao">
+        <Visualizador
+          chapa={chapaAtual}
+          pecas={pecas.filter((p) => p.chapaId === chapaAtivaId)}
+          largCorte={largCorte}
+          escala={escala}
+        />
+      </div>
+    </div> // Fecha .card-principal
   );
 }
-
