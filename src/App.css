@@ -1,12 +1,35 @@
 #root {
   max-width: 1280px;
-  margin: 0 auto;
-  /* padding: 1rem; */
+  margin: 0 8px 0 5px;
   text-align: center;
 }
 
 .app-container {
   min-height: 100vh;
-  font-family: sans-serif;
+  font-family: 'Montserrat', Arial, serif;
+}
+
+html, body{
+  margin: 0;
+  background-color: var(--body-bg);
+}
+
+:root {
+    --destaque: #8B4513;
+    --secundario-madeira: #dddad3;
+    --industrial-aco: #2F4F4F;
+    --acao: #FFBF00;
+    --body-bg: #F4EBD9;
+    --texto: #444;
+    --input: #f3f2f2;
+    --texto-inativo: #64748b;
+    --branco: #ffffff;
+
+    /* visualizador */
+    --chapa-visualizador: #deb887;
+    --borda-chapa-visualizador: #451a03;
+    --bg-tabela-th: #f8f9fa;
+    --borda-tabela-th: #dee2e6;
+    --fonte-erro: #820404;
 }
 
