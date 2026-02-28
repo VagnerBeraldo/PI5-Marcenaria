@@ -98,10 +98,10 @@ export default function PlanoDeCorte() {
             print-color-adjust: exact !important;
           }
           body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            font-family: 'Montserrat', Tahoma, Geneva, Verdana, sans-serif; 
             padding: 10mm; 
             background: white; 
-            color: #333;
+            color: #444;
           }
 
           /* 2. Ajuste de Escala sem Cortes */
@@ -129,14 +129,14 @@ export default function PlanoDeCorte() {
             width: 100%;
           }
           .card-estatistica { 
-            border: 1px solid #ddd; 
+            border: 1px solid #f3f2f2; 
             padding: 10px; 
             flex: 1; 
             text-align: center;
-            background-color: #f9f9f9 !important;
+            background-color: #f3f2f2 !important;
             border-radius: 4px;
           }
-          .valor-destaque { font-size: 16px; font-weight: bold; color: #2563eb; }
+          .valor-destaque { font-size: 16px; font-weight: bold; color: #000000; }
 
           .chapa-madeira { 
             border: 3px solid #451a03; 
@@ -148,8 +148,8 @@ export default function PlanoDeCorte() {
 
           .peca-no-plano { 
             position: absolute; 
-            background-color: #2563eb !important; 
-            border: 1px solid #1e3a8a; 
+            background-color: #8B4513 !important; 
+            border: 1px solid #8B4513; 
             display: flex; 
             flex-direction: column;
             justify-content: center; 
@@ -171,21 +171,21 @@ export default function PlanoDeCorte() {
             margin-top: 10px;
           }
           th { 
-            background-color: #2563eb !important; 
-            color: white !important; 
+            background-color: #444 !important; 
+            color: black !important; 
             font-size: 12px;
             padding: 10px;
-            border: 1px solid #1e3a8a;
+            border: 1px solid #000;
           }
           td { 
-            border: 1px solid #ccc; 
+            border: 1px solid #000; 
             padding: 8px; 
             text-align: center; 
             font-size: 11px;
           }
-          tr:nth-child(even) { background-color: #f2f2f2 !important; }
+          tr:nth-child(even) { background-color: #4444 !important; }
 
-          h1 { color: #1e3a8a; margin-bottom: 5px; }
+          h1 { color: #000000; margin-bottom: 5px; }
 
           @media print {
             @page { size: portrait; margin: 10mm; }
