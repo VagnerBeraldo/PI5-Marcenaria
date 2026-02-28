@@ -75,7 +75,7 @@ export default function Visualizador({ chapa, pecas, largCorte, escala }) {
       // Re-ordena para priorizar espaços que preencham a largura primeiro
       espaçosLivres.sort((a, b) => a.x - b.x || a.y - b.y);
     } else {
-      // Se não couber, marca erro 
+      // Se não couber, marca erro
       pecasPosicionadas.push({
         ...peca,
         largura: peca.w,
@@ -93,40 +93,42 @@ export default function Visualizador({ chapa, pecas, largCorte, escala }) {
 
   return (
     <div className="wrapper-visualizador-impressao">
-      <div className="container-visualizador">
-        {/* 1. Estatísticas no topo */}
-        <div className="grade-estatisticas">
-          <div className="card-estatistica">
-            <span>Aproveitamento</span>
-            <p className="valor-destaque cor-azul">{aproveitamento}%</p>
-          </div>
-          <div className="card-estatistica">
-            <span>Área da Chapa</span>
-            <p className="valor-destaque">
-              {(areaTotalChapa / 1000000).toFixed(2)}m²
-            </p>
-          </div>
-          <div className="card-estatistica">
-            <span>Sobras</span>
-            <p className="valor-destaque cor-laranja">
-              {(100 - aproveitamento).toFixed(1)}%
-            </p>
-          </div>
+      {/* 1. Estatísticas no topo */}
+      <div className="grade-estatisticas">
+        <div className="card-estatistica">
+          <span>Aproveitamento</span>
+          <p className="valor-destaque cor-azul">{aproveitamento}%</p>
         </div>
+        <div className="card-estatistica">
+          <span>Área da Chapa</span>
+          <p className="valor-destaque">
+            {(areaTotalChapa / 1000000).toFixed(2)}m²
+          </p>
+        </div>
+        <div className="card-estatistica">
+          <span>Sobras</span>
+          <p className="valor-destaque cor-laranja">
+            {(100 - aproveitamento).toFixed(1)}%
+          </p>
+        </div>
+      </div>
 
-        {/* 2. Área do Gabarito (Chapa) */}
+      {/* 2. Container do Visualizador */}
+      <div className="container-visualizador">
+        {pecasPosicionadas.some((p) => p.erro) && (
+          <div className="alerta-erro">
+            ⚠️ Algumas peças não couberam na chapa!
+          </div>
+        )}
+
         <div
           className="chapa-madeira"
           style={{
             width: `${chapa.largura * escala}px`,
             height: `${chapa.altura * escala}px`,
-            backgroundColor: "#deb887",
-            position: "relative",
-            overflow: "hidden",
-            border: "2px solid #451a03",
+            
           }}
         >
-          {/* Renderiza as Peças */}
           {pecasPosicionadas.map((p) => {
             if (p.erro) return null;
             return (
@@ -139,8 +141,8 @@ export default function Visualizador({ chapa, pecas, largCorte, escala }) {
                   top: `${p.top * escala}px`,
                   left: `${p.left * escala}px`,
                   position: "absolute",
-                  backgroundColor: "rgba(37, 99, 235, 0.7)",
-                  border: "1px solid #1e3a8a",
+                  backgroundColor: "rgba(139, 69, 19, 0.7)",
+                  border: "1px solid #8B4513",
                 }}
               >
                 <span className="info-medida">
@@ -151,7 +153,6 @@ export default function Visualizador({ chapa, pecas, largCorte, escala }) {
             );
           })}
 
-          {/* Renderiza as Sobras */}
           {espaçosLivres.map(
             (espaco, index) =>
               espaco.w > 50 &&
@@ -186,53 +187,51 @@ export default function Visualizador({ chapa, pecas, largCorte, escala }) {
               ),
           )}
         </div>
-
-        {/* 3. Alerta de erro fora da chapa */}
-        {pecasPosicionadas.some((p) => p.erro) && (
-          <div className="alerta-erro">
-            ⚠️ Algumas peças não couberam na chapa!
-          </div>
-        )}
       </div>
+
+      {/* 3. Seção da Tabela */}
       <div className="secao-lista-corte">
         <h3>Lista de Corte Por Peça</h3>
-        <table className="tabela-corte">
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Nome da Peça</th>
-              <th>Medidas (mm)</th>
-              <th>Qtd</th>
-              <th>Área Total (m²)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pecas.map((peca, index) => {
-              const largura = Number(peca.largura) || 0;
-              const altura = Number(peca.altura) || 0;
-              const qtd = Number(peca.qtd) || 0;
-              // Cálculo da área: (L * A * Qtd) / 1.000.000 para converter mm² para m²
-              const areaTotal = ((largura * altura * qtd) / 1000000).toFixed(3);
+        <div className="tabela-scroll-wrapper">
+          <table className="tabela-corte">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Nome da Peça</th>
+                <th>Medidas (mm)</th>
+                <th>Qtd</th>
+                <th>Área Total (m²)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pecas.map((peca, index) => {
+                const largura = Number(peca.largura) || 0;
+                const altura = Number(peca.altura) || 0;
+                const qtd = Number(peca.qtd) || 0;
+                const areaTotal = ((largura * altura * qtd) / 1000000).toFixed(
+                  3,
+                );
 
-              return (
-                largura > 0 &&
-                altura > 0 && (
-                  <tr key={peca.id}>
-                    <td>{index + 1}</td>
-                    <td>{peca.nome || "Sem nome"}</td>
-                    <td>
-                      <strong>
-                        {largura} x {altura}
-                      </strong>
-                    </td>
-                    <td>{qtd}</td>
-                    <td>{areaTotal} m²</td>
-                  </tr>
-                )
-              );
-            })}
-          </tbody>
-        </table>
+                return (
+                  largura > 0 &&
+                  altura > 0 && (
+                    <tr key={peca.id}>
+                      <td>{index + 1}</td>
+                      <td>{peca.nome || "Sem nome"}</td>
+                      <td>
+                        <strong>
+                          {largura} x {altura}
+                        </strong>
+                      </td>
+                      <td>{qtd}</td>
+                      <td>{areaTotal} m²</td>
+                    </tr>
+                  )
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
