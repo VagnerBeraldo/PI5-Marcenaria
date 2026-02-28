@@ -262,13 +262,6 @@ export default function PlanoDeCorte() {
 
   return (
     <div className="card-principal">
-      {/* <div className="cabecalho ocultar-na-impressao"> */}
-      {/* <div className="logo-container">
-          <img src="/logo.png" alt="Logo Marcenaria" className="logo-img" />
-        </div> */}
-      {/* <h2>Plano de Corte</h2> */}
-      {/* </div> */}
-
       <div className="secao-nome-servico ocultar-na-impressao">
         <div className="grupo-input">
           <h2 className="titulo">Plano de Corte</h2>
