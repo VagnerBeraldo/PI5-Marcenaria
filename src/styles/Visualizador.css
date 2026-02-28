@@ -1,22 +1,24 @@
 .wrapper-visualizador-impressao {
   width: 100%;
   display: block;
+  overflow-x: hidden;
 }
 
 .container-visualizador {
-  display: block; 
-  width: 100%;    
-  margin: 0;
+  display: block;
+  width: 100%;
   padding: 0;
+  overflow-x: auto;
   box-sizing: border-box;
 }
 
 .chapa-madeira {
   display: block;
   position: relative;
-  border: 3px solid #451a03;
-  background-color: #deb887;
-  margin: 0 auto 20px; 
+  border: 3px solid var(--borda-chapa-visualizador);
+  background-color: var(--chapa-visualizador);
+  margin: 0 auto 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .grade-estatisticas {
@@ -25,16 +27,16 @@
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 10px;
   padding: 8px;
-  margin-bottom: 25px;
+  margin: 20px 0;
   box-sizing: border-box;
 }
 
 .card-estatistica {
-  background: white;
+  background: var(--input);
   padding: 12px 8px;
-  border-radius: 6px;
+  border-radius: 8px;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   min-width: 0;
   overflow: hidden;
 }
@@ -43,7 +45,7 @@
   display: block;
   font-size: 10px;
   font-weight: bold;
-  color: #666;
+  color: var(--texto);
   text-transform: uppercase;
 }
 
@@ -102,50 +104,90 @@
 
 /* Seção da Tabela */
 .secao-lista-corte {
-  width: 93%;
+  width: calc(100% - 20px);
   margin: 40px 10px;
-  min-width: 768px;
-  background: white;
+  overflow-x: auto;
+  background: var(--input);
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 }
 
 .secao-lista-corte h3 {
+  font-family: "Saira", Arial, serif;
+  font-size: 1.2rem;
   margin-bottom: 15px;
-  color: #333;
+  color: var(--texto);
   padding-left: 10px;
+}
+
+.tabela-scroll-wrapper {
+  width: 100%;
 }
 
 .tabela-corte {
   width: 100%;
+  min-width: 600px;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: 0.8rem;
 }
 
 .tabela-corte th {
-  background-color: #f8f9fa;
-  color: #555;
+  background-color: var(--bg-tabela-th);
+  color: var(--texto);
   text-align: center;
   padding: 12px;
-  border-bottom: 2px solid #dee2e6;
+  border-bottom: 2px solid var(--borda-tabela-th);
 }
 
 .tabela-corte td {
   padding: 10px 12px;
-  border-bottom: 1px solid #eee;
-  color: #444;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  color: var(--texto);
 }
 
 .tabela-corte tr:hover {
-  background-color: #f1f8e9;
+  background-color: rgba(221, 218, 211, 0.4);
 }
 
 .alerta-erro {
-  margin-top: 20px;
+  margin: 20px;
   padding: 15px;
-  background-color: #ffebee;
-  color: #c62828;
+  background-color: rgba(198, 40, 40, 0.5);
+  color: var(--fonte-erro);
   border-radius: 6px;
   text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  animation: pulso-discreto 2s ease-in-out infinite;
+}
+
+@keyframes pulso-discreto {
+  0% {
+    /* Estado inicial: brilho colado ao elemento */
+    box-shadow: 0 0 0 0 rgba(198, 40, 40, 0.4);
+  }
+  70% {
+    /* Expansão sutil de apenas 6px e dissipação total */
+    box-shadow: 0 0 0 6px rgba(198, 40, 40, 0);
+  }
+  100% {
+    /* Pausa no final do ciclo para não cansar a vista */
+    box-shadow: 0 0 0 0 rgba(198, 40, 40, 0);
+  }
+}
+
+@media (max-width: 900px) {
+  .container-visualizador {
+    padding-right: 5px !important;
+  }
+
+  .secao-lista-corte {
+    width: 100%;
+    margin: 40px 0px 20px 0px;
+  }
+
+  .chapa-madeira {
+    margin: 0 0px 20px 0px;
+  }
 }

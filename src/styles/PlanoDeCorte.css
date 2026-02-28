@@ -1,53 +1,62 @@
 .card-principal {
   max-width: 900px;
   margin: 0 auto;
-  padding: 20px 5px;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background-color: var(--body-bg);
 }
 
-.cabecalho {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
-}
-
-.btn-container {
-  display: flex;
-  gap: 15px;
+.titulo {
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--branco);
+  font-family: "Saira", Arial, serif;
+  font-size: 1.8rem;
 }
 
 /* --- Botões de Ação Superiores --- */
 .btn-icone {
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
   display: flex;
+  border-radius: 8px;
+  cursor: pointer;
   align-items: center;
-  color: black;
-  border: 1px solid black;
-  background-color: transparent;
-  transition: all 0.2s;
+  transition: all 0.4s ease-in-out;
 }
 
 .btn-icone:hover {
-  background-color: #f3f4f6;
+  background-color: var(--destaque);
+  color: var(--body-bg);
 }
 
 /* --- Identificação do Serviço --- */
 .secao-nome-servico {
-  margin-bottom: 20px;
-  padding: 10px;
-  background-color: #f8fafc;
+  margin: 10px 0px 20px 0px;
+  padding: 0 20px 20px 20px;
+  background-color: var(--secundario-madeira);
+  border-left: 4px solid var(--destaque);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); */
+  /* box-shadow: -10px 18px 25px -10px rgba(0, 0, 0, 0.1); */
+  box-shadow: -10px 18px 25px -20px rgba(0, 0, 0, 0.1);
+}
+
+.container-navegacao {
+  background-color: var(--secundario-madeira);
+  border-left: 4px solid var(--destaque);
   border-radius: 8px;
-  border-left: 4px solid #2563eb;
+  overflow: hidden;
+  /* box-shadow: -20px 4px 20px rgba(0, 0, 0, 0.1); */
+  box-shadow: 0 12px 20px -10px rgba(0, 0, 0, 0.1);
+}
+
+.linha {
+  border-bottom: 1px solid var(--branco);
 }
 
 /* --- NAVEGAÇÃO DE CHAPAS (ABAS) --- */
 .navegacao-chapas {
   margin-bottom: 10px;
+  background-color: var(--body-bg);
 }
 
 .abas-container {
@@ -61,31 +70,38 @@
 .tab-wrapper {
   display: flex;
   align-items: center;
-  background-color: #e2e8f0; 
-  border: 1px solid #cbd5e1;
-  border-radius: 8px 8px 0 0;
-  transition: all 0.2s ease;
+  background-color: var(--secundario-madeira);
+  border: none;
+  outline: none;
+  padding-top: 3px;
+  border-radius: 5px 0 0 0;
+  transition: all 0.4s ease;
 }
 
 /* Aba Selecionada (Ativa) */
 .tab-wrapper.ativa {
-  background-color: #2563eb; 
-  border-color: #2563eb;
+  background-color: var(--destaque);
+  border: none;
 }
 
 /* Botão de texto da aba */
 .tab-chapa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   background: transparent;
-  padding: 10px 14px;
+  padding: 10px 15px;
   cursor: pointer;
   font-weight: 700;
   font-size: 0.9rem;
-  color: #000000; 
+  gap: 8px;
+  color: var(--texto);
+  transition: all 0.6s ease-in-out;
 }
 
 .tab-wrapper.ativa .tab-chapa {
-  color: #ffffff; 
+  color: var(--branco);
 }
 
 /* Lixeira da Aba */
@@ -99,11 +115,11 @@
   align-items: center;
   justify-content: center;
   transition: transform 0.2s;
-  color: #64748b; 
+  color: var(--texto);
 }
 
 .tab-wrapper.ativa .btn-excluir-chapa {
-  color: #fff; 
+  color: var(--branco);
 }
 
 .btn-excluir-chapa:hover {
@@ -112,20 +128,22 @@
 
 /* Botão "+ Nova Chapa" */
 .btn-nova-chapa {
-  padding: 8px 16px;
-  background-color: #f8fafc;
-  border: 1px dashed #94a3b8;
-  border-radius: 6px;
+  padding: 10px 25px;
+  margin-bottom: 3px;
+  background-color: var(--input);
+  border: 1.6px dashed rgb(139, 69, 19, 0.5);
+  border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #475569;
+  outline: none;
+  color: var(--texto);
+  transition: all 0.4s ease-in-out;
 }
 
 .btn-nova-chapa:hover {
-  background-color: #f1f5f9;
-  border-color: #2563eb;
-  color: #2563eb;
+  background-color: var(--destaque);
+  color: var(--branco);
 }
 
 /* --- Configuração da Chapa e Serra --- */
@@ -133,10 +151,8 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 15px;
-  margin-bottom: 30px;
   padding: 20px;
-  background-color: #f4f8ff;
-  border-radius: 8px;
+  background-color: var(--secundario-madeira);
 }
 
 .grupo-input {
@@ -150,25 +166,37 @@
   font-weight: 600;
   margin-left: 5px;
   text-align: left;
-  color: #444;
+  color: var(--texto);
 }
 
 .input-padrao {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  border: none;
+  background-color: var(--input);
+  border-radius: 8px;
   box-sizing: border-box;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .input-padrao:focus {
-  outline: none; 
-  border: 2px solid black;
+  outline: none;
+  border: 2px solid var(--destaque);
 }
 
 /* --- Lista de Peças --- */
 .lista-pecas {
-  margin-top: 30px;
+  margin: 30px 0;
+  background-color: var(--secundario-madeira);
+  padding: 1px 20px;
+  border-bottom-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.lista-pecas h3 {
+  font-family: "Saira", Arial, serif;
+  font-size: 1.2rem;
+  color: var(--texto);
 }
 
 .item-peca {
@@ -176,18 +204,26 @@
   flex-wrap: wrap;
   gap: 8px;
   align-items: flex-end;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--branco);
   padding-bottom: 15px;
   margin-bottom: 15px;
 }
 
-.coluna-nome { flex: 1 1 100%; }
-.coluna-medida { flex: 1 1 50px; min-width: 0; }
-.coluna-qtd { flex: 0 1 60px; }
+.coluna-nome {
+  flex: 1 1 100%;
+}
+.coluna-medida {
+  margin-top: 5px;
+  flex: 1 1 50px;
+  min-width: 0;
+}
+.coluna-qtd {
+  flex: 0 1 60px;
+}
 
 .sub-rotulo {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--texto);
   text-align: left;
   margin-left: 5px;
   font-weight: 600;
@@ -197,46 +233,104 @@
 
 .btn-remover {
   background-color: transparent;
-  border: 1px solid #ddd;
+  color: var(--destaque);
+  border: 1px solid var(--secundario-madeira);
   padding: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 30px 0 0 0;
+}
+
+.btn-adicionar,
+.btn-imprimir {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  min-width: 300px;
+  border-radius: 8px;
+  padding: 12px;
+  transition: background-color 0.4s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.btn-imprimir {
+  border: 1px solid var(--destaque);
+  background-color: var(--destaque);
+  padding: 13px;
+  color: var(--branco);
+}
+
+.texto-imprimir {
+  margin-left: 8px;
+  font-weight: bold;
 }
 
 .btn-adicionar {
-  display: block;
-  width: fit-content; 
-  min-width: 300px; 
-  padding: 12px 30px !important;
-  margin: 20px auto; 
-  background-color: #2e7d32;
-  color: white;
-  border: none;
-  border-radius: 6px;
+  width: fit-content;
+  padding: 15px;
+  background-color: var(--destaque);
+  color: var(--branco);
   font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s;
 }
 
-.btn-adicionar:hover {
-  background-color: #1b5e20; 
+.btn-adicionar:active {
+  transform: scale(0.98);
 }
-
 
 .espaco-impressao {
   width: 100%;
+  box-sizing: border-box;
   overflow-x: auto;
-  padding: 20px 0;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  padding: 0 20px;
   display: block;
   text-align: center;
-  background-color: #f3f4f6;
-  border-radius: 8px;
+  background-color: var(--secundario-madeira);
+  border-radius: 8px 0 8px 8px;
+  border-left: 4px solid var(--destaque);
+  box-shadow: -10px 18px 25px -10px rgba(0, 0, 0, 0.1);
 }
 
 /* --- Responsividade --- */
+@media (max-width: 900px) {
+  .espaco-impressao {
+    padding: 0 8px;
+  }
+}
+
 @media (max-width: 600px) {
-  .coluna-nome { order: 1; }
-  .coluna-medida, .coluna-qtd, .btn-remover { order: 2; }
-  
+  .coluna-nome {
+    order: 1;
+  }
+  .coluna-medida,
+  .coluna-qtd,
+  .btn-remover {
+    order: 2;
+  }
+
   .secao-config-chapa {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .btn-container {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 350px) {
+  .btn-adicionar,
+  .btn-imprimir {
+    min-width: 280px;
   }
 }
