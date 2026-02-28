@@ -1,11 +1,13 @@
 import PlanoDeCorte from './pages/PlanoDeCorte';
+import MenuMarcenaria from './pages/MenuMarcenaria';
 
 import './App.css'; 
 
 function App() {
   return (
     <div className="app-container">
-      <PlanoDeCorte />
+      <MenuMarcenaria />
+      {/* <PlanoDeCorte /> */}
     </div>
   );
 }
