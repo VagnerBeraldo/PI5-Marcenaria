@@ -97,17 +97,17 @@ export default function Visualizador({ chapa, pecas, largCorte, escala }) {
       <div className="grade-estatisticas">
         <div className="card-estatistica">
           <span>Aproveitamento</span>
-          <p className="valor-destaque cor-azul">{aproveitamento}%</p>
+          <p className="valor-cor-primaria cor-azul">{aproveitamento}%</p>
         </div>
         <div className="card-estatistica">
           <span>Área da Chapa</span>
-          <p className="valor-destaque">
+          <p className="valor-cor-primaria">
             {(areaTotalChapa / 1000000).toFixed(2)}m²
           </p>
         </div>
         <div className="card-estatistica">
           <span>Sobras</span>
-          <p className="valor-destaque cor-laranja">
+          <p className="valor-cor-primaria cor-laranja">
             {(100 - aproveitamento).toFixed(1)}%
           </p>
         </div>
@@ -126,7 +126,6 @@ export default function Visualizador({ chapa, pecas, largCorte, escala }) {
           style={{
             width: `${chapa.largura * escala}px`,
             height: `${chapa.altura * escala}px`,
-            
           }}
         >
           {pecasPosicionadas.map((p) => {

@@ -32,7 +32,7 @@
 }
 
 .card-estatistica {
-  background: var(--input);
+  background: var(--input-bg);
   padding: 12px 8px;
   border-radius: 8px;
   text-align: center;
@@ -49,7 +49,7 @@
   text-transform: uppercase;
 }
 
-.valor-destaque {
+.valor-cor-primaria {
   font-size: 1rem !important;
   font-weight: 900;
   margin-top: 5px;
@@ -66,7 +66,7 @@
   }
 }
 
-.valor-destaque {
+.valor-cor-primaria {
   font-size: 20px;
   font-weight: 900;
   margin-top: 5px;
@@ -107,7 +107,7 @@
   width: calc(100% - 20px);
   margin: 40px 10px;
   overflow-x: auto;
-  background: var(--input);
+  background: var(--input-bg);
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);

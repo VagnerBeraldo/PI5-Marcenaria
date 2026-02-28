@@ -21,7 +21,7 @@
 }
 
 .btn-icone:hover {
-  background-color: var(--destaque);
+  background-color: var(--cor-primaria);
   color: var(--body-bg);
 }
 
@@ -29,8 +29,8 @@
 .secao-nome-servico {
   margin: 10px 0px 20px 0px;
   padding: 0 20px 20px 20px;
-  background-color: var(--secundario-madeira);
-  border-left: 4px solid var(--destaque);
+  background-color: var(--cor-secundaria);
+  border-left: 4px solid var(--cor-primaria);
   border-top-left-radius: 8px;
   border-top-right-radius: 0px;
   border-bottom-right-radius: 8px;
@@ -41,8 +41,8 @@
 }
 
 .container-navegacao {
-  background-color: var(--secundario-madeira);
-  border-left: 4px solid var(--destaque);
+  background-color: var(--cor-secundaria);
+  border-left: 4px solid var(--cor-primaria);
   border-radius: 8px;
   overflow: hidden;
   /* box-shadow: -20px 4px 20px rgba(0, 0, 0, 0.1); */
@@ -70,7 +70,7 @@
 .tab-wrapper {
   display: flex;
   align-items: center;
-  background-color: var(--secundario-madeira);
+  background-color: var(--cor-secundaria);
   border: none;
   outline: none;
   padding-top: 3px;
@@ -80,7 +80,7 @@
 
 /* Aba Selecionada (Ativa) */
 .tab-wrapper.ativa {
-  background-color: var(--destaque);
+  background-color: var(--cor-primaria);
   border: none;
 }
 
@@ -130,7 +130,7 @@
 .btn-nova-chapa {
   padding: 10px 25px;
   margin-bottom: 3px;
-  background-color: var(--input);
+  background-color: var(--input-bg);
   border: 1.6px dashed rgb(139, 69, 19, 0.5);
   border-radius: 8px;
   cursor: pointer;
@@ -142,7 +142,7 @@
 }
 
 .btn-nova-chapa:hover {
-  background-color: var(--destaque);
+  background-color: var(--cor-primaria);
   color: var(--branco);
 }
 
@@ -152,7 +152,7 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 15px;
   padding: 20px;
-  background-color: var(--secundario-madeira);
+  background-color: var(--cor-secundaria);
 }
 
 .grupo-input {
@@ -173,7 +173,7 @@
   width: 100%;
   padding: 10px;
   border: none;
-  background-color: var(--input);
+  background-color: var(--input-bg);
   border-radius: 8px;
   box-sizing: border-box;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -181,13 +181,13 @@
 
 .input-padrao:focus {
   outline: none;
-  border: 2px solid var(--destaque);
+  border: 2px solid var(--cor-primaria);
 }
 
 /* --- Lista de Peças --- */
 .lista-pecas {
   margin: 30px 0;
-  background-color: var(--secundario-madeira);
+  background-color: var(--cor-secundaria);
   padding: 1px 20px;
   border-bottom-left-radius: 8px;
   border-top-right-radius: 8px;
@@ -233,8 +233,8 @@
 
 .btn-remover {
   background-color: transparent;
-  color: var(--destaque);
-  border: 1px solid var(--secundario-madeira);
+  color: var(--cor-primaria);
+  border: 1px solid var(--cor-secundaria);
   padding: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
@@ -262,8 +262,8 @@
 }
 
 .btn-imprimir {
-  border: 1px solid var(--destaque);
-  background-color: var(--destaque);
+  border: 1px solid var(--cor-primaria);
+  background-color: var(--cor-primaria);
   padding: 13px;
   color: var(--branco);
 }
@@ -276,7 +276,7 @@
 .btn-adicionar {
   width: fit-content;
   padding: 15px;
-  background-color: var(--destaque);
+  background-color: var(--cor-primaria);
   color: var(--branco);
   font-weight: bold;
 }
@@ -294,9 +294,9 @@
   padding: 0 20px;
   display: block;
   text-align: center;
-  background-color: var(--secundario-madeira);
+  background-color: var(--cor-secundaria);
   border-radius: 8px 0 8px 8px;
-  border-left: 4px solid var(--destaque);
+  border-left: 4px solid var(--cor-primaria);
   box-shadow: -10px 18px 25px -10px rgba(0, 0, 0, 0.1);
 }
 
