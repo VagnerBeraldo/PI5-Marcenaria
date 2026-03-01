@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import PageTransition from '../components/Animation/PageTransition';
+import PageTransition from "../components/Animation/PageTransition";
 import {
   LayoutDashboard,
   CalendarCheck,
@@ -12,16 +12,13 @@ import {
 import "../styles/MenuMarcenaria.css";
 import logoMarcenaria from "/logo.svg";
 
-
 const MenuMarcenaria = () => {
   const navigate = useNavigate();
 
   return (
-    <PageTransition 
-      className="menu-container"
-    >
+    <PageTransition className="menu-container">
       <header className="menu-header">
-        <div className="logo-box">
+        <div>
           <img
             src={logoMarcenaria}
             alt="Logo GR Marcenaria"
@@ -32,7 +29,10 @@ const MenuMarcenaria = () => {
       </header>
 
       <div className="grid-main">
-        <div className="grid-item item-topo-esq">
+        <div
+          className="grid-item item-topo-esq"
+          onClick={() => navigate("/despesas")}
+        >
           <CalendarCheck size={24} />
           <span>Despesas</span>
         </div>
