@@ -37,5 +37,9 @@ body {
   --borda-tabela-th: #dee2e6;
   --fonte-erro: #820404;
 
+  /* despesas */
+  --vermelho-destaque: #e74c3c;
+  --verde-destaque: #27ae60;
+  --verde-destaque-bg: #eafaf1;
 
 }
