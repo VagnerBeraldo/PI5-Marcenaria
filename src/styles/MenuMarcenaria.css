@@ -42,8 +42,8 @@ body {
   grid-template-rows: 1.2fr 1.2fr 1fr 0.8fr;
   gap: 12px;
   background-color: var(--cor-secundaria);
-  box-shadow: -10px 18px 25px -20px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 30px 20px;
   border-radius: 8px;
   border-left: 4px solid var(--cor-primaria);
   grid-template-areas:
@@ -114,6 +114,13 @@ body {
   transition: transform 0.4s ease;
 }
 
+@media (max-width: 550px) {
+  .menu-container {
+    margin: 2px auto;
+    padding: 2px;
+  }
+}
+
 @media (max-width: 400px) {
   .menu-container {
     margin: 2px auto;
@@ -134,9 +141,3 @@ body {
     gap: 8px;
   }
 }
-
-/*mudar cor do ícone
-
-incluir navegação
-
-*/
