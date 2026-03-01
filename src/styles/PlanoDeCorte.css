@@ -321,6 +321,12 @@
   }
 }
 
+@media (max-width: 768px) {
+  .btn-container {
+    flex-direction: column;
+  }
+}
+
 @media (max-width: 600px) {
   .coluna-nome {
     order: 1;
@@ -336,10 +342,15 @@
   }
 }
 
-@media (max-width: 768px) {
-  .btn-container {
-    flex-direction: column;
+@media (max-width: 430px) {
+  .secao-nome-servico {
+    padding: 0 10px 20px 10px;
   }
+
+  .secao-config-chapa {
+    padding: 20px 10px;
+  }
+
 }
 
 @media (max-width: 350px) {
