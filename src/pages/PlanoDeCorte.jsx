@@ -431,6 +431,7 @@ import Visualizador from "./Visualizador";
 import { LayoutDashboard, Printer, Trash2 } from "lucide-react";
 import PageTransition from "../components/Animation/PageTransition";
 import BotaoVoltar from '../components/BotaoVoltar/BotaoVoltar';
+import logoMarcenaria from "/logo.svg";
 import "../styles/PlanoDeCorte.css";
 import "../styles/Visualizador.css";
 
@@ -692,12 +693,17 @@ export default function PlanoDeCorte() {
   };
 
   return (
-    <PageTransition 
-      className="card-principal"
-    >
-    <div className="card-principal">
+    <PageTransition className="card-principal">
       <div className="secao-nome-servico ocultar-na-impressao">
         <BotaoVoltar/>
+        <div>
+                  <img
+                    src={logoMarcenaria}
+                    alt="Logo GR Marcenaria"
+                    className="logo-img"
+                  />
+                </div>
+                <h1 className="nome-fantasia">GR Marcenaria</h1>
         <div className="grupo-input">
           <h2 className="titulo">Plano de Corte</h2>
           <label className="rotulo">Nome do Serviço / Projeto</label>
@@ -857,7 +863,6 @@ export default function PlanoDeCorte() {
           escala={escala}
         />
       </div>
-    </div>
     </PageTransition> 
   );
 }
