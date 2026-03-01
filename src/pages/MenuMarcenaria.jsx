@@ -1,61 +1,71 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import PageTransition from '../components/Animation/PageTransition';
+import {
+  LayoutDashboard,
+  CalendarCheck,
+  Users,
+  ClipboardList,
+  CircleDollarSignIcon,
+  ThumbsUp,
+} from "lucide-react";
+import "../styles/MenuMarcenaria.css";
+import logoMarcenaria from "/logo.svg";
 
-import React from 'react';
-import { LayoutDashboard, CalendarCheck, Users, ClipboardList, CircleDollarSignIcon, ThumbsUp } from 'lucide-react';
-import '../styles/MenuMarcenaria.css';
-import logoMarcenaria from '/logo.svg';
 
 const MenuMarcenaria = () => {
+  const navigate = useNavigate();
+
   return (
-    <nav className="menu-container">
+    <PageTransition 
+      className="menu-container"
+    >
       <header className="menu-header">
         <div className="logo-box">
-          <img 
-            src={logoMarcenaria} 
-            alt="Logo GR Marcenaria" 
-            className="logo-img" 
+          <img
+            src={logoMarcenaria}
+            alt="Logo GR Marcenaria"
+            className="logo-img"
           />
         </div>
         <h1 className="nome-fantasia">GR Marcenaria</h1>
       </header>
 
       <div className="grid-main">
-        {/* Retângulo 1: Topo Esquerda (2 linhas) */}
         <div className="grid-item item-topo-esq">
           <CalendarCheck size={24} />
           <span>Despesas</span>
         </div>
 
-        {/* Retângulo 2: Topo Centro (1 linha) */}
         <div className="grid-item item-topo-centro">
           <ThumbsUp size={24} />
           <span>Ponto de Equilíbrio</span>
         </div>
 
-        {/* Retângulo 3: Abaixo do 1 (1 linha) */}
         <div className="grid-item item-abaixo-1">
           <CircleDollarSignIcon size={24} />
           <span>Precificação</span>
         </div>
 
-        {/* Retângulo 4: Centro (2 linhas, abaixo do 2) */}
         <div className="grid-item item-centro-baixo">
           <ClipboardList size={24} />
           <span>Orçamento</span>
         </div>
 
-        {/* Retângulo 5: Direita (3 linhas verticais) */}
         <div className="grid-item item-col-direita">
           <Users size={24} />
           <span>Clientes</span>
         </div>
 
-        {/* Retângulo 6: Base (Ocupa todas as colunas) */}
-        <div className="grid-item item-base-total">
+        <div
+          className="grid-item item-base-total"
+          onClick={() => navigate("/plano-de-corte")}
+        >
           <LayoutDashboard size={24} />
           <span>Plano de Corte</span>
         </div>
       </div>
-    </nav>
+    </PageTransition>
   );
 };
 
