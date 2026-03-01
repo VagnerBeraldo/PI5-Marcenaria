@@ -2,7 +2,7 @@
 import React from 'react';
 import { LayoutDashboard, CalendarCheck, Users, ClipboardList, CircleDollarSignIcon, ThumbsUp } from 'lucide-react';
 import '../styles/MenuMarcenaria.css';
-import logoMarcenaria from '/public/logo.png';
+import logoMarcenaria from '/logo.svg';
 
 const MenuMarcenaria = () => {
   return (
