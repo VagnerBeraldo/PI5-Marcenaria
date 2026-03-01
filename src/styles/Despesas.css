@@ -140,7 +140,7 @@
   justify-content: space-between;
   padding: 10px 0;
   /* border-bottom: 1px dashed var(--cor-secundaria); */
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--texto);
 }
 
@@ -157,7 +157,7 @@
 
 .linha-lucro {
   font-weight: bold;
-  font-size: 1.3rem;
+  font-size: 1rem;
   color: var(--verde-destaque);
   background-color: var(--verde-destaque-bg);
   padding: 15px 10px;
@@ -193,7 +193,7 @@
 
 @media (max-width: 380px) {
   .financeiro-container {
-    padding: 0 5px 5px 5px;
+    padding: 0 10px 5px 10px;
   }
   .footer-resumo {
     padding: 5px;
