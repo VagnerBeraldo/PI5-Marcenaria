@@ -8,14 +8,18 @@ body {
 
 .menu-container {
   max-width: 900px;
-  height: 100vh;
-  margin: 20px auto;
-  padding: 20px;
+  height: 97vh;
+  margin: 10px auto;
   font-family: "Montserrat", sans-serif;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   box-sizing: border-box;
+  border-left: 4px solid var(--cor-primaria);
+  background-color: var(--cor-secundaria);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 20px 20px 0px 20px;
+  border-radius: 8px;
 }
 
 .menu-header {
@@ -31,7 +35,7 @@ body {
 .nome-fantasia {
   font-size: 1.3rem;
   color: var(--texto);
-  margin: 0;
+  margin: -15px 0 20px 0;
   font-family: "Saira", Arial, serif;
 }
 
@@ -41,11 +45,7 @@ body {
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: 1.2fr 1.2fr 1fr 0.8fr;
   gap: 12px;
-  background-color: var(--cor-secundaria);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  padding: 30px 20px;
-  border-radius: 8px;
-  border-left: 4px solid var(--cor-primaria);
+  
   grid-template-areas:
     "bloco1 bloco2 bloco5"
     "bloco1 bloco4 bloco5"
@@ -53,12 +53,12 @@ body {
     "bloco6 bloco6 bloco6";
 
   height: 100%;
-  max-height: calc(100vh - 300px);
+  max-height: calc(100vh - 250px);
 }
 
 .grid-item {
   background: var(--input-bg);
-  border: 2px solid var(--borda-chapa-visualizador);
+  border: 2px solid var(--texto);
   display: flex;
   border-radius: 8px;
   flex-direction: column;
@@ -117,15 +117,19 @@ body {
 
 @media (max-width: 550px) {
   .menu-container {
-    margin: 2px auto;
-    padding: 2px;
+    margin: 10px auto;
+    
+    padding: 20px 2px 2px;
+  }
+
+  .grid-item {
+   margin: 0 5px;
   }
 }
 
 @media (max-width: 400px) {
   .menu-container {
-    margin: 2px auto;
-    padding: 2px;
+    padding: 20px 2px 2px;
   }
 
   .grid-main {
@@ -137,6 +141,7 @@ body {
   .grid-item {
     flex-direction: row;
     padding: 15px 0;
+    
     align-items: center;
     justify-content: center;
     gap: 8px;

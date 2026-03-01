@@ -4,11 +4,25 @@
   background-color: var(--body-bg);  
 }
 
+.logo-img {
+  max-width: 120px;
+  height: auto;
+}
+
+.nome-fantasia {
+  font-size: 1.3rem;
+  color: var(--texto);
+  margin: -35px 0 30px 0;
+  font-family: "Saira", Arial, serif;
+}
+
+
 .titulo {
   padding-bottom: 30px;
   border-bottom: 1px solid var(--branco);
   font-family: "Saira", Arial, serif;
   font-size: 1.8rem;
+  color: var(--texto);
 }
 
 /* --- Botões de Ação Superiores --- */
@@ -181,7 +195,7 @@
 
 .input-padrao:focus {
   outline: none;
-  border: 2px solid var(--cor-primaria);
+  border: 1px solid var(--cor-primaria);
 }
 
 /* --- Lista de Peças --- */
