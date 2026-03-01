@@ -1,7 +1,7 @@
 .card-principal {
   max-width: 900px;
   margin: 0 auto;
-  background-color: var(--body-bg);
+  background-color: var(--body-bg);  
 }
 
 .titulo {
