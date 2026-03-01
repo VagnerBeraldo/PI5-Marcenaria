@@ -5,13 +5,16 @@
 }
 
 .app-container {
-  min-height: 100vh;
+  /* min-height: 100vh; */
   margin: 0 8px 0 5px;
   font-family: "Montserrat", Arial, serif;
 }
 
 html,
 body {  
+  max-height: 100vh; 
+  overflow-y: auto;  
+  overflow-x: hidden;
   margin: 0;
   background-color: var(--body-bg);
 }
