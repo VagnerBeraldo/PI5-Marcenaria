@@ -1,0 +1,205 @@
+.financeiro-container {
+  max-width: 900px;
+  margin: 10px auto;
+  padding: 0 20px 20px 20px;
+  border-radius: 8px;
+  background-color: var(--cor-secundaria);
+  border-left: 4px solid var(--cor-primaria);
+}
+
+.logo-wrapper {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo {
+  max-width: 120px;
+  height: auto;
+}
+
+.nomefantasia {
+  font-size: 1.3rem;
+  color: var(--texto);
+  margin: -35px 0 30px 0;
+  font-family: "Saira", Arial, serif;
+}
+
+.title-center {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  color: var(--texto);
+  font-family: "Saira", Arial, serif;
+}
+
+.subtitle-left {
+  text-align: left;
+  margin-bottom: 20px;
+  color: var(--texto);
+  font-size: 1.3rem;
+  border-bottom: 2px solid var(--branco);
+  padding-bottom: 5px;
+  font-family: "Saira", Arial, serif;
+}
+
+.section-title {
+  text-align: left;
+  margin-top: 35px;
+  margin-bottom: 15px;
+  color: var(--texto);
+  font-size: 1.2rem;
+  font-family: "Saira", Arial, serif;
+  border-bottom: 1px solid var(--branco);
+  padding-bottom: 5px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.form-group label {
+  margin-bottom: 5px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--texto);
+}
+
+.form-group input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: var(--input-bg);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+  border-color: var(--destaque);
+  outline: none;
+}
+
+.form-group.highlight input {
+  font-weight: bold;
+  border-color: var(--destaque);
+  background-color: var(--input-bg);
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+  align-items: flex-end;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.flex-2 {
+  flex: 2;
+}
+
+.input-disabled {
+  background-color: rgba(243, 242, 242, 0.5) !important;
+  color: rgba(68, 68, 68, 0.5);
+  cursor: not-allowed;
+  font-weight: bold;
+}
+
+.btn-add {
+  display: inline-block;
+  padding: 15px 15px;
+  background-color: var(--cor-primaria);
+  color: var(--branco);
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  margin-top: 5px;
+  transition: background-color 0.3s;
+}
+
+.btn-add:hover {
+  background-color: rgba(139, 69, 19, 0.8);
+}
+
+.footer-resumo {
+  margin-top: 40px;
+  background-color: var(--branco);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.resumo-linha {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  /* border-bottom: 1px dashed var(--cor-secundaria); */
+  font-size: 1.1rem;
+  color: var(--texto);
+}
+
+.resumo-linha:last-child {
+  border-bottom: none;
+}
+
+.linha-destaque {
+  font-weight: bold;
+  color: var(--vermelho-destaque);
+  margin-top: 10px;
+  border-top: 2px solid var(--cor-secundaria);
+}
+
+.linha-lucro {
+  font-weight: bold;
+  font-size: 1.3rem;
+  color: var(--verde-destaque);
+  background-color: var(--verde-destaque-bg);
+  padding: 15px 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+@media (max-width: 500px) {
+  .flex-1 {
+    min-width: 100px !important;
+  }
+  .flex-2 {
+    min-width: 150px !important;
+  }
+
+  .resumo-linha {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 426px) {
+  .resumo-linha {
+    font-size: 1rem;
+  }
+
+  .financeiro-container {
+    padding: 0 10px 10px 10px;
+  }
+  .footer-resumo {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 380px) {
+  .financeiro-container {
+    padding: 0 5px 5px 5px;
+  }
+  .footer-resumo {
+    padding: 5px;
+  }
+
+  .resumo-linha {
+    font-size: 0.85rem;
+  }
+}
