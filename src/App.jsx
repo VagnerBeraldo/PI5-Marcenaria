@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { AnimatePresence } from 'framer-motion';
 import PlanoDeCorte from './pages/PlanoDeCorte';
 import MenuMarcenaria from './pages/MenuMarcenaria';
-
+import Despesas from './pages/Despesas';
 import './App.css'; 
 
 function AnimatedRoutes() {
@@ -13,6 +13,7 @@ function AnimatedRoutes() {
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<MenuMarcenaria />} />
         <Route path="/plano-de-corte" element={<PlanoDeCorte />} />
+        <Route path="/despesas" element={<Despesas />} />
       </Routes>
     </AnimatePresence>
   );
