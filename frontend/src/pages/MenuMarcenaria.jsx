@@ -44,7 +44,7 @@ const MenuMarcenaria = () => {
 
         <div className="grid-item item-abaixo-1">
           <CircleDollarSignIcon size={24} />
-          <span>Precificação</span>
+          <span>Custo do Material</span>
         </div>
 
         <div className="grid-item item-centro-baixo">

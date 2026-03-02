@@ -109,23 +109,57 @@
   font-weight: bold;
 }
 
-.btn-add {
-  display: inline-block;
-  padding: 15px 15px;
-  background-color: var(--cor-primaria);
-  color: var(--branco);
-  border: none;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  margin-top: 5px;
-  transition: background-color 0.3s;
+.btn-container {
+  display: flex;
+  align-items: center;
+  justify-content: center; 
 }
 
-.btn-add:hover {
+.btn-add,
+.btn-salvar {
+  display: flex;           
+  align-items: center;     
+  justify-content: center; 
+  gap: 8px;
+  width: 100%;           
+  max-width: fit-content;                
+  margin-left: auto;
+  margin-right: auto;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  /* margin-top: 5px; */
+  transition: background-color 0.3s, opacity 0.2s;
+}
+
+.btn-add {
+  padding: 15px; 
+  background-color: var(--cor-primaria);
+  color: var(--branco);
+}
+
+.btn-add:hover:not(:disabled) {
   background-color: rgba(139, 69, 19, 0.8);
 }
+
+.btn-salvar {
+  padding: 15px 65px; 
+  background-color: var(--verde-destaque);
+  color: var(--verde-destaque-bg);
+}
+
+.btn-salvar:hover:not(:disabled) {
+  background-color: rgba(39, 174, 96, 0.8);
+}
+
+.btn-add:disabled,
+.btn-salvar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 
 .footer-resumo {
   margin-top: 40px;
