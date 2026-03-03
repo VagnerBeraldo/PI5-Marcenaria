@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import PageTransition from "../components/Animation/PageTransition";
 import BotaoVoltar from '../components/BotaoVoltar/BotaoVoltar';
-import { CirclePlus, Plus, Save } from 'lucide-react';
+import { CirclePlus, FileEditIcon, Plus, Save, Trash2 } from 'lucide-react';
 import '../styles/Despesas.css';
 import api from '../../services/api';
 
@@ -27,21 +27,21 @@ export default function Despesas() {
   const impostoValor = useMemo(() => (faturamento * impostoPerc) / 100, [faturamento, impostoPerc]);
   const taxaCartaoValor = useMemo(() => (faturamento * taxaCartaoPerc) / 100, [faturamento, taxaCartaoPerc]);
 
-  const totalFixas = useMemo(() => {
-    const somaOutras = outrasFixas.reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
-    return manutencao + internet + contador + somaOutras;
-  }, [manutencao, internet, contador, outrasFixas]);
+  // const totalFixas = useMemo(() => {
+  //   const somaOutras = outrasFixas.reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
+  //   return manutencao + internet + contador + somaOutras;
+  // }, [manutencao, internet, contador, outrasFixas]);
 
-  const totalVariaveis = useMemo(() => {
-    const somaOutras = outrasVariaveis.reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
-    return energia + impostoValor + taxaCartaoValor + fornecedores + somaOutras;
-  }, [energia, impostoValor, taxaCartaoValor, fornecedores, outrasVariaveis]);
+  // const totalVariaveis = useMemo(() => {
+  //   const somaOutras = outrasVariaveis.reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
+  //   return energia + impostoValor + taxaCartaoValor + fornecedores + somaOutras;
+  // }, [energia, impostoValor, taxaCartaoValor, fornecedores, outrasVariaveis]);
 
-  const totalDespesas = totalFixas + totalVariaveis;
-  const lucro = faturamento - totalDespesas;
+  // const totalDespesas = totalFixas + totalVariaveis;
+  // const lucro = faturamento - totalDespesas;
 
   // Helpers
-  const calcPerc = (valor) => (faturamento > 0 ? ((valor / faturamento) * 100).toFixed(2) : '0.00');
+  // const calcPerc = (valor) => (faturamento > 0 ? ((valor / faturamento) * 100).toFixed(2) : '0.00');
   const formatMoney = (valor) => valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
   const addOutraFixa = () => setOutrasFixas([...outrasFixas, { id: Date.now(), nome: '', valor: 0 }]);
@@ -178,7 +178,7 @@ export default function Despesas() {
         </div>
       ))}
       
- <div className='btn-container'>
+ 
   <button 
     className="btn-add" 
     onClick={addOutraVariavel} 
@@ -188,17 +188,39 @@ export default function Despesas() {
     <span>Inserir Outra Despesa Variável</span>
   </button>
 
-  <button 
+<div className='btn-container'>
+    <div className='btn-wrapper'>
+    <button 
     className="btn-salvar" 
     onClick={handleSalvar} 
     disabled={isLoading}
   >
     <Save className="icon-salvar" size={18} />
-    <span>Salvar Despesas</span>
+    <span>Salvar</span>
   </button>
+
+  <button 
+    className="btn-salvar" 
+    onClick={handleSalvar} 
+    disabled={isLoading}
+  >
+    <FileEditIcon className="icon-salvar" size={18} />
+    <span>Editar</span>
+  </button>
+
+  <button 
+    className="btn-salvar" 
+    onClick={handleSalvar} 
+    disabled={isLoading}
+  >
+    <Trash2 className="icon-salvar" size={18} />
+    <span>Excluir</span>
+  </button>
+</div>
+
 </div>     
       
-      <div className="footer-resumo">
+      {/* <div className="footer-resumo">
         <div className="resumo-linha">
           <span>Faturamento</span>
           <span>{formatMoney(faturamento)}</span>
@@ -219,7 +241,7 @@ export default function Despesas() {
           <span>Lucro</span>
           <span>{formatMoney(lucro)} ({calcPerc(lucro)}%)</span>
         </div>
-      </div>
+      </div> */}
     </PageTransition>
   );
 }
