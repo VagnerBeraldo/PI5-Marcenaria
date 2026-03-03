@@ -14,12 +14,12 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  box-sizing: border-box;
   border-left: 4px solid var(--cor-primaria);
   background-color: var(--cor-secundaria);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   padding: 20px 20px 0px 20px;
   border-radius: 8px;
+  box-sizing: border-box;
 }
 
 .menu-header {
@@ -67,7 +67,9 @@ body {
   gap: 8px;
   font-weight: 600;
   color: var(--texto);
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  /* transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   position: relative;
   z-index: 1;
 }
@@ -103,7 +105,7 @@ body {
     0 10px 20px rgba(0, 0, 0, 0.15),
     0 6px 6px rgba(0, 0, 0, 0.1);
 
-  transform: translateY(-1px);
+  transform: translateY(-4px);
     /* transition: transform 0.2s ease; */
   z-index: 10;
   color: var(--cor-primaria);
