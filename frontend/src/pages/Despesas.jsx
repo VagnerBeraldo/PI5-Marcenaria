@@ -1,11 +1,16 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import PageTransition from "../components/Animation/PageTransition";
 import BotaoVoltar from '../components/BotaoVoltar/BotaoVoltar';
-import { CirclePlus, FileEditIcon, Plus, Save, Trash2 } from 'lucide-react';
+import { CirclePlus, FileEditIcon, Save, Trash2 } from 'lucide-react';
+import Swal from 'sweetalert2';
 import '../styles/Despesas.css';
 import api from '../../services/api';
 
 export default function Despesas() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [idDespesaSalva, setIdDespesaSalva] = useState(null);
+
+  // Estados do Formulário
   const [faturamento, setFaturamento] = useState(0);
 
   // Despesas Fixas Predefinidas
@@ -20,59 +25,297 @@ export default function Despesas() {
   const [taxaCartaoPerc, setTaxaCartaoPerc] = useState(0);
   const [fornecedores, setFornecedores] = useState(0);
   const [outrasVariaveis, setOutrasVariaveis] = useState([]);
-  
-  const [isLoading, setIsLoading] = useState(false);
 
   // Cálculos dinâmicos
   const impostoValor = useMemo(() => (faturamento * impostoPerc) / 100, [faturamento, impostoPerc]);
   const taxaCartaoValor = useMemo(() => (faturamento * taxaCartaoPerc) / 100, [faturamento, taxaCartaoPerc]);
 
-  // const totalFixas = useMemo(() => {
-  //   const somaOutras = outrasFixas.reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
-  //   return manutencao + internet + contador + somaOutras;
-  // }, [manutencao, internet, contador, outrasFixas]);
-
-  // const totalVariaveis = useMemo(() => {
-  //   const somaOutras = outrasVariaveis.reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
-  //   return energia + impostoValor + taxaCartaoValor + fornecedores + somaOutras;
-  // }, [energia, impostoValor, taxaCartaoValor, fornecedores, outrasVariaveis]);
-
-  // const totalDespesas = totalFixas + totalVariaveis;
-  // const lucro = faturamento - totalDespesas;
-
-  // Helpers
-  // const calcPerc = (valor) => (faturamento > 0 ? ((valor / faturamento) * 100).toFixed(2) : '0.00');
+  // Helpers de Formatação
   const formatMoney = (valor) => valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  
+  const formatInputBR = (valor) => {
+    return (Number(valor) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  };
+  
+  const handleMonetarioChange = (setter) => (e) => {
+    const apenasNumeros = e.target.value.replace(/\D/g, '');
+    setter(Number(apenasNumeros) / 100);
+  };
 
+  // Funções para itens dinâmicos
   const addOutraFixa = () => setOutrasFixas([...outrasFixas, { id: Date.now(), nome: '', valor: 0 }]);
   const updateOutraFixa = (id, field, value) => {
     setOutrasFixas(outrasFixas.map(item => (item.id === id ? { ...item, [field]: value } : item)));
+  };
+  
+  const removeOutraFixa = async (id) => {
+    const result = await Swal.fire({
+      title: 'Remover despesa?',
+      text: "Deseja remover este item da lista?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e74c3c',
+      cancelButtonColor: '#27ae60',
+      confirmButtonText: 'Sim, remover',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
+      // 1. Remove da tela
+      const novasFixas = outrasFixas.filter(item => item.id !== id);
+      setOutrasFixas(novasFixas);
+
+      // 2. Se já existe no banco, atualiza o banco imediatamente
+      if (idDespesaSalva) {
+        setIsLoading(true);
+        try {
+          const payload = montarPayload();
+          payload.despesasFixas.outrasFixas = novasFixas; // Injeta a nova lista sem o item removido
+          
+          await api.put(`/despesas/${idDespesaSalva}`, payload);
+          
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Item removido do banco!',
+            showConfirmButton: false,
+            timer: 2000,
+            customClass: { popup: 'mensagem-confirmacao' }
+          });
+        } catch (error) {
+          console.error("Erro ao atualizar banco após exclusão:", error);
+          Swal.fire({ 
+            toast: true, 
+            position: 'top-end', 
+            icon: 'error', 
+            title: 'Não foi possível remover o item do banco.', 
+            showConfirmButton: false, 
+            timer: 3000, 
+            customClass: { popup: 'mensagem-erro' } 
+          });
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    }
   };
 
   const addOutraVariavel = () => setOutrasVariaveis([...outrasVariaveis, { id: Date.now(), nome: '', valor: 0 }]);
   const updateOutraVariavel = (id, field, value) => {
     setOutrasVariaveis(outrasVariaveis.map(item => (item.id === id ? { ...item, [field]: value } : item)));
   };
+  
+  const removeOutraVariavel = async (id) => {
+    const result = await Swal.fire({
+      title: 'Remover despesa?',
+      text: "Deseja remover este item da lista?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e74c3c',
+      cancelButtonColor: '#27ae60',
+      confirmButtonText: 'Sim, remover',
+      cancelButtonText: 'Cancelar'
+    });
 
+    if (result.isConfirmed) {
+      // 1. Remove da tela
+      const novasVariaveis = outrasVariaveis.filter(item => item.id !== id);
+      setOutrasVariaveis(novasVariaveis);
+
+      // 2. Se já existe no banco, atualiza o banco imediatamente
+      if (idDespesaSalva) {
+        setIsLoading(true);
+        try {
+          const payload = montarPayload();
+          payload.despesasVariaveis.outrasVariaveis = novasVariaveis; // Injeta a nova lista sem o item removido
+          
+          await api.put(`/despesas/${idDespesaSalva}`, payload);
+          
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Item removido do banco!',
+            showConfirmButton: false,
+            timer: 1500,
+            customClass: { popup: 'mensagem-confirmacao' }
+          });
+        } catch (error) {
+          console.error("Erro ao atualizar banco após exclusão:", error);
+          Swal.fire({ 
+            toast: true, 
+            position: 'top-end', 
+            icon: 'error', 
+            title: 'Não foi possível remover o item do banco.', 
+            showConfirmButton: false, 
+            timer: 3000, 
+            customClass: { popup: 'mensagem-erro' } 
+          });
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    }
+  };
+
+  // GET: Carrega os dados se existirem
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await api.get('/despesas');
+        if (response.data) {
+          const data = response.data;
+          setIdDespesaSalva(data.id || 1); 
+          
+          setFaturamento(Number(data.faturamento) || 0);
+          setManutencao(Number(data.despesasFixas.manutencao) || 0);
+          setInternet(Number(data.despesasFixas.internet) || 0);
+          setContador(Number(data.despesasFixas.contador) || 0);
+          setOutrasFixas(data.despesasFixas.outrasFixas || []);
+
+          setEnergia(Number(data.despesasVariaveis.energia) || 0);
+          setImpostoPerc(Number(data.despesasVariaveis.impostoPerc) || 0);
+          setTaxaCartaoPerc(Number(data.despesasVariaveis.taxaCartaoPerc) || 0);
+          setFornecedores(Number(data.despesasVariaveis.fornecedores) || 0);
+          setOutrasVariaveis(data.despesasVariaveis.outrasVariaveis || []);
+        }
+      } catch (error) {
+        if (error.response && error.response.status !== 404) {
+          console.error("Erro ao buscar dados:", error);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const montarPayload = () => ({
+    faturamento,
+    despesasFixas: { manutencao, internet, contador, outrasFixas },
+    despesasVariaveis: { energia, impostoPerc, taxaCartaoPerc, fornecedores, outrasVariaveis }
+  });
+
+  // POST: Criar novo registro
   const handleSalvar = async () => {
     setIsLoading(true);
-    const despesasData = {
-      faturamento,
-      despesasFixas: { manutencao, internet, contador, outrasFixas },
-      despesasVariaveis: { energia, impostoPerc, taxaCartaoPerc, fornecedores, outrasVariaveis }
-    };
-
     try {
-      const response = await api.post('/despesas', despesasData);
-      // Status 201 confirma a criação
+      const response = await api.post('/despesas', montarPayload());
       if (response.status === 201) {
-        alert('Despesas salvas com sucesso no banco de dados!');
+        setIdDespesaSalva(response.data.id || 1);
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Despesas salvas com sucesso no banco de dados!',
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: 'mensagem-confirmacao' }
+        });
       }
     } catch (error) {
       console.error("Erro ao salvar:", error);
-      alert('Erro ao salvar as despesas.');
+      Swal.fire({ 
+        toast: true, 
+        position: 'top-end', 
+        icon: 'error', 
+        title: 'Erro ao salvar as despesas.', 
+        showConfirmButton: false, 
+        timer: 3000, 
+        customClass: { popup: 'mensagem-erro' } 
+      });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // PUT: Editar registro existente
+  const handleEditar = async () => {
+    if (!idDespesaSalva) return;
+    setIsLoading(true);
+    try {
+      await api.put(`/despesas/${idDespesaSalva}`, montarPayload());
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Despesas atualizadas com sucesso!',
+        showConfirmButton: false,
+        timer: 3000,
+        customClass: { popup: 'mensagem-confirmacao' }
+      });
+    } catch (error) {
+      console.error("Erro ao atualizar:", error);
+      Swal.fire({ 
+        toast: true, 
+        position: 'top-end', 
+        icon: 'error', 
+        title: 'Erro ao atualizar as despesas.', 
+        showConfirmButton: false, 
+        timer: 3000, 
+        customClass: { popup: 'mensagem-erro' } 
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+// DELETE: Excluir registro existente
+  const handleExcluir = async () => {
+    if (!idDespesaSalva) return;
+    
+    // 1. Dispara o Modal de Confirmação
+    const result = await Swal.fire({
+      title: 'Exclusão de despesa',
+      text: "Excluir as despesas fixas e variáveis?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e74c3c', 
+      cancelButtonColor: '#27ae60',
+      confirmButtonText: 'Sim, excluir!',
+      cancelButtonText: 'Cancelar'
+    });
+
+    // 2. Verifica se o usuário confirmou
+    if (result.isConfirmed) {
+      setIsLoading(true);
+      
+      try {
+        await api.delete(`/despesas/${idDespesaSalva}`);
+        setIdDespesaSalva(null);
+        setFaturamento(0);
+        setManutencao(0); setInternet(0); setContador(0); setOutrasFixas([]);
+        setEnergia(0); setImpostoPerc(0); setTaxaCartaoPerc(0); setFornecedores(0); setOutrasVariaveis([]);
+        
+        // 3. (Bônus) Mensagem de Sucesso que some sozinha (Toast)
+        Swal.fire({
+          toast: true,
+          position: 'top-end', // Canto da tela
+          icon: 'success',
+          title: 'Despesas excluídas com sucesso!',
+          showConfirmButton: false,
+          timer: 2000, // Some em 2 segundos
+          customClass: { popup: 'mensagem-confirmacao' }
+        });
+
+      } catch (error) {
+        console.error("Erro ao excluir:", error);
+        
+        // Mensagem de Erro
+        Swal.fire({
+          toast: true, 
+          position: 'top-end', 
+          icon: 'error', 
+          title: 'Erro ao excluir as despesas.', 
+          showConfirmButton: false, 
+          timer: 3000, 
+          customClass: { popup: 'mensagem-erro' } 
+        });
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -89,9 +332,9 @@ export default function Despesas() {
       <div className="form-group highlight">
         <label>Faturamento Bruto</label>
         <input 
-          type="number" 
-          value={faturamento || ''} 
-          onChange={(e) => setFaturamento(Number(e.target.value))} 
+          type="text" 
+          value={formatInputBR(faturamento)} 
+          onChange={handleMonetarioChange(setFaturamento)} 
           placeholder="R$ 0,00"
           disabled={isLoading}
         />
@@ -100,15 +343,15 @@ export default function Despesas() {
       <h3 className="section-title">Despesas Fixas</h3>
       <div className="form-group">
         <label>Manutenção Preventiva de Máquinas</label>
-        <input type="number" value={manutencao || ''} onChange={(e) => setManutencao(Number(e.target.value))} placeholder="R$ 0,00" disabled={isLoading} />
+        <input type="text" value={formatInputBR(manutencao)} onChange={handleMonetarioChange(setManutencao)} placeholder="R$ 0,00" disabled={isLoading} />
       </div>
       <div className="form-group">
         <label>Internet e Telefone</label>
-        <input type="number" value={internet || ''} onChange={(e) => setInternet(Number(e.target.value))} placeholder="R$ 0,00" disabled={isLoading} />
+        <input type="text" value={formatInputBR(internet)} onChange={handleMonetarioChange(setInternet)} placeholder="R$ 0,00" disabled={isLoading} />
       </div>
       <div className="form-group">
         <label>Contador</label>
-        <input type="number" value={contador || ''} onChange={(e) => setContador(Number(e.target.value))} placeholder="R$ 0,00" disabled={isLoading}/>
+        <input type="text" value={formatInputBR(contador)} onChange={handleMonetarioChange(setContador)} placeholder="R$ 0,00" disabled={isLoading}/>
       </div>
 
       {outrasFixas.map((item) => (
@@ -118,24 +361,32 @@ export default function Despesas() {
             <input type="text" value={item.nome} onChange={(e) => updateOutraFixa(item.id, 'nome', e.target.value)} disabled={isLoading}/>
           </div>
           <div className="form-group flex-1">
-            <label>Valor (R$)</label>
-            <input type="number" value={item.valor || ''} onChange={(e) => updateOutraFixa(item.id, 'valor', Number(e.target.value))} disabled={isLoading}/>
+            <label>Valor</label>
+            <input 
+              type="text" 
+              value={formatInputBR(item.valor)} 
+              onChange={(e) => {
+                const apenasNumeros = e.target.value.replace(/\D/g, '');
+                updateOutraFixa(item.id, 'valor', Number(apenasNumeros) / 100);
+              }} 
+              placeholder="R$ 0,00"
+              disabled={isLoading}
+            />
           </div>
+          <button className="btn-delete-item" onClick={() => removeOutraFixa(item.id)} disabled={isLoading} title="Remover item">
+            <Trash2 size={20} />
+          </button>
         </div>
       ))}
-      <button 
-    className="btn-add" 
-    onClick={addOutraFixa} 
-    disabled={isLoading}
-  >
-    <CirclePlus size={18} className="icon-add" strokeWidth={1.5} />
-    <span>Inserir Outra Despesa Fixa</span>
-  </button>
+      <button className="btn-add" onClick={addOutraFixa} disabled={isLoading}>
+        <CirclePlus size={18} className="btn-icon-add" strokeWidth={2} />
+        <span>Inserir Outra Despesa Fixa</span>
+      </button>
 
       <h3 className="section-title">Despesas Variáveis</h3>
       <div className="form-group">
         <label>Energia Elétrica</label>
-        <input type="number" value={energia || ''} onChange={(e) => setEnergia(Number(e.target.value))} placeholder="R$ 0,00" disabled={isLoading}/>
+        <input type="text" value={formatInputBR(energia)} onChange={handleMonetarioChange(setEnergia)} placeholder="R$ 0,00" disabled={isLoading}/>
       </div>
       
       <div className="form-row">
@@ -162,7 +413,7 @@ export default function Despesas() {
 
       <div className="form-group">
         <label>Fornecedores</label>
-        <input type="number" value={fornecedores || ''} onChange={(e) => setFornecedores(Number(e.target.value))} placeholder="R$ 0,00" disabled={isLoading}/>
+        <input type="text" value={formatInputBR(fornecedores)} onChange={handleMonetarioChange(setFornecedores)} placeholder="R$ 0,00" disabled={isLoading}/>
       </div>
 
       {outrasVariaveis.map((item) => (
@@ -172,76 +423,59 @@ export default function Despesas() {
             <input type="text" value={item.nome} onChange={(e) => updateOutraVariavel(item.id, 'nome', e.target.value)} disabled={isLoading}/>
           </div>
           <div className="form-group flex-1">
-            <label>Valor (R$)</label>
-            <input type="number" value={item.valor || ''} onChange={(e) => updateOutraVariavel(item.id, 'valor', Number(e.target.value))} disabled={isLoading}/>
+            <label>Valor</label>
+            <input 
+              type="text" 
+              value={formatInputBR(item.valor)} 
+              onChange={(e) => {
+                const apenasNumeros = e.target.value.replace(/\D/g, '');
+                updateOutraVariavel(item.id, 'valor', Number(apenasNumeros) / 100);
+              }} 
+              placeholder="R$ 0,00"
+              disabled={isLoading}
+            />
           </div>
+          <button className="btn-delete-item" onClick={() => removeOutraVariavel(item.id)} disabled={isLoading} title="Remover item">
+            <Trash2 size={20} />
+          </button>
         </div>
       ))}
       
- 
-  <button 
-    className="btn-add" 
-    onClick={addOutraVariavel} 
-    disabled={isLoading}
-  >
-    <CirclePlus size={18} className="icon-add" strokeWidth={1.5} />
-    <span>Inserir Outra Despesa Variável</span>
-  </button>
+      <button className="btn-add" onClick={addOutraVariavel} disabled={isLoading}>
+        <CirclePlus size={18} className="btn-icon-add" strokeWidth={2} />
+        <span>Inserir Outra Despesa Variável</span>
+      </button>
 
-<div className='btn-container'>
-    <div className='btn-wrapper'>
-    <button 
-    className="btn-salvar" 
-    onClick={handleSalvar} 
-    disabled={isLoading}
-  >
-    <Save className="icon-salvar" size={18} />
-    <span>Salvar</span>
-  </button>
+      <div className='btn-container'>
+        <div className='btn-wrapper'>
+          <button 
+            className="btn-salvar" 
+            onClick={handleSalvar} 
+            disabled={isLoading || idDespesaSalva !== null}
+          >
+            <Save className="btn-icon" size={18} strokeWidth={2}/>
+            <span>Salvar</span>
+          </button>
 
-  <button 
-    className="btn-salvar" 
-    onClick={handleSalvar} 
-    disabled={isLoading}
-  >
-    <FileEditIcon className="icon-salvar" size={18} />
-    <span>Editar</span>
-  </button>
+          <button 
+            className="btn-editar" 
+            onClick={handleEditar} 
+            disabled={isLoading || idDespesaSalva === null}
+          >
+            <FileEditIcon className="btn-icon" size={18} strokeWidth={2}/>
+            <span>Editar</span>
+          </button>
 
-  <button 
-    className="btn-salvar" 
-    onClick={handleSalvar} 
-    disabled={isLoading}
-  >
-    <Trash2 className="icon-salvar" size={18} />
-    <span>Excluir</span>
-  </button>
-</div>
-
-</div>     
-      
-      {/* <div className="footer-resumo">
-        <div className="resumo-linha">
-          <span>Faturamento</span>
-          <span>{formatMoney(faturamento)}</span>
+          <button 
+            className="btn-excluir" 
+            onClick={handleExcluir} 
+            disabled={isLoading || idDespesaSalva === null}
+          >
+            <Trash2 className="btn-icon" size={18} strokeWidth={2}/>
+            <span>Excluir</span>
+          </button>
         </div>
-        <div className="resumo-linha">
-          <span>Despesas Fixas</span>
-          <span>{formatMoney(totalFixas)} ({calcPerc(totalFixas)}%)</span>
-        </div>
-        <div className="resumo-linha">
-          <span>Despesas Variáveis</span>
-          <span>{formatMoney(totalVariaveis)} ({calcPerc(totalVariaveis)}%)</span>
-        </div>
-        <div className="resumo-linha linha-destaque">
-          <span>Total Despesas</span>
-          <span>{formatMoney(totalDespesas)} ({calcPerc(totalDespesas)}%)</span>
-        </div>
-        <div className="resumo-linha linha-lucro">
-          <span>Lucro</span>
-          <span>{formatMoney(lucro)} ({calcPerc(lucro)}%)</span>
-        </div>
-      </div> */}
+      </div>     
     </PageTransition>
   );
 }
