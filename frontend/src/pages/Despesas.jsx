@@ -3,6 +3,7 @@ import PageTransition from "../components/Animation/PageTransition";
 import BotaoVoltar from '../components/BotaoVoltar/BotaoVoltar';
 import { CirclePlus, FileEditIcon, Save, Trash2 } from 'lucide-react';
 import Swal from 'sweetalert2';
+import DOMPurify from 'dompurify';
 import '../styles/Despesas.css';
 import api from '../../services/api';
 
@@ -61,16 +62,17 @@ export default function Despesas() {
     });
 
     if (result.isConfirmed) {
-      // 1. Remove da tela
       const novasFixas = outrasFixas.filter(item => item.id !== id);
       setOutrasFixas(novasFixas);
 
-      // 2. Se já existe no banco, atualiza o banco imediatamente
       if (idDespesaSalva) {
         setIsLoading(true);
         try {
           const payload = montarPayload();
-          payload.despesasFixas.outrasFixas = novasFixas; // Injeta a nova lista sem o item removido
+          payload.despesasFixas.outrasFixas = novasFixas.map(item => ({
+            ...item,
+            nome: DOMPurify.sanitize(item.nome)
+          }));
           
           await api.put(`/despesas/${idDespesaSalva}`, payload);
           
@@ -119,16 +121,17 @@ export default function Despesas() {
     });
 
     if (result.isConfirmed) {
-      // 1. Remove da tela
       const novasVariaveis = outrasVariaveis.filter(item => item.id !== id);
       setOutrasVariaveis(novasVariaveis);
 
-      // 2. Se já existe no banco, atualiza o banco imediatamente
       if (idDespesaSalva) {
         setIsLoading(true);
         try {
           const payload = montarPayload();
-          payload.despesasVariaveis.outrasVariaveis = novasVariaveis; // Injeta a nova lista sem o item removido
+          payload.despesasVariaveis.outrasVariaveis = novasVariaveis.map(item => ({
+            ...item,
+            nome: DOMPurify.sanitize(item.nome)
+          }));
           
           await api.put(`/despesas/${idDespesaSalva}`, payload);
           
@@ -159,7 +162,6 @@ export default function Despesas() {
     }
   };
 
-  // GET: Carrega os dados se existirem
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -194,11 +196,27 @@ export default function Despesas() {
 
   const montarPayload = () => ({
     faturamento,
-    despesasFixas: { manutencao, internet, contador, outrasFixas },
-    despesasVariaveis: { energia, impostoPerc, taxaCartaoPerc, fornecedores, outrasVariaveis }
+    despesasFixas: { 
+      manutencao, 
+      internet, 
+      contador, 
+      outrasFixas: outrasFixas.map(item => ({
+        ...item,
+        nome: DOMPurify.sanitize(item.nome)
+      })) 
+    },
+    despesasVariaveis: { 
+      energia, 
+      impostoPerc, 
+      taxaCartaoPerc, 
+      fornecedores, 
+      outrasVariaveis: outrasVariaveis.map(item => ({
+        ...item,
+        nome: DOMPurify.sanitize(item.nome)
+      })) 
+    }
   });
 
-  // POST: Criar novo registro
   const handleSalvar = async () => {
     setIsLoading(true);
     try {
@@ -231,7 +249,6 @@ export default function Despesas() {
     }
   };
 
-  // PUT: Editar registro existente
   const handleEditar = async () => {
     if (!idDespesaSalva) return;
     setIsLoading(true);
@@ -262,11 +279,9 @@ export default function Despesas() {
     }
   };
 
-// DELETE: Excluir registro existente
   const handleExcluir = async () => {
     if (!idDespesaSalva) return;
     
-    // 1. Dispara o Modal de Confirmação
     const result = await Swal.fire({
       title: 'Exclusão de despesa',
       text: "Excluir as despesas fixas e variáveis?",
@@ -278,7 +293,6 @@ export default function Despesas() {
       cancelButtonText: 'Cancelar'
     });
 
-    // 2. Verifica se o usuário confirmou
     if (result.isConfirmed) {
       setIsLoading(true);
       
@@ -289,21 +303,19 @@ export default function Despesas() {
         setManutencao(0); setInternet(0); setContador(0); setOutrasFixas([]);
         setEnergia(0); setImpostoPerc(0); setTaxaCartaoPerc(0); setFornecedores(0); setOutrasVariaveis([]);
         
-        // 3. (Bônus) Mensagem de Sucesso que some sozinha (Toast)
         Swal.fire({
           toast: true,
-          position: 'top-end', // Canto da tela
+          position: 'top-end',
           icon: 'success',
           title: 'Despesas excluídas com sucesso!',
           showConfirmButton: false,
-          timer: 2000, // Some em 2 segundos
+          timer: 2000,
           customClass: { popup: 'mensagem-confirmacao' }
         });
 
       } catch (error) {
         console.error("Erro ao excluir:", error);
         
-        // Mensagem de Erro
         Swal.fire({
           toast: true, 
           position: 'top-end', 
