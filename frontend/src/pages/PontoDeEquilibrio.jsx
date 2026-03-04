@@ -76,7 +76,7 @@ export default function PontoDeEquilibrio() {
     return (
       <PageTransition className="financeiro-container">
         <BotaoVoltar />
-        <div className="empty-state">Nenhum registro de despesas encontrado. Cadastre as despesas primeiro.</div>
+        <div className="empty-state">Ops.... Nenhum registro de despesas encontrado! Cadastre as despesas primeiro.</div>
       </PageTransition>
     );
   }
