@@ -3,6 +3,7 @@ import { AnimatePresence } from 'framer-motion';
 import PlanoDeCorte from './pages/PlanoDeCorte';
 import MenuMarcenaria from './pages/MenuMarcenaria';
 import Despesas from './pages/Despesas';
+import PontoDeEquilibrio from './pages/PontoDeEquilibrio';
 import './App.css'; 
 
 function AnimatedRoutes() {
@@ -14,6 +15,7 @@ function AnimatedRoutes() {
         <Route path="/" element={<MenuMarcenaria />} />
         <Route path="/plano-de-corte" element={<PlanoDeCorte />} />
         <Route path="/despesas" element={<Despesas />} />
+        <Route path="/ponto-de-equilibrio" element={<PontoDeEquilibrio/>} />
       </Routes>
     </AnimatePresence>
   );

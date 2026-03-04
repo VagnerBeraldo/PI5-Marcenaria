@@ -37,7 +37,7 @@ const MenuMarcenaria = () => {
           <span>Despesas</span>
         </div>
 
-        <div className="grid-item item-topo-centro">
+        <div className="grid-item item-topo-centro" onClick={() => navigate("/ponto-de-equilibrio")}>
           <ThumbsUp size={24} />
           <span>Ponto de Equilíbrio</span>
         </div>
