@@ -7,7 +7,7 @@
 .app-container {
   /* min-height: 100vh; */
   margin: 0 8px 0 5px;
-  font-family: "Montserrat", Arial, serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 html,
@@ -17,6 +17,10 @@ body {
   overflow-x: hidden;
   margin: 0;
   background-color: var(--body-bg);
+}
+
+.swal2-popup {
+    font-family: 'Montserrat', sans-serif !important;
 }
 
 :root {
