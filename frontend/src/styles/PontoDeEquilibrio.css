@@ -46,13 +46,9 @@
   font-weight: bold;
 }
 
-
 .painel-resultados {
   margin-top: 20px;
-  /* background-color: var(--branco); */
-  /* border-radius: 8px; */
   padding: 25px;
-  /* box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); */
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -131,9 +127,13 @@
   border-radius: 8px;
 }
 
-@media (max-width: 700px) {
-  .linha-ponto-equilibrio {
-    padding: 20px 5px;
+@media (max-width: 768px) {
+  .financeiro-container {
+    padding: 15px;
+  }
+
+  .painel-resultados {
+    padding: 15px;
   }
 
   .pe-titulo {
@@ -142,6 +142,7 @@
 
   .pe-subtitulo {
     margin-right: 10px;
+    font-weight: 500;
   }
 
   .pe-valor {
@@ -178,16 +179,16 @@
   }
 
   .pe-valor {
-    font-size: 1.1rem!important;
+    font-size: 1.1rem !important;
     padding: 10px 10px;
   }
 }
 
 @media (max-width: 380px) {
-.financeiro-container {
+  .financeiro-container {
     padding: 10px 0px;
   }
-      .resumo-linha {
+  .resumo-linha {
     font-size: 0.85rem;
   }
 
