@@ -431,6 +431,7 @@ import Visualizador from "./Visualizador";
 import { LayoutDashboard, Printer, Trash2 } from "lucide-react";
 import PageTransition from "../components/Animation/PageTransition";
 import BotaoVoltar from '../components/BotaoVoltar/BotaoVoltar';
+import Swal from 'sweetalert2';
 import logoMarcenaria from "/logo.svg";
 import "../styles/PlanoDeCorte.css";
 import "../styles/Visualizador.css";
@@ -440,6 +441,7 @@ export default function PlanoDeCorte() {
   const [chapas, setChapas] = useState([
     { id: 1, largura: 2750, altura: 1840 },
   ]);
+  const [setIsLoading] = useState(false);
   const [chapaAtivaId, setChapaAtivaId] = useState(1);
   const [pecas, setPecas] = useState([]);
   const [largCorte, setLargCorte] = useState(3);
@@ -477,23 +479,67 @@ export default function PlanoDeCorte() {
     setPecas(pecas.filter((p) => p.id !== id));
   };
 
-  const removerChapa = (id) => {
+  const removerChapa = async (id) => {
     if (chapas.length === 1) {
-      alert("Você deve ter pelo menos uma chapa no projeto.");
+      // CORREÇÃO 2: Uso do Swal no lugar do alert()
+      Swal.fire({
+        icon: 'warning',
+        title: 'Atenção',
+        text: 'Você deve ter pelo menos uma chapa no projeto.',
+        confirmButtonColor: '#27ae60'
+      });
       return;
     }
 
-    if (window.confirm("Excluir esta chapa e todas as peças?")) {
-      // 1. Remove a chapa da lista
-      const novasChapas = chapas.filter((c) => c.id !== id);
-      setChapas(novasChapas);
+    // 1. Dispara o Modal de Confirmação
+    const result = await Swal.fire({
+      title: 'Exclusão chapa',
+      text: "Excluir esta chapa e todas as peças?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e74c3c', 
+      cancelButtonColor: '#27ae60',
+      confirmButtonText: 'Sim, excluir!',
+      cancelButtonText: 'Cancelar'
+    });
 
-      // 2. Remove todas as peças vinculadas a essa chapa
-      setPecas(pecas.filter((p) => p.chapaId !== id));
+    // 2. Verifica se o usuário confirmou
+    if (result.isConfirmed) {
+      setIsLoading(true);
 
-      // 3. Se a chapa apagada era a ativa, volta para a primeira disponível
-      if (chapaAtivaId === id) {
-        setChapaAtivaId(novasChapas[0].id);
+      try {
+        // 1. Remove a chapa da lista
+        const novasChapas = chapas.filter((c) => c.id !== id);
+        setChapas(novasChapas);
+
+        // 2. Remove todas as peças vinculadas a essa chapa
+        setPecas(pecas.filter((p) => p.chapaId !== id));
+
+        // 3. Se a chapa apagada era a ativa, volta para a primeira disponível
+        if (chapaAtivaId === id) {
+          setChapaAtivaId(novasChapas[0].id);
+        }
+        
+        // Mensagem de Sucesso (Toast)
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'Chapa excluída com sucesso!',
+          showConfirmButton: false,
+          timer: 2000
+        });
+
+      } catch (error) {
+        console.error("Erro ao excluir:", error);
+        
+        // Mensagem de Erro
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Erro ao excluir a chapa.'
+        });
+      } finally {
+        setIsLoading(false);
       }
     }
   };
