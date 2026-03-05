@@ -5,7 +5,6 @@ import { FileEditIcon, Save, Trash2, Search, FilePlus, CirclePlus, CircleMinus }
 import Swal from 'sweetalert2';
 import DOMPurify from 'dompurify';
 import { z } from 'zod';
-import '../styles/Despesas.css';
 import '../styles/CustoDoMaterial.css';
 import api from '../../services/api';
 
