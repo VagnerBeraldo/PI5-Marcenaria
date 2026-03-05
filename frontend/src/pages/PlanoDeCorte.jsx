@@ -473,7 +473,7 @@ export default function PlanoDeCorte() {
           }
           .secao-lista-corte { 
             width: 100%; 
-            margin-top: 30px;
+            margin-top: 60px;
             clear: both;
           }
           table { 
@@ -745,18 +745,9 @@ export default function PlanoDeCorte() {
             </button>
           </div>
         </div>
-      </div>
 
-      {/* Área Técnica de Impressão e Gabarito */}
-      <div className="espaco-impressao" ref={containerRef}>
-        <Visualizador
-          chapa={chapaAtual}
-          pecas={pecas.filter((p) => p.chapaId === chapaAtivaId)}
-          largCorte={largCorte}
-          escala={escala}
-        />
-        
-        {/* --- Rodapé de Ações do Plano de Corte --- */}
+
+{/* --- Rodapé de Ações do Plano de Corte --- */}
       <div className="btn-container-corte ocultar-na-impressao">
         <div className="btn-wrapper-corte">
           <div className="btn-wrapper-flex-corte">
@@ -792,7 +783,15 @@ export default function PlanoDeCorte() {
 
       </div>
 
-      
+      {/* Área Técnica de Impressão e Gabarito */}
+      <div className="espaco-impressao" ref={containerRef}>
+        <Visualizador
+          chapa={chapaAtual}
+          pecas={pecas.filter((p) => p.chapaId === chapaAtivaId)}
+          largCorte={largCorte}
+          escala={escala}
+        />
+      </div>
     </PageTransition>
   );
 }
