@@ -24,81 +24,84 @@ body {
     font-family: 'Montserrat', sans-serif !important;
 }
 
+/* Modais Centrais (Isolados do Toast) */
 .swal2-popup:not(.swal2-toast) {
-    font-family: 'Montserrat', sans-serif !important;
     max-width: 380px !important; 
     padding: 24px !important;
     border-radius: 12px !important; 
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important; 
 }
 
-/* Tamanho e margem do ícone */
-.swal2-icon {
-    transform: scale(0.75) !important; 
+.swal2-popup:not(.swal2-toast) .swal2-icon {
+    transform: scale(0.50) !important; 
     margin: 0 auto 16px auto !important;
 }
 
-/* Tipografia do Título */
-.swal2-title {
+.swal2-popup:not(.swal2-toast) .swal2-title {
     font-size: 18px !important;
     font-weight: 600 !important;
-    color: #2c3e50 !important;
+    color: var(--texto) !important;
     padding: 0 !important;
     margin-bottom: 8px !important;
 }
 
-/* Tipografia do Texto secundário */
-.swal2-html-container {
+.swal2-popup:not(.swal2-toast) .swal2-html-container {
     font-size: 14px !important;
     font-weight: 400 !important;
-    color: #666 !important;
+    color: var(--texto) !important;
     margin: 0 !important;
+    padding: 0 10px !important;
 }
 
-/* Alinhamento e estilo dos botões */
-.swal2-actions {
+.swal2-popup:not(.swal2-toast) .swal2-actions {
     margin-top: 24px !important;
     gap: 12px;
 }
 
-.swal2-confirm, .swal2-cancel {
+.swal2-popup:not(.swal2-toast) .swal2-confirm, 
+.swal2-popup:not(.swal2-toast) .swal2-cancel {
     font-weight: 500 !important;
     font-size: 14px !important;
     padding: 10px 20px !important;
     border-radius: 6px !important;
-    transition: filter 0.2s ease-in-out !important;
 }
 
-.swal2-confirm:hover, .swal2-cancel:hover {
-    filter: brightness(0.9) !important; 
+.swal2-toast .swal2-icon {
+    transform: scale(0.6) !important; 
+    margin: 0 8px 0px 0 !important; 
 }
 
-.mensagem-confirmacao {
-    font-size: 14px;
-    padding: 8px 16px;
-    max-width: fit-content;
-    background-color: #e6f4ea; 
-    color: #1e8e3e;
-    border: 1px solid #ceead6;
-    border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    margin: 10px auto;
-    text-align: center;
-    font-family: sans-serif;
+.swal2-container.swal2-top-end {
+    padding-right: 30px !important;
 }
 
-.mensagem-erro {
-    font-size: 14px;
-    padding: 8px 16px;
-    max-width: fit-content;
-    background-color: #fce8e6; 
-    color: #d93025;
-    border: 1px solid #fad2cf;
-    border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    margin: 10px auto;
-    text-align: center;
-    font-family: sans-serif;
+.swal2-input {
+    margin: 12px auto 0 auto !important; 
+    width: 90% !important;
+    height: 38px !important;
+    font-size: 14px !important;
+    border-radius: 6px !important;
+}
+
+/* Estrutura flexível para centralizar o Toast perfeitamente */
+.swal2-toast.mensagem-confirmacao,
+.swal2-toast.mensagem-erro {
+    display: flex !important;
+    align-items: center !important;
+    padding: 12px 20px !important;
+    border-radius: 8px !important;
+    background-color: var(--input-bg) !important;
+    border: 1px solid var(--input-borda) !important;
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+.swal2-toast.mensagem-confirmacao { color: var(--verde-destaque) !important; }
+.swal2-toast.mensagem-erro { color: var(--vermelho-destaque) !important; }
+
+.swal2-toast .swal2-title {
+    margin: 0 0 0 12px !important; 
+    font-size: 14px !important;
+    font-weight: 500 !important;
 }
 /* --- Final do Modal SweetAlert2 --- */
 
@@ -112,6 +115,7 @@ body {
   --body-bg: #f4ebd9;
   --texto: #444;
   --input-bg: #f3f2f2;
+  --input-borda: #ccc;
   --branco: #ffffff;
 
   /* visualizador */
@@ -126,4 +130,5 @@ body {
   --verde-destaque: #27ae60;
   --verde-destaque-bg: #eafaf1;
 
+  --item-busca-modal-bg: #f8f9fa;
 }
