@@ -8,11 +8,9 @@
 .header-actions {
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Alinha o eixo vertical */
+  align-items: center; 
   width: 100%;
-  /* margin-bottom: 15px; */
-  /* padding-top: 40px; */
-}
+ }
 
 /* início para anular o botão voltar */
 .header-actions > * {

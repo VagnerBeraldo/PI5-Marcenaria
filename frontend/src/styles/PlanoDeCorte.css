@@ -365,9 +365,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-top: 2px solid var(--branco);
-  padding-top: 30px;
-  margin-top: 50px !important;
+  padding-top: 20px;
   margin-bottom: 5px;
 }
 
@@ -429,13 +427,6 @@
   }
 }
 
-@media (max-width: 768px) {
-  .btn-container {
-    flex-direction: column;
-  }
-
-}
-
 @media (max-width: 710px) {
      .btn-wrapper-corte {
   gap: 30px;
@@ -467,6 +458,15 @@
 
 
 @media (max-width: 650px) {
+  .btn-container {
+    flex-direction: column;
+  }
+
+  .btn-adicionar,
+  .btn-imprimir {
+    min-width: 380px;
+  }
+
   .swal2-popup.modal-pesquisa {
     max-width: 400px !important;
   }
@@ -515,6 +515,11 @@
 }
 
 @media (max-width: 450px) {
+    .btn-adicionar,
+  .btn-imprimir {
+    min-width: 350px;
+  }
+
   .swal2-popup.modal-pesquisa {
     max-width: 340px !important;
   }
@@ -559,16 +564,21 @@
   }
 }
 
-@media (max-width: 350px) {
-  .btn-adicionar,
-  .btn-imprimir {
-    min-width: 280px;
-  }
-}
-
-
-@media (max-width: 375px) {
+@media (max-width: 380px) {
   .swal2-popup.modal-pesquisa {
     max-width: 290px !important;
+  }
+
+  .btn-adicionar,
+  .btn-imprimir {
+    min-width: 330px;
+  }
+
+}
+
+@media (max-width: 350px) {
+.btn-adicionar,
+  .btn-imprimir {
+    min-width: 280px;
   }
 }
