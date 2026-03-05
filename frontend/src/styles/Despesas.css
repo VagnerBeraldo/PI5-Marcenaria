@@ -165,7 +165,6 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   font-weight: bold;
-  /* margin-top: 5px; */
   transition:
     background-color 0.3s,
     opacity 0.2s;
@@ -182,7 +181,7 @@
 .btn-salvar:hover:not(:disabled),
 .btn-editar:hover:not(:disabled),
 .btn-excluir:hover:not(:disabled) {
-  background-color: rgba(139, 69, 19, 0.8);
+  filter: brightness(0.85) !important;
 }
 
 .btn-salvar,
@@ -200,6 +199,9 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+
+
 
 @media (max-width: 600px) {
   .btn-wrapper {
