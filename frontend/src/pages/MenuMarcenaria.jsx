@@ -42,7 +42,7 @@ const MenuMarcenaria = () => {
           <span>Ponto de Equilíbrio</span>
         </div>
 
-        <div className="grid-item item-abaixo-1">
+        <div className="grid-item item-abaixo-1" onClick={() => navigate("/custo-do-material")}>
           <CircleDollarSignIcon size={24} />
           <span>Custo do Material</span>
         </div>
