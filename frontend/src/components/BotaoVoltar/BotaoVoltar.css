@@ -10,6 +10,7 @@
   color: var(--texto);
   position: relative;
   top: 15px;
+  margin-left: 5px;
   transition: transform 0.2s ease;
 }
 
