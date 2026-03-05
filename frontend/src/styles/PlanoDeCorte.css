@@ -10,14 +10,14 @@
     align-items: center; 
     width: 100%;
     margin: 0 0 15px 0;
-    padding-top: 10px;
+    /* padding-top: 95px; */
 }
 
 /* início para anular o botão voltar */
 .header-actions-plano > * {
   position: relative !important;
-  top: 0 !important;
-  margin: 0 10px !important;
+  top: -20px !important;
+  margin: 0 30px !important;
 }
 
 /* --- Barra Superior para o voltar e botão novo --- */
