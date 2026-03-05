@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const despesasRoutes = require('./routes/despesasRoutes');
 const custosRoutes = require('./routes/custosRoutes');
+const planoCorteRoutes = require('./routes/planoCorteRoutes');
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 // Registro das Rotas
 app.use('/api/despesas', despesasRoutes);
 app.use('/api/custos', custosRoutes);
+app.use('/api/planos-corte', planoCorteRoutes);
 
 // Rota de status simples
 app.get('/api/status', (req, res) => {
