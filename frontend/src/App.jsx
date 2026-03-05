@@ -5,6 +5,7 @@ import MenuMarcenaria from './pages/MenuMarcenaria';
 import Despesas from './pages/Despesas';
 import PontoDeEquilibrio from './pages/PontoDeEquilibrio';
 import './App.css'; 
+import CustoDoMaterial from './pages/CustoDoMaterial';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -16,6 +17,7 @@ function AnimatedRoutes() {
         <Route path="/plano-de-corte" element={<PlanoDeCorte />} />
         <Route path="/despesas" element={<Despesas />} />
         <Route path="/ponto-de-equilibrio" element={<PontoDeEquilibrio/>} />
+        <Route path="/custo-do-material" element={<CustoDoMaterial/>} />
       </Routes>
     </AnimatePresence>
   );
