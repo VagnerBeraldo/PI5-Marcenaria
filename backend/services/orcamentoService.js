@@ -9,12 +9,12 @@ const salvarOrcamento = async (dados) => {
 
         const [result] = await connection.execute(
             `INSERT INTO orcamento 
-            (id_cliente, id_projeto, nome_projeto, quantidade, dias_trabalho, valor_custo, imposto_importacao, frete, comissao, custo_fixo, energia_eletrica, imposto, taxa_cartao, margem_lucro, preco_sugerido, preco_final_impresso) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                (id_cliente, id_projeto, nome_projeto, quantidade, dias_trabalho, valor_custo, imposto_importacao, frete, custo_fixo, energia_eletrica, imposto, taxa_cartao, margem_lucro, preco_sugerido, preco_final_impresso, adiantamento) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 mestre.id_cliente || null, mestre.id_projeto || null, mestre.nome_projeto, mestre.quantidade, mestre.dias_trabalho, 
-                mestre.valor_custo, mestre.imposto_importacao, mestre.frete, mestre.comissao, mestre.custo_fixo, 
-                mestre.energia_eletrica, mestre.imposto, mestre.taxa_cartao, mestre.margem_lucro, mestre.preco_sugerido, mestre.preco_final_impresso
+                mestre.valor_custo, mestre.imposto_importacao, mestre.frete, mestre.custo_fixo, mestre.energia_eletrica, mestre.imposto, 
+                mestre.taxa_cartao, mestre.margem_lucro, mestre.preco_sugerido, mestre.preco_final_impresso, mestre.adiantamento
             ]
         );
 
@@ -72,12 +72,12 @@ const editarOrcamento = async (id_orcamento, dados) => {
         await connection.execute(
             `UPDATE orcamento SET 
                 id_cliente = ?, id_projeto = ?, nome_projeto = ?, quantidade = ?, dias_trabalho = ?, valor_custo = ?, 
-                imposto_importacao = ?, frete = ?, comissao = ?, custo_fixo = ?, energia_eletrica = ?, imposto = ?, 
+                imposto_importacao = ?, frete = ?, custo_fixo = ?, energia_eletrica = ?, imposto = ?, 
                 taxa_cartao = ?, margem_lucro = ?, preco_sugerido = ?, preco_final_impresso = ?
             WHERE id_orcamento = ?`,
             [
                 mestre.id_cliente || null, mestre.id_projeto || null, mestre.nome_projeto, mestre.quantidade, mestre.dias_trabalho, 
-                mestre.valor_custo, mestre.imposto_importacao, mestre.frete, mestre.comissao, mestre.custo_fixo, 
+                mestre.valor_custo, mestre.imposto_importacao, mestre.frete, mestre.custo_fixo, 
                 mestre.energia_eletrica, mestre.imposto, mestre.taxa_cartao, mestre.margem_lucro, mestre.preco_sugerido, mestre.preco_final_impresso,
                 id_orcamento
             ]

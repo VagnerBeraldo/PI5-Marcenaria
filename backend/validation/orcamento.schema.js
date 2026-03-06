@@ -9,7 +9,6 @@ const orcamentoSchema = z.object({
     valor_custo: z.coerce.number().min(0),
     imposto_importacao: z.coerce.number().min(0),
     frete: z.coerce.number().min(0),
-    comissao: z.coerce.number().min(0),
     custo_fixo: z.coerce.number().min(0),
     energia_eletrica: z.coerce.number().min(0),
     imposto: z.coerce.number().min(0),
@@ -17,6 +16,7 @@ const orcamentoSchema = z.object({
     margem_lucro: z.coerce.number().min(0),
     preco_sugerido: z.coerce.number().min(0),
     preco_final_impresso: z.coerce.number().min(0),
+    adiantamento: z.coerce.number().min(0).optional().default(0),
     extras: z.array(z.object({
         descricao: z.string().trim().min(1, "A descrição da despesa extra é obrigatória."),
         valor: z.coerce.number().min(0)
