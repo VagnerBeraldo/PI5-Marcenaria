@@ -47,7 +47,7 @@ const MenuMarcenaria = () => {
           <span>Custo do Material</span>
         </div>
 
-        <div className="grid-item item-centro-baixo">
+        <div className="grid-item item-centro-baixo" onClick={() => navigate("/orcamentos")}>
           <ClipboardList size={24} />
           <span>Orçamento</span>
         </div>
