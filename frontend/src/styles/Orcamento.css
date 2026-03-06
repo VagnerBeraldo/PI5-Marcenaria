@@ -1,0 +1,516 @@
+.orcamento-container {
+  max-width: 900px;
+  margin: 10px auto;
+}
+
+/* --- Card Principal --- */
+.card-orcamento {
+  background-color: var(--cor-secundaria);
+  border-left: 4px solid var(--cor-primaria);
+  padding: 30px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: -10px 18px 25px -20px rgba(0, 0, 0, 0.1);
+}
+
+
+.secao-form {
+  background-color: transparent;
+  border: none;
+  padding: 0 0 25px 0;
+  border-radius: 0;
+  margin-bottom: 25px;
+  box-shadow: none;
+  border-bottom: 1px dashed rgba(200, 200, 200, 0.4);
+}
+
+.secao-form:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 10px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0; /* Isso é o que impede os inputs de vazarem do card! */
+}
+
+/* 1. Trava a altura de todos os inputs em 42px */
+.form-group input {
+  height: 42px; 
+  width: 100%; 
+  box-sizing: border-box; 
+  padding: 10px 12px;
+  border: none;
+  background-color: var(--input-bg); 
+  border-radius: 8px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); 
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+
+.form-group input:focus {
+  outline: none;
+  border: 1px solid var(--cor-primaria);
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: flex-end;
+  box-sizing: border-box;
+}
+
+.flex-1 { flex: 1; }
+.flex-2 { flex: 2; }
+.mt-15 { margin-top: 15px; }
+
+
+.wrapper-lupa-input{
+  display: flex;
+}
+
+.container-lupa {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.btn-icone-lupa {
+  background-color: transparent;
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  color: var(--cor-primaria);
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.btn-icone-lupa:hover {
+  background-color: var(--cor-primaria);
+  color: var(--branco);
+}
+
+
+.input-lupa-flex {
+  flex: 1;
+  width: 100%;
+  min-width: 150px!important;
+}
+
+.container-custo-energia{
+  display: flex;
+  gap: 8px;
+  width: 450px;
+}
+
+.readonly-box {
+  background-color: rgba(0, 0, 0, 0.03);
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px dashed var(--cor-primaria);
+}
+
+.readonly-val {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--texto);
+  margin-top: 5px;
+}
+
+
+.input-extra {
+  height: 42px; 
+  box-sizing: border-box; 
+  padding: 10px 12px;
+  border: none;
+  background-color: var(--input-bg, #f3f2f2); 
+  border-radius: 8px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); 
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.input-extra:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--cor-primaria);
+}
+
+.extra-row {
+  display: flex;
+  align-items: center; 
+  gap: 15px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.btn-del-extra {
+  background: transparent;
+  color: var(--cor-primaria);
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px; 
+  width: 42px;
+  flex-shrink: 0; /* Impede o botão de ser espremido pelos inputs */
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.btn-del-extra:hover {
+  background: var(--cor-primaria);
+  color: white;
+  border-color: var(--cor-primaria);
+}
+
+
+.btn-add-row:hover{
+  filter: brightness(0.85) !important;
+}
+
+.resumo-box {
+  background-color: var(--cor-primaria);
+  color: var(--branco);
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 30px;
+}
+
+.resumo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+.resumo-item.destaque {
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  padding-top: 15px;
+  margin-top: 15px;
+  font-size: 1.4rem;
+}
+
+.input-preco-fechado {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid white;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: right;
+  width: 200px;
+  outline: none;
+}
+
+.btn-container-acoes {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  border-top: 2px solid var(--branco);
+  padding-top: 30px;
+  margin-top: 30px;
+}
+
+.btn-container-salvar-buscar, .btn-container-imprimir-excluir {
+  display: flex;
+  gap: 20px;
+}
+
+.btn-acao-salvar, .btn-acao-buscar, .btn-acao-excluir, .btn-acao-imprimir {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn-acao-salvar,
+.btn-acao-imprimir,
+.btn-acao-buscar,
+.btn-acao-excluir {
+  background-color: var(--cor-primaria);
+  color: var(--branco);
+}
+
+
+.btn-acao-salvar:hover,
+.btn-acao-imprimir:hover,
+.btn-acao-buscar:hover,
+.btn-acao-excluir:hover{
+  filter: brightness(0.85) !important;
+}
+
+.recibo-impressao {
+  display: none;
+}
+
+@media(max-width: 768px){
+  .form-row {
+    flex-wrap: wrap; 
+  }
+
+  /* Força o campo Nome do Serviço (que tem a classe highlight) a ocupar 100% da primeira linha */
+  .form-group.highlight.flex-2 {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  /* Faz a Quantidade e Dias de Trabalho (flex-1) dividirem a segunda linha */
+  .form-group.flex-1 {
+    flex: 1 1 45%; /* Ocupam quase metade da tela cada, deixando espaço para o gap */
+  }
+
+  .container-custo-energia{
+    width: 300px;
+  }
+
+  .btn-container-acoes {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .btn-acao-salvar{
+    width: 210px;
+    justify-content: center;
+  }
+  .btn-acao-imprimir, .btn-acao-excluir{
+    width: 210px;
+    justify-content: center;
+  }
+
+}
+
+
+
+@media(max-width: 580px){
+  .card-orcamento{
+    padding: 10px;
+  }
+
+  .container-custo-energia{
+    width: 280px;
+  }
+
+  .mobile{
+    font-size: 0.8rem!important;
+  }
+
+  .btn-container-acoes{
+    padding-bottom: 30px!important;
+  }
+  
+}
+
+
+@media(max-width: 480px){
+  
+  .btn-container-salvar-buscar, .btn-container-imprimir-excluir{
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+
+
+@media(max-width: 450px){
+  .card-orcamento{
+    padding: 10px 5px 0 5px;
+  }
+
+/* início para anular o botão voltar */
+.header-actions > * {
+  position: relative !important;
+  top: 0px !important;
+  margin: 0px 5px 15px 5px!important;
+}
+
+/* --- Barra Superior para o voltar e botão novo --- */
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.btn-novo-topo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--cor-primaria);
+  color: var(--branco);
+  border: none;
+  outline: none;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: filter 0.2s ease;
+}
+
+.btn-novo-topo:hover {
+  filter: brightness(0.85);
+}
+/* fim para anular o botão voltar */
+
+.title-center{
+  font-size: 1.6rem;
+}
+
+.container-custo-energia{
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin: 0px auto;
+  padding: 0 5px;
+  width: 100%;
+}
+
+.mobile{
+  font-size: 0.84rem!important;
+}
+  
+.resumo-item.destaque {
+ font-size: 1rem;
+ font-weight: bold;
+}
+
+.input-preco-fechado {
+  font-size: 1.2rem;
+  width: 130px;
+  }
+
+  
+
+}
+
+@media(max-width:375px){
+  .resumo-item {
+ font-size: 0.9rem;
+}
+  
+  .resumo-item.destaque {
+ font-size: 1rem;
+ font-weight: 500;
+}
+
+.input-preco-fechado {
+  font-size: 1.2rem;
+  width: 130px;
+}
+
+}
+
+
+/* =========================================
+   ESTILOS DE IMPRESSÃO (Profissional)
+   ========================================= */
+@media print {
+  /* 1. Esconde o sistema inteiro (formulário, botões, logo do sistema) */
+  .card-orcamento, 
+  .header-actions, 
+  .logo-wrapper, 
+  .nomefantasia, 
+  .title-center,
+  .btn-container-acoes {
+    display: none !important;
+  }
+
+  /* 2. Mostra e formata o recibo limpo */
+  .recibo-impressao {
+    display: block !important;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    color: black;
+  }
+
+  .cabecalho-impressao {
+    text-align: center;
+    margin-bottom: 40px;
+    border-bottom: 2px solid black;
+    padding-bottom: 20px;
+  }
+
+  .logo-impressao {
+    max-width: 150px;
+    margin-bottom: 10px;
+  }
+
+  .cabecalho-impressao h2 {
+    margin: 0;
+    font-size: 24px;
+    color: black;
+  }
+
+  .dados-impressao {
+    margin-bottom: 40px;
+  }
+
+  .linha-dado {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .valores-impressao {
+    border: 1px solid black;
+    border-radius: 8px;
+    padding: 25px;
+  }
+
+  .linha-valor {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+
+  .linha-valor.destaque-saldo {
+    border-top: 1px solid black;
+    padding-top: 15px;
+    font-weight: bold;
+    font-size: 20px;
+  }
+
+  /* --- ÁREA DE ASSINATURAS (Adicionar dentro do @media print) --- */
+  .assinaturas-impressao {
+    display: flex;
+    justify-content: space-around; /* Coloca uma de cada lado com espaçamento igual */
+    margin-top: 100px; /* Dá bastante espaço em branco para a assinatura física */
+    text-align: center;
+  }
+
+  .linha-assinatura {
+    width: 40%; /* Tamanho da linha */
+  }
+
+  .linha-assinatura hr {
+    border: none;
+    border-top: 1px solid black;
+    margin-bottom: 8px;
+  }
+
+  .linha-assinatura span {
+    font-size: 16px;
+    font-weight: bold;
+  }
+}
