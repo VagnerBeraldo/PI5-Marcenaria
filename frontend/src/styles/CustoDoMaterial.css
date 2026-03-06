@@ -8,15 +8,15 @@
 .header-actions {
   display: flex;
   justify-content: space-between;
-  align-items: center; 
+  align-items: center;
   width: 100%;
  }
 
 /* início para anular o botão voltar */
 .header-actions > * {
   position: relative !important;
-  top: 0 !important;
-  margin: 0 20px !important;
+  top: 20px !important;
+  margin: 0px 15px 25px 15px!important;
 }
 
 /* --- Barra Superior para o voltar e botão novo --- */
@@ -464,6 +464,10 @@
     max-width: 340px !important;
   }
 
+  .header-actions{
+    padding: 20px 5px 0px 5px!important;
+    box-sizing: border-box;
+  }
   .total-box {
     margin: 15px 5px 0 5px;
   }
