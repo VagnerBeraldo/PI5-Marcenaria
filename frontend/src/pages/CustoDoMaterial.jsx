@@ -103,7 +103,7 @@ export default function CustoDoMaterial() {
         return;
       }
 
-      Swal.fire({
+      Swal.fire({ 
         title: 'Pesquisar Projetos',
         customClass: { popup: 'modal-pesquisa' },
         html: `
@@ -154,6 +154,92 @@ export default function CustoDoMaterial() {
       setIsLoading(false); 
     }
   };
+
+  const handleBuscarPlanoDeCorte = async () => {
+    setIsLoading(true); // Certifique-se de ter esse state ou remova esta linha
+    try {
+      const response = await api.get('/planos-corte');
+      
+      const planosNormalizados = response.data.map(plano => ({
+        ...plano,
+        chapas: typeof plano.chapas === 'string' ? JSON.parse(plano.chapas) : plano.chapas
+      }));
+
+      if (!planosNormalizados.length) {
+        Swal.fire({ title: 'Aviso', text: 'Nenhum plano de corte encontrado.', icon: 'info', customClass: { popup: 'modal-pesquisa' }});
+        return;
+      }
+
+      Swal.fire({
+        title: 'Importar Plano de Corte',
+        customClass: { popup: 'modal-pesquisa' },
+        html: `
+          <input type="text" id="swal-search-plano" class="swal2-input input-pesquisa" placeholder="Buscar projeto...">
+          <div id="swal-results-plano" class="lista-resultados"></div>
+        `,
+        showConfirmButton: false,
+        showCancelButton: true,
+        cancelButtonText: 'Fechar',
+        didOpen: () => {
+          const input = document.getElementById('swal-search-plano');
+          const list = document.getElementById('swal-results-plano');
+          
+          const render = (val) => {
+            const filtered = planosNormalizados.filter(p => p.nome_servico.toLowerCase().includes(val.toLowerCase()));
+            
+            if (filtered.length === 0) {
+              list.innerHTML = '<div class="item-vazio">Nenhum plano encontrado.</div>';
+              return;
+            }
+
+            list.innerHTML = filtered.map(p => `
+              <div class="swal-res-item item-resultado" data-id="${p.id_plano}">
+                <span class="item-titulo">${p.nome_servico}</span>
+                <span class="item-badge">${p.chapas.length} ${p.chapas.length === 1 ? 'chapa' : 'chapas'}</span>
+              </div>`).join('');
+            
+            document.querySelectorAll('.swal-res-item').forEach(el => el.onclick = () => {
+              const plano = planosNormalizados.find(x => x.id_plano == el.dataset.id);
+              
+              // 1. Atualiza o Nome do Projeto
+              setNomeProjeto(plano.nome_servico); // Ajuste para o nome exato do seu state
+              
+              // 2. Atualiza a quantidade de chapas na sua lista de materiais
+              setMateriais(prevMateriais => {
+                const novoMaterial = {
+                  id: Date.now(),
+                  material: 'Chapa de MDF',
+                  quantidade: plano.chapas.length,
+                  unidade_medida: 'un',
+                  valor_unitario: 0 // Deixa zerado para o usuário preencher o preço
+                };
+
+                // Se a lista tiver apenas 1 item e ele estiver vazio, substitui ele
+                if (prevMateriais.length === 1 && prevMateriais[0].material === '') {
+                  return [{ ...novoMaterial, id: prevMateriais[0].id }];
+                }
+                
+                // Senão, adiciona o material na próxima linha vazia
+                return [...prevMateriais, novoMaterial];
+              }); 
+              
+              Swal.close();
+            });
+          };
+          
+          render('');
+          input.focus();
+          input.oninput = (e) => render(e.target.value);        
+        }
+      });
+    } catch (error) {
+      console.error('Erro ao importar plano:', error);
+      Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Falha ao buscar planos.', showConfirmButton: false, timer: 3000, customClass: { popup: 'mensagem-erro' } });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
 
   const handleSalvar = async () => {
     setIsLoading(true);
@@ -246,7 +332,12 @@ export default function CustoDoMaterial() {
 
       <div className="form-group highlight">
         <label>Nome do Projeto</label>
+        <div className='cotainer-nomeProjeto'>
         <input type="text" className='nomeProjeto' value={nomeProjeto} onChange={e => setNomeProjeto(e.target.value)} disabled={isLoading} placeholder="Ex: Cozinha Completa" />
+      <button type="button" onClick={handleBuscarPlanoDeCorte} className="btn-icone-lupa">
+  <Search size={18} />
+</button>
+</div>
       </div>
 
       <h3 className="section-title">Itens da Ficha Técnica</h3>
