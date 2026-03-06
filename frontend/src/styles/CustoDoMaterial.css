@@ -49,6 +49,37 @@
 }
 /* fim para anular o botão voltar */
 
+.cotainer-nomeProjeto {
+  display: flex;
+  gap: 8px;
+  width: 100%; /* Trocado de 100vw para 100% para respeitar o limite do form-group */
+  align-items: stretch; /* Garante que o botão e o input tenham a mesma altura */
+}
+
+.nomeProjeto {
+  flex: 1; /* Esta é a mágica! Faz o input preencher todo o espaço vazio disponível */
+  width: 100%;
+}
+
+.btn-icone-lupa {
+  background-color: transparent;
+  border: none;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  color: var(--cor-primaria);
+  padding: 8px 10px; /* Ajuste fino para o botão não ficar espremido */
+  border-radius: 8px;
+  transition: background-color 0.5s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icone-lupa:hover {
+  background-color: var(--cor-primaria);
+  color: var(--branco);
+}
+
 .tabela-header,
 .tabela-row {
   display: grid;

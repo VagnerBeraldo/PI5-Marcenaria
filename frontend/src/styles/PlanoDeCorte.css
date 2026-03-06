@@ -260,27 +260,30 @@
   color: var(--texto);
 }
 
+/* --- Estilo Base (Mobile: Nome em cima, resto embaixo) --- */
 .item-peca {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  flex-wrap: wrap; 
+  gap: 12px;
   align-items: flex-end;
-  border-bottom: 1px solid var(--branco);
-  padding-bottom: 15px;
   margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px dashed rgba(200, 200, 200, 0.5);
 }
 
 .coluna-nome {
-  flex: 1 1 100%;
+  flex: 1 1 100%; /* Ocupa a 1ª linha inteira no celular */
+  display: flex;
+  flex-direction: column;
 }
-.coluna-medida {
-  margin-top: 5px;
-  flex: 1 1 50px;
-  min-width: 0;
-}
+
+.coluna-medida, 
 .coluna-qtd {
-  flex: 0 1 60px;
+  flex: 1; /* Divide o espaço da 2ª linha por igual */
+  display: flex;
+  flex-direction: column;
 }
+
 
 .sub-rotulo {
   font-size: 0.85rem;
@@ -427,6 +430,26 @@
   }
 }
 
+/* --- TELAS GRANDES --- */
+@media (min-width: 768px) {
+  .item-peca {
+    flex-wrap: nowrap; 
+  }
+
+  .coluna-nome {
+    flex: 1 1 auto; 
+  }
+
+  .coluna-medida {
+    flex: 0 0 110px; 
+  }
+
+  .coluna-qtd {
+    flex: 0 0 70px; 
+  }
+}
+
+
 @media (max-width: 710px) {
      .btn-wrapper-corte {
   gap: 30px;
@@ -500,15 +523,6 @@
 
 
 @media (max-width: 600px) {
-  .coluna-nome {
-    order: 1;
-  }
-  .coluna-medida,
-  .coluna-qtd,
-  .btn-remover {
-    order: 2;
-  }
-
   .secao-config-chapa {
     grid-template-columns: 1fr;
   }
