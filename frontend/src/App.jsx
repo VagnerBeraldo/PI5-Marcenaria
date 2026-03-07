@@ -4,8 +4,10 @@ import PlanoDeCorte from './pages/PlanoDeCorte';
 import MenuMarcenaria from './pages/MenuMarcenaria';
 import Despesas from './pages/Despesas';
 import PontoDeEquilibrio from './pages/PontoDeEquilibrio';
-import './App.css'; 
 import CustoDoMaterial from './pages/CustoDoMaterial';
+import Orcamento from './pages/Orcamento';
+import Cliente from './pages/Cliente';
+import './App.css'; 
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -18,6 +20,8 @@ function AnimatedRoutes() {
         <Route path="/despesas" element={<Despesas />} />
         <Route path="/ponto-de-equilibrio" element={<PontoDeEquilibrio/>} />
         <Route path="/custo-do-material" element={<CustoDoMaterial/>} />
+        <Route path="/orcamentos" element={<Orcamento/>} />
+        <Route path="/clientes" element={<Cliente/>} />
       </Routes>
     </AnimatePresence>
   );
