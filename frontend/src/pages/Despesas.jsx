@@ -452,15 +452,15 @@ export default function Despesas() {
   return (
     <PageTransition className="financeiro-container">
       <BotaoVoltar />
-      <div className="logo-wrapper">
-        <img src="/logo.svg" alt="Logo da Empresa" className="logo" />
-      </div>
-      <h1 className="nomefantasia">GR Marcenaria</h1>
-      <h1 className="title-center">Despesas</h1>
-      <h2 className="subtitle-left">Custos</h2>
+      
+        <img src="/logo.svg" alt="Logo da Empresa" className="logo-img" />
+      
+      <h1 className="nome-fantasia">GR Marcenaria</h1>
+      <h1 className="titulo-pagina">Despesas</h1>
+      <h2 className="subtitulo">Custos</h2>
 
       <div className="form-group highlight">
-        <label>Faturamento Bruto</label>
+        <label className="titulo-input">Faturamento Bruto</label>
         <input
           type="text"
           value={formatInputBR(faturamento)}
@@ -470,9 +470,9 @@ export default function Despesas() {
         />
       </div>
 
-      <h3 className="section-title">Despesas Fixas</h3>
+      <h2 className="subtitulo">Despesas Fixas</h2>
       <div className="form-group">
-        <label>Manutenção Preventiva de Máquinas</label>
+        <label className="titulo-input">Manutenção Preventiva de Máquinas</label>
         <input
           type="text"
           value={formatInputBR(manutencao)}
@@ -482,7 +482,7 @@ export default function Despesas() {
         />
       </div>
       <div className="form-group">
-        <label>Internet e Telefone</label>
+        <label className="titulo-input">Internet e Telefone</label>
         <input
           type="text"
           value={formatInputBR(internet)}
@@ -492,7 +492,7 @@ export default function Despesas() {
         />
       </div>
       <div className="form-group">
-        <label>Contador</label>
+        <label className="titulo-input">Contador</label>
         <input
           type="text"
           value={formatInputBR(contador)}
@@ -505,7 +505,7 @@ export default function Despesas() {
       {outrasFixas.map((item) => (
         <div key={item.id} className="form-row">
           <div className="form-group flex-2">
-            <label>Descrição</label>
+            <label className="titulo-input">Descrição</label>
             <input
               type="text"
               value={item.nome}
@@ -514,7 +514,7 @@ export default function Despesas() {
             />
           </div>
           <div className="form-group flex-1">
-            <label>Valor</label>
+            <label className="titulo-input">Valor</label>
             <input
               type="text"
               value={formatInputBR(item.valor)}
@@ -541,9 +541,9 @@ export default function Despesas() {
         <span>Inserir Outra Despesa Fixa</span>
       </button>
 
-      <h3 className="section-title">Despesas Variáveis</h3>
+      <h2 className="subtitulo">Despesas Variáveis</h2>
       <div className="form-group">
-        <label>Energia Elétrica</label>
+        <label className="titulo-input">Energia Elétrica</label>
         <input
           type="text"
           value={formatInputBR(energia)}
@@ -555,7 +555,7 @@ export default function Despesas() {
 
       <div className="form-row">
         <div className="form-group flex-1">
-          <label>Imposto (%)</label>
+          <label className="titulo-input">Imposto (%)</label>
           <input
             type="number"
             value={impostoPerc || ""}
@@ -565,7 +565,7 @@ export default function Despesas() {
           />
         </div>
         <div className="form-group flex-2">
-          <label>Valor Calculado (Imposto)</label>
+          <label className="titulo-input">Valor Calculado (Imposto)</label>
           <input
             type="text"
             value={formatMoney(impostoValor)}
@@ -577,7 +577,7 @@ export default function Despesas() {
 
       <div className="form-row">
         <div className="form-group flex-1">
-          <label>Taxa de Cartão (%)</label>
+          <label className="titulo-input">Taxa de Cartão (%)</label>
           <input
             type="number"
             value={taxaCartaoPerc || ""}
@@ -587,7 +587,7 @@ export default function Despesas() {
           />
         </div>
         <div className="form-group flex-2">
-          <label>Valor Calculado (Taxa)</label>
+          <label className="titulo-input">Valor Calculado (Taxa)</label>
           <input
             type="text"
             value={formatMoney(taxaCartaoValor)}
@@ -598,7 +598,7 @@ export default function Despesas() {
       </div>
 
       <div className="form-group">
-        <label>Fornecedores</label>
+        <label className="titulo-input">Fornecedores</label>
         <input
           type="text"
           value={formatInputBR(fornecedores)}
@@ -611,7 +611,7 @@ export default function Despesas() {
       {outrasVariaveis.map((item) => (
         <div key={item.id} className="form-row">
           <div className="form-group flex-2">
-            <label>Descrição</label>
+            <label className="titulo-input">Descrição</label>
             <input
               type="text"
               value={item.nome}
@@ -622,7 +622,7 @@ export default function Despesas() {
             />
           </div>
           <div className="form-group flex-1">
-            <label>Valor</label>
+            <label className="titulo-input">Valor</label>
             <input
               type="text"
               value={formatInputBR(item.valor)}
