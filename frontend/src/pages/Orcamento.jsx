@@ -19,6 +19,7 @@ export default function Orcamento() {
 
   // Estados Base
   const [clienteId, setClienteId] = useState("");
+  const [nomeCliente, setNomeCliente] = useState("");
   const [projetoId, setProjetoId] = useState("");
   const [nomeProjeto, setNomeProjeto] = useState("");
   const [quantidade, setQuantidade] = useState(1);
@@ -171,6 +172,59 @@ export default function Orcamento() {
   const atualizarExtra = (id, campo, valor) =>
     setExtras(extras.map((e) => (e.id === id ? { ...e, [campo]: valor } : e)));
 
+
+// --- BUSCAR CLIENTE (Lupa) ---
+  const handleBuscarCliente = async () => {
+    setIsLoading(true);
+    try {
+      const { data } = await api.get("/clientes");
+      if (!data || data.length === 0) {
+        Swal.fire({ title: "Aviso", text: "Nenhum cliente cadastrado.", icon: "info", customClass: { popup: "modal-pesquisa" } });
+        return;
+      }
+
+      Swal.fire({
+        title: "Selecionar Cliente",
+        customClass: { popup: "modal-pesquisa" },
+        html: `<input type="text" id="swal-search-cli" class="swal2-input input-pesquisa" placeholder="Buscar por nome..."><div id="swal-results-cli" class="lista-resultados"></div>`,
+        showConfirmButton: false,
+        showCancelButton: true,
+        cancelButtonText: "Fechar",
+        didOpen: () => {
+          const input = document.getElementById("swal-search-cli");
+          const list = document.getElementById("swal-results-cli");
+
+          const render = (val) => {
+            const filtered = data.filter((c) => (c.nome || "").toLowerCase().includes(val.toLowerCase()));
+            list.innerHTML = filtered.map((c) => `
+              <div class="swal-res-item item-resultado" data-id="${c.id_cliente}" data-nome="${c.nome}">
+                <span class="item-titulo">${c.nome}</span>
+                <span class="item-badge">${c.telefone || 'Sem telefone'}</span>
+              </div>`).join("");
+
+            document.querySelectorAll(".swal-res-item").forEach((el) => {
+              el.onclick = () => {
+                setClienteId(el.dataset.id);
+                setNomeCliente(el.dataset.nome);
+                Swal.close();
+              };
+            });
+          };
+          render("");
+          input.focus();
+          input.oninput = (e) => render(e.target.value);
+        },
+      });
+    } catch (error) {
+      console.error("Erro ao buscar clientes.", error);
+      Swal.fire({ icon: "error", title: "Erro", text: "Não foi possível carregar os clientes." });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
+
   // --- BUSCAR FICHA TÉCNICA (Lupa) ---
   const handleBuscarProjeto = async () => {
     setIsLoading(true);
@@ -267,6 +321,7 @@ export default function Orcamento() {
     setIdOrcamentoSalvo(null);
     setProjetoId("");
     setNomeProjeto("");
+    setNomeCliente("");
     setQuantidade(1);
     setDiasTrabalho(1);
     setValorCustoBase(0);
@@ -504,18 +559,37 @@ export default function Orcamento() {
             <span>Novo</span>
           </button>
         </div>
-
-        <div className="logo-wrapper">
-          <img src="/logo.svg" alt="Logo" className="logo" />
-        </div>
-        <h1 className="nomefantasia">GR Marcenaria</h1>
-        <h1 className="title-center">Orçamento Comercial</h1>
+          <img src="/logo.svg" alt="Logo" className="logo-img" />
+        <h1 className="nome-fantasia">GR Marcenaria</h1>
+        <h1 className="titulo-pagina">Orçamento Comercial</h1>
 
         <div className="secao-form">
-          <h3 className="section-title">Dados do Serviço</h3>
+          <h2 className="subtitulo">Dados do Serviço</h2>
+          {/* --- NOVO CAMPO DE CLIENTE --- */}
           <div className="form-row">
             <div className="form-group highlight flex-2">
-              <label>Nome do Serviço / Projeto</label>
+              <label className="titulo-input">Cliente</label>
+              <div className="container-lupa">
+                <input
+                  type="text"
+                  className="input-lupa-flex"
+                  value={nomeCliente}
+                  readOnly
+                  placeholder="Nome do cliente..."
+                />
+                <button
+                  type="button"
+                  onClick={handleBuscarCliente}
+                  className="btn-icone-lupa"
+                >
+                  <Search size={20} />
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group highlight flex-2">
+              <label className="titulo-input">Nome do Serviço / Projeto</label>
               <div className="container-lupa">
                 <input
                   type="text"
@@ -534,34 +608,32 @@ export default function Orcamento() {
               </div>
             </div>
 
-            
-              <div className="form-group flex-1">
-                <label>Quantidade</label>
-                <input
-                  type="number"
-                  value={quantidade}
-                  onChange={(e) => setQuantidade(Number(e.target.value))}
-                  min="1"
-                />
-              </div>
-              <div className="form-group flex-1">
-                <label>Dias de Trabalho</label>
-                <input
-                  type="number"
-                  value={diasTrabalho}
-                  onChange={(e) => setDiasTrabalho(Number(e.target.value))}
-                  min="0"
-                />
-              </div>
-            
+            <div className="form-group flex-1">
+              <label className="titulo-input">Quantidade</label>
+              <input
+                type="number"
+                value={quantidade}
+                onChange={(e) => setQuantidade(Number(e.target.value))}
+                min="1"
+              />
+            </div>
+            <div className="form-group flex-1">
+              <label className="titulo-input">Dias de Trabalho</label>
+              <input
+                type="number"
+                value={diasTrabalho}
+                onChange={(e) => setDiasTrabalho(Number(e.target.value))}
+                min="0"
+              />
+            </div>
           </div>
         </div>
 
         <div className="secao-form">
-          <h3 className="section-title">Custos de Base</h3>
+          <h2 className="subtitulo">Custos de Base</h2>
           <div className="form-row">
             <div className="form-group flex-1">
-              <label>Custo do Material (Base)</label>
+              <label className="titulo-input">Custo do Material (Base)</label>
               <input
                 type="text"
                 value={formatMoney(valorCustoBase)}
@@ -588,7 +660,7 @@ export default function Orcamento() {
 
           <div className="form-row mt-15">
             <div className="form-group flex-1">
-              <label>Imposto de Importação (R$)</label>
+              <label className="titulo-input">Imposto de Importação (R$)</label>
               <input
                 type="text"
                 value={formatMoney(impostoImportacao)}
@@ -598,7 +670,7 @@ export default function Orcamento() {
               />
             </div>
             <div className="form-group flex-1">
-              <label>Frete (R$)</label>
+              <label className="titulo-input">Frete (R$)</label>
               <input
                 type="text"
                 value={formatMoney(frete)}
@@ -606,7 +678,7 @@ export default function Orcamento() {
               />
             </div>
             <div className="form-group flex-1">
-              <label>Adiantamento (R$)</label>
+              <label className="titulo-input">Adiantamento (R$)</label>
               <input
                 type="text"
                 value={formatMoney(adiantamento)}
@@ -619,7 +691,7 @@ export default function Orcamento() {
         </div>
 
         <div className="secao-form">
-          <h3 className="section-title">Outras Despesas</h3>
+          <h2 className="subtitulo">Outras Despesas</h2>
           {extras.map((extra) => (
             <div key={extra.id} className="form-row extra-row">
               <input
@@ -654,10 +726,10 @@ export default function Orcamento() {
         </div>
 
         <div className="secao-form">
-          <h3 className="section-title">Imposto / Taxa / Margem</h3>
+          <h2 className="subtitulo">Imposto / Taxa / Margem</h2>
           <div className="form-row">
             <div className="form-group flex-1">
-              <label>Imposto NFe (%)</label>
+              <label className="titulo-input">Imposto NFe (%)</label>
               <input
                 type="number"
                 value={impostoPerc}
@@ -665,7 +737,7 @@ export default function Orcamento() {
               />
             </div>
             <div className="form-group flex-1">
-              <label>Taxa Cartão (%)</label>
+              <label className="titulo-input">Taxa Cartão (%)</label>
               <input
                 type="number"
                 value={taxaCartaoPerc}
@@ -673,7 +745,7 @@ export default function Orcamento() {
               />
             </div>
             <div className="form-group flex-1">
-              <label>Margem Lucro (%)</label>
+              <label className="titulo-input">Margem Lucro (%)</label>
               <input
                 type="number"
                 value={margemLucroPerc}
@@ -713,35 +785,35 @@ export default function Orcamento() {
 
         <div className="btn-container-acoes">
           <div className="btn-container-salvar-buscar">
-          <button
-            className="btn-acao-salvar"
-            onClick={handleSalvar}
-            disabled={isLoading}
-          >
-            <Save size={18} />
-            <span>{isLoading ? "Salvando..." : "Salvar"}</span>
-          </button>
-          <button
-            className="btn-acao-buscar"
-            onClick={handleBuscarOrcamento}
-            disabled={isLoading}
-          >
-            <Search size={18} />
-            <span>{isLoading ? "Buscando..." : "Buscar Orçamento"}</span>
-          </button>
-</div>
-<div className="btn-container-imprimir-excluir">
-          <button className="btn-acao-imprimir" onClick={imprimirOrcamento}>
-            <Printer size={18} />
-            <span>Imprimir</span>
-          </button>
+            <button
+              className="btn-acao-salvar"
+              onClick={handleSalvar}
+              disabled={isLoading}
+            >
+              <Save size={18} />
+              <span>{isLoading ? "Salvando..." : "Salvar"}</span>
+            </button>
+            <button
+              className="btn-acao-buscar"
+              onClick={handleBuscarOrcamento}
+              disabled={isLoading}
+            >
+              <Search size={18} />
+              <span>{isLoading ? "Buscando..." : "Buscar"}</span>
+            </button>
+          </div>
+          <div className="btn-container-imprimir-excluir">
+            <button className="btn-acao-imprimir" onClick={imprimirOrcamento}>
+              <Printer size={18} />
+              <span>Imprimir</span>
+            </button>
 
-          <button className="btn-acao-excluir" onClick={handleExcluir}>
-            <Trash2 size={18} />
-            <span>Excluir</span>
-          </button>
+            <button className="btn-acao-excluir" onClick={handleExcluir}>
+              <Trash2 size={18} />
+              <span>Excluir</span>
+            </button>
+          </div>
         </div>
-      </div>
       </div>
 
       {/* --- ÁREA EXCLUSIVA DE IMPRESSÃO --- */}
@@ -757,9 +829,7 @@ export default function Orcamento() {
 
         <div className="dados-impressao">
           <div className="linha-dado">
-            <strong>Cliente:</strong>{" "}
-            <span>{clienteId ? `ID ${clienteId}` : "Não informado"}</span>{" "}
-            {/* Ajuste para sua variável de Nome do Cliente, se houver */}
+            <strong>Cliente:</strong> <span>{nomeCliente || (clienteId ? `ID ${clienteId}` : 'Nome não informado')}</span>
           </div>
           <div className="linha-dado">
             <strong>Projeto:</strong>{" "}
