@@ -51,18 +51,6 @@
   }
   /* fim para anular o botão voltar */
 
-.logo-img {
-  max-width: 120px;
-  height: auto;
-}
-
-.nome-fantasia {
-  font-size: 1.3rem;
-  color: var(--texto);
-  margin: -35px 0 30px 0;
-  font-family: "Saira", Arial, serif;
-}
-
 
 .titulo {
   padding-bottom: 30px;
@@ -108,10 +96,6 @@
   overflow: hidden;
   /* box-shadow: -20px 4px 20px rgba(0, 0, 0, 0.1); */
   box-shadow: 0 12px 20px -10px rgba(0, 0, 0, 0.1);
-}
-
-.linha {
-  border-bottom: 1px solid var(--branco);
 }
 
 /* --- NAVEGAÇÃO DE CHAPAS (ABAS) --- */
@@ -222,13 +206,6 @@
   gap: 6px;
 }
 
-.rotulo {
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin-left: 5px;
-  text-align: left;
-  color: var(--texto);
-}
 
 .input-padrao {
   width: 100%;

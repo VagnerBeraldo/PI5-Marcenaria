@@ -8,52 +8,6 @@
   box-sizing: border-box;
 }
 
-.logo-wrapper {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.logo {
-  max-width: 120px;
-  height: auto;
-}
-
-.nomefantasia {
-  font-size: 1.3rem;
-  color: var(--texto);
-  margin: -35px 0 30px 0;
-  font-family: "Saira", Arial, serif;
-}
-
-.title-center {
-  text-align: center;
-  font-size: 1.8rem;
-  margin-bottom: 10px;
-  color: var(--texto);
-  font-family: "Saira", Arial, serif;
-}
-
-.subtitle-left {
-  text-align: left;
-  margin-bottom: 20px;
-  color: var(--texto);
-  font-size: 1.3rem;
-  border-bottom: 2px solid var(--branco);
-  padding-bottom: 5px;
-  font-family: "Saira", Arial, serif;
-}
-
-.section-title {
-  text-align: left;
-  margin-top: 35px;
-  margin-bottom: 15px;
-  color: var(--texto);
-  font-size: 1.2rem;
-  font-family: "Saira", Arial, serif;
-  border-bottom: 1px solid var(--branco);
-  padding-bottom: 5px;
-}
-
 .form-group {
   display: flex;
   flex-direction: column;

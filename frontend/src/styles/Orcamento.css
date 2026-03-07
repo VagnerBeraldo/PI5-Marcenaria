@@ -231,6 +231,7 @@
 
 .btn-acao-salvar, .btn-acao-buscar, .btn-acao-excluir, .btn-acao-imprimir {
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 8px;
   padding: 15px 20px;
@@ -373,7 +374,7 @@
 }
 /* fim para anular o botão voltar */
 
-.title-center{
+.titulo-pagina{
   font-size: 1.6rem;
 }
 
@@ -428,10 +429,9 @@
 @media print {
   /* 1. Esconde o sistema inteiro (formulário, botões, logo do sistema) */
   .card-orcamento, 
-  .header-actions, 
-  .logo-wrapper, 
-  .nomefantasia, 
-  .title-center,
+  .header-actions,  
+  .nome-fantasia, 
+  .titulo-pagina,
   .btn-container-acoes {
     display: none !important;
   }

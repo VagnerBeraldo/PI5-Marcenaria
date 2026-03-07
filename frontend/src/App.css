@@ -19,6 +19,43 @@ body {
   background-color: var(--body-bg);
 }
 
+.logo-img {
+  width: 120px;
+  height: auto;
+}
+
+.nome-fantasia {
+  font-size: 1.3rem;
+  color: var(--texto);
+  margin: -15px 0 20px 0;
+  font-family: "Saira", Arial, serif;
+}
+
+.titulo-pagina {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 40px;
+  color: var(--texto);
+  font-family: "Saira", Arial, serif;
+}
+
+.subtitulo {
+  text-align: left;
+  margin-bottom: 20px;
+  color: var(--texto);
+  font-size: 1.2rem;
+  border-bottom: 2px solid var(--branco);
+  padding-bottom: 5px;
+  font-family: "Saira", Arial, serif;
+}
+
+.titulo-input {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0  0 0 5px!important;
+  text-align: left;
+  color: var(--texto)!important;
+}
 /* --- Início Modal SweetAlert2 --- */
 .swal2-popup {
     font-family: 'Montserrat', sans-serif !important;

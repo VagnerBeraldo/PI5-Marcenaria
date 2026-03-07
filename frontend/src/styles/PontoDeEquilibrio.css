@@ -7,32 +7,6 @@
   border-left: 4px solid var(--cor-primaria);
 }
 
-.logo-wrapper {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.logo {
-  max-width: 120px;
-  height: auto;
-}
-
-.nomefantasia {
-  text-align: center;
-  font-size: 1.3rem;
-  color: var(--texto);
-  margin-bottom: 5px;
-  font-family: "Saira", Arial, serif;
-}
-
-.title-center {
-  text-align: center;
-  font-size: 1.8rem;
-  margin-bottom: 30px;
-  color: var(--texto);
-  font-family: "Saira", Arial, serif;
-}
-
 .loading-state,
 .empty-state {
   text-align: center;
