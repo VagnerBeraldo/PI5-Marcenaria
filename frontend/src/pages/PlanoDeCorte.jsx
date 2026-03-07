@@ -595,8 +595,8 @@ export default function PlanoDeCorte() {
         </div>
         <h1 className="nome-fantasia">GR Marcenaria</h1>
         <div className="grupo-input">
-          <h2 className="titulo">Plano de Corte</h2>
-          <label className="rotulo">Nome do Serviço / Projeto</label>
+          <h2 className="titulo-pagina">Plano de Corte</h2>
+          <h2 className="subtitulo">Nome do Serviço / Projeto</h2>
           <input
             type="text"
             value={nomeServico}
@@ -643,7 +643,7 @@ export default function PlanoDeCorte() {
         {/* Configurações da Chapa de MDF */}
         <div className="secao-config-chapa ocultar-na-impressao">
           <div className="grupo-input">
-            <label className="rotulo">Largura Chapa (mm)</label>
+            <label className="titulo-input">Largura Chapa (mm)</label>
             <input
               type="number"
               value={chapaAtual.largura || ""}
@@ -652,7 +652,7 @@ export default function PlanoDeCorte() {
             />
           </div>
           <div className="grupo-input">
-            <label className="rotulo">Altura Chapa (mm)</label>
+            <label className="titulo-input">Altura Chapa (mm)</label>
             <input
               type="number"
               value={chapaAtual.altura || ""}
@@ -661,7 +661,7 @@ export default function PlanoDeCorte() {
             />
           </div>
           <div className="grupo-input">
-            <label className="rotulo">Espessura da Serra (mm)</label>
+            <label className="titulo-input">Espessura da Serra (mm)</label>
             <input
               type="number"
               step="0.5"
@@ -674,8 +674,8 @@ export default function PlanoDeCorte() {
 
         {/* Listagem de Peças para Produção */}
         <div className="lista-pecas ocultar-na-impressao">
-          <div className="linha"></div>
-          <h3>Peças</h3>
+        
+          <h2 className="subtitulo">Peças</h2>
           {pecas
             .filter((p) => p.chapaId === chapaAtivaId)
             .map((peca) => (
