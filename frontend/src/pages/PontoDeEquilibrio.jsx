@@ -87,13 +87,9 @@ export default function PontoDeEquilibrio() {
   return (
     <PageTransition className="financeiro-container">
       <BotaoVoltar />
-      
-      <div className="logo-wrapper">
-        <img src="/logo.svg" alt="Logo da Empresa" className="logo" />
-      </div>
-      
-      <h1 className="nomefantasia">GR Marcenaria</h1>
-      <h1 className="title-center">Ponto de Equilíbrio</h1>
+        <img src="/logo.svg" alt="Logo da Empresa" className="logo-img" />
+      <h1 className="nome-fantasia">GR Marcenaria</h1>
+      <h1 className="titulo-pagina">Ponto de Equilíbrio</h1>
 
       <div className="painel-resultados">
         <div className="resumo-linha">

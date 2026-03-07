@@ -326,12 +326,15 @@ export default function CustoDoMaterial() {
         </button>
       </div>
       
-      <div className="logo-wrapper"><img src="/logo.svg" alt="Logo" className="logo" /></div>
-      <h1 className="nomefantasia">GR Marcenaria</h1>
-      <h1 className="title-center">Custo do Material</h1>
+      
+        <img src="/logo.svg" alt="Logo" className="logo-img" />
+      
+      <h1 className="nome-fantasia">GR Marcenaria</h1>
+      <h1 className="titulo-pagina">Custo do Material</h1>
 
       <div className="form-group highlight">
-        <label>Nome do Projeto</label>
+        
+        <h2 className="subtitulo">Nome do Projeto</h2>
         <div className='cotainer-nomeProjeto'>
         <input type="text" className='nomeProjeto' value={nomeProjeto} onChange={e => setNomeProjeto(e.target.value)} disabled={isLoading} placeholder="Ex: Cozinha Completa" />
       <button type="button" onClick={handleBuscarPlanoDeCorte} className="btn-icone-lupa">
@@ -340,7 +343,7 @@ export default function CustoDoMaterial() {
 </div>
       </div>
 
-      <h3 className="section-title">Itens da Ficha Técnica</h3>
+      <h2 className="subtitulo">Itens da Ficha Técnica</h2>
       <div className="tabela-materiais">
         <div className="tabela-header">
           <span className="col-mat">Material</span>
@@ -376,11 +379,11 @@ export default function CustoDoMaterial() {
 
       <div className="form-row" style={{ marginTop: '20px' }}>
         <div className="form-group flex-1">
-          <label>Mão de Obra</label>
+          <label className="titulo-input">Mão de Obra</label>
           <input type="text" value={formatInputBR(maoDeObra)} onChange={e => setMaoDeObra(Number(e.target.value.replace(/\D/g, '')) / 100)} />
         </div>
         <div className="form-group flex-1">
-          <label>Instalação</label>
+          <label className="titulo-input">Instalação</label>
           <input type="text" value={formatInputBR(instalacao)} onChange={e => setInstalacao(Number(e.target.value.replace(/\D/g, '')) / 100)} />
         </div>
       </div>
