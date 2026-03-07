@@ -1,0 +1,58 @@
+.cliente-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10px 0;
+}
+
+.card-cliente {
+  background-color: var(--cor-secundaria);
+  border-radius: 8px;
+  padding: 20px;
+  border-left: 4px solid var(--cor-primaria);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.estado-box {
+  flex: 0 0 80px; /* Campo UF menor */
+}
+
+.btn-icone-lupa{
+    outline: none;
+}
+
+
+@media (max-width: 768px) {
+  .form-row {
+    flex-wrap: wrap;
+  }
+  
+  .form-group.flex-2, 
+  .form-group.flex-1,
+  .estado-box {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  .btn-container-acoes {
+    flex-direction: column;
+  }
+ 
+  .cliente-container .btn-container-acoes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .cliente-container .btn-container-acoes button {
+    width: 250px;
+    margin: 0;
+  }
+}
+
+
+@media (max-width: 425px) {
+    .card-cliente{
+        padding: 10px;
+    }
+}
