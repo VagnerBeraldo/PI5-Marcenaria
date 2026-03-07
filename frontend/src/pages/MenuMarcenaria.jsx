@@ -52,7 +52,7 @@ const MenuMarcenaria = () => {
           <span>Orçamento</span>
         </div>
 
-        <div className="grid-item item-col-direita">
+        <div className="grid-item item-col-direita" onClick={() => navigate("/clientes")}>
           <Users size={24} />
           <span>Clientes</span>
         </div>
