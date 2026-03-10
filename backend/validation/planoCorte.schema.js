@@ -3,7 +3,8 @@ const { z } = require('zod');
 const chapaSchema = z.object({
   id: z.number(),
   largura: z.number().positive(),
-  altura: z.number().positive()
+  altura: z.number().positive(),
+  material: z.string().optional()
 });
 
 const pecaSchema = z.object({
@@ -16,7 +17,8 @@ const pecaSchema = z.object({
 });
 
 const criarPlanoSchema = z.object({
-  nome_servico: z.string().trim().min(1, "O nome do serviço é obrigatório."),
+  id_orcamento: z.number().nullable().optional(),
+  nome_servico: z.string().optional(),
   espessura_serra: z.number().nonnegative().default(3),
   chapas: z.array(chapaSchema).min(1, "Adicione pelo menos uma chapa."),
   pecas: z.array(pecaSchema).optional().default([])
