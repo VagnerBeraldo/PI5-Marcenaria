@@ -8,7 +8,7 @@ const salvarPlanoCompleto = async (dadosMestre) => {
     try {
         let orcamentoId = id_orcamento;
 
-        // REGRA DE OURO: Se não veio ID de orçamento, cria um agora só com o nome
+        // Se não veio ID de orçamento, cria um agora só com o nome
         // Isso evita que o Plano de Corte fique "órfão"
         if (!orcamentoId) {
             const [orcamentoResult] = await connection.execute(

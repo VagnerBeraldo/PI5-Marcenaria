@@ -9,7 +9,7 @@ const obterDespesaAtual = async () => {
   const [adicionais] = await db.query('SELECT * FROM despesas_adicionais WHERE id_despesa = ?', [despesaAtual.id_despesa]);
 
   return {
-    id: despesaAtual.id_despesa, // Fundamental para o frontend bloquear o botão salvar
+    id: despesaAtual.id_despesa,
     faturamento: despesaAtual.faturamento_bruto,
     despesasFixas: {
       manutencao: despesaAtual.manutencao_maquinas,
@@ -69,7 +69,7 @@ const atualizarDespesas = async (id, dados) => {
       [dados.faturamento || 0, dados.despesasFixas.manutencao || 0, dados.despesasFixas.internet || 0, dados.despesasFixas.contador || 0, dados.despesasVariaveis.energia || 0, dados.despesasVariaveis.impostoPerc || 0, dados.despesasVariaveis.taxaCartaoPerc || 0, dados.despesasVariaveis.fornecedores || 0, id]
     );
 
-    // 2. Remove os itens dinâmicos antigos e insere os novos (abordagem mais segura para arrays editados)
+    // 2. Remove os itens dinâmicos antigos e insere os novos 
     await conexao.query(`DELETE FROM despesas_adicionais WHERE id_despesa = ?`, [id]);
 
     const adicionais = [];

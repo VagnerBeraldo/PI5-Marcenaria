@@ -4,7 +4,7 @@ import BotaoVoltar from "../components/BotaoVoltar/BotaoVoltar";
 import { Save, Trash2, Search, FilePlus, MapPin } from "lucide-react";
 import Swal from "sweetalert2";
 import api from "../../services/api";
-import { useProjeto } from "../hooks/useProjeto"; // <-- IMPORTAÇÃO DO CONTEXTO
+import { useProjeto } from "../hooks/useProjeto"; 
 import "../styles/Cliente.css";
 
 export default function Cliente() {
@@ -60,7 +60,7 @@ export default function Cliente() {
   };
 
   const limparFormulario = () => {
-    limparContexto(); // Limpa a memória global
+    limparContexto();
     setIdClienteSalvo(null);
     setNome("");
     setEmail("");
@@ -88,7 +88,7 @@ export default function Cliente() {
     setEstado(cliente.estado || "");
   };
 
-  // --- ALIMENTAR O CONTEXTO GLOBAL ---
+  // --- CONTEXTO GLOBAL ---
   const carregarAmbienteGlobal = async (cliente) => {
     setIsLoading(true);
     try {
@@ -244,7 +244,7 @@ export default function Cliente() {
               const selectedCli = data.find(item => item.id_cliente === Number(el.dataset.id));
               if (selectedCli) {
                 carregarCliente(selectedCli);
-                carregarAmbienteGlobal(selectedCli); // <--- INICIA O CONTEXTO AQUI
+                carregarAmbienteGlobal(selectedCli); 
               }
               Swal.close();
             });

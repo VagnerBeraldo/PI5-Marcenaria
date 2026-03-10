@@ -26,7 +26,7 @@ const criar = async (req, res) => {
   try {
     const dadosValidados = clienteSchema.parse(req.body);
     const id = await clienteService.createCliente(dadosValidados);
-    res.status(201).json({ id, ...dadosValidados }); // 201 Created
+    res.status(201).json({ id, ...dadosValidados }); 
   } catch (error) {
     if (error.name === 'ZodError') {
       return res.status(400).json({ error: 'Erro de validação', detalhes: error.errors });

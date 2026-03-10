@@ -1,5 +1,5 @@
 const custoMaterialService = require('../services/custoMaterialService');
-const { custoProjetoSchema } = require('../validation/custo.schema'); // Ajuste o caminho se necessário
+const { custoProjetoSchema } = require('../validation/custo.schema'); 
 
 const getCusto = async (req, res) => {
   try {

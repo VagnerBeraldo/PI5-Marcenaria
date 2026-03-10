@@ -9,11 +9,11 @@ const postPlanoDeCorte = async (req, res) => {
         // 2. Chama o Service
         const resultado = await planoCorteService.salvarPlanoCompleto(dadosValidados);
 
-        // 3. Resposta de Sucesso (CORRIGIDO: Enviando id_orcamento para o Front)
+        // 3. Resposta de Sucesso 
         res.status(201).json({ 
             message: 'Plano de corte salvo com sucesso!', 
             id_plano: resultado.id_plano,
-            id_orcamento: resultado.id_orcamento // <-- Faltava esta linha!
+            id_orcamento: resultado.id_orcamento 
         });
 
     } catch (err) {
