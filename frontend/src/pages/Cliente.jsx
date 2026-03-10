@@ -4,11 +4,15 @@ import BotaoVoltar from "../components/BotaoVoltar/BotaoVoltar";
 import { Save, Trash2, Search, FilePlus, MapPin } from "lucide-react";
 import Swal from "sweetalert2";
 import api from "../../services/api";
+import { useProjeto } from "../hooks/useProjeto"; // <-- IMPORTAÇÃO DO CONTEXTO
 import "../styles/Cliente.css";
 
 export default function Cliente() {
   const [isLoading, setIsLoading] = useState(false);
   const [idClienteSalvo, setIdClienteSalvo] = useState(null);
+
+  // Instanciando o Contexto Global
+  const { atualizarContexto, limparContexto } = useProjeto();
 
   // Estados do Formulário
   const [nome, setNome] = useState("");
@@ -47,7 +51,7 @@ export default function Cliente() {
       setCidade(data.localidade || "");
       setEstado(data.uf || "");
       document.getElementById("input-numero").focus(); 
-      } catch (error) {
+    } catch (error) {
       console.error("Erro ao buscar CEP:", error);
       Swal.fire({ icon: "error", title: "Erro", text: "Falha ao buscar o CEP." });
     } finally {
@@ -56,6 +60,7 @@ export default function Cliente() {
   };
 
   const limparFormulario = () => {
+    limparContexto(); // Limpa a memória global
     setIdClienteSalvo(null);
     setNome("");
     setEmail("");
@@ -81,6 +86,86 @@ export default function Cliente() {
     setBairro(cliente.bairro || "");
     setCidade(cliente.cidade || "");
     setEstado(cliente.estado || "");
+  };
+
+  // --- ALIMENTAR O CONTEXTO GLOBAL ---
+  const carregarAmbienteGlobal = async (cliente) => {
+    setIsLoading(true);
+    try {
+      atualizarContexto({ cliente }); // Salva o cliente na memória global
+
+      // 1. Busca orçamentos deste cliente
+      const { data: orcamentos } = await api.get(`/orcamentos/cliente/${cliente.id_cliente}`);
+
+      if (!orcamentos || orcamentos.length === 0) {
+        Swal.fire({
+          toast: true, position: "top-end", icon: "info",
+          title: "Cliente carregado (Sem projetos vinculados)",
+          showConfirmButton: false, timer: 3000
+        });
+        return;
+      }
+
+      // 2. Abre Modal para o usuário escolher o projeto
+      Swal.fire({
+        title: "Selecionar Projeto",
+        text: "Escolha qual projeto deste cliente deseja carregar para a área de trabalho:",
+        customClass: { popup: "modal-pesquisa" },
+        html: `<div id="swal-results-proj" class="lista-resultados"></div>`,
+        showConfirmButton: false,
+        showCancelButton: true,
+        cancelButtonText: "Cancelar",
+        didOpen: () => {
+          const list = document.getElementById("swal-results-proj");
+          list.innerHTML = orcamentos.map(o => `
+            <div class="swal-res-item item-resultado" data-id="${o.id_orcamento}">
+              <span class="item-titulo">${o.nome_projeto}</span>
+              <span class="item-badge">${new Date(o.data_orcamento).toLocaleDateString("pt-BR")}</span>
+            </div>
+          `).join("");
+
+          document.querySelectorAll(".swal-res-item").forEach(el => {
+            el.onclick = async () => {
+              Swal.close();
+              setIsLoading(true);
+              const selectedOrc = orcamentos.find(item => item.id_orcamento === Number(el.dataset.id));
+              
+              let planoCorte = null;
+              let custo = null;
+
+              // 3. Busca Plano de Corte vinculado
+              try {
+                const resPlano = await api.get(`/plano-corte/orcamento/${selectedOrc.id_orcamento}`);
+                planoCorte = resPlano.data;
+              } catch (e) { console.error("Sem plano de corte.", e); }
+
+              // 4. Busca Ficha Técnica vinculada
+              if (selectedOrc.id_projeto) {
+                try {
+                  const resCusto = await api.get(`/custos/${selectedOrc.id_projeto}`);
+                  custo = resCusto.data;
+                } catch (e) { console.error("Sem ficha técnica.", e); }
+              }
+
+              // 5. Injeta TUDO no Contexto Global
+              atualizarContexto({ orcamento: selectedOrc, planoCorte, custo });
+
+              Swal.fire({
+                toast: true, position: "top-end", icon: "success",
+                title: "Ambiente Global carregado!",
+                showConfirmButton: false, timer: 3000
+              });
+              setIsLoading(false);
+            };
+          });
+        }
+      });
+
+    } catch (error) {
+      console.error("Erro ao carregar ambiente", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // --- SALVAR CLIENTE ---
@@ -111,6 +196,7 @@ export default function Cliente() {
       } else {
         const response = await api.post("/clientes", payload);
         setIdClienteSalvo(response.data.id);
+        atualizarContexto({ cliente: { ...payload, id_cliente: response.data.id } }); // Atualiza memória se for novo
         Swal.fire({ toast: true, position: "top-end", icon: "success", title: "Cliente salvo!", showConfirmButton: false, timer: 3000 });
       }
     } catch (error) {
@@ -156,7 +242,10 @@ export default function Cliente() {
 
             document.querySelectorAll('.swal-res-item').forEach(el => el.onclick = () => {
               const selectedCli = data.find(item => item.id_cliente === Number(el.dataset.id));
-              if (selectedCli) carregarCliente(selectedCli);
+              if (selectedCli) {
+                carregarCliente(selectedCli);
+                carregarAmbienteGlobal(selectedCli); // <--- INICIA O CONTEXTO AQUI
+              }
               Swal.close();
             });
           };
@@ -209,8 +298,9 @@ export default function Cliente() {
             <FilePlus size={18} /><span>Novo</span>
           </button>
         </div>
-          <img src="/logo.svg" alt="Logo" className="logo-img" />
-          <h1 className="nome-fantasia">GR Marcenaria</h1>  
+        
+        <img src="/logo.svg" alt="Logo" className="logo-img" />
+        <h1 className="nome-fantasia">GR Marcenaria</h1>  
         
         <h1 className="titulo-pagina">Cadastro de Cliente</h1>
 
@@ -218,7 +308,7 @@ export default function Cliente() {
         <div className="secao-form">
           <h2 className="subtitulo">Dados Pessoais e Contato</h2>
           <div className="form-row">
-            <div className="form-group flex-2 "> {/*  highlight */}
+            <div className="form-group flex-2 "> {/* highlight */}
               <label className="titulo-input">Nome Completo / Empresa *</label>
               <input 
                 type="text" 
@@ -338,9 +428,11 @@ export default function Cliente() {
             <Search size={18}/><span>Buscar</span>
           </button>
           
+          {idClienteSalvo && (
             <button className="btn-acao-excluir" onClick={handleExcluir}>
               <Trash2 size={18}/><span>Excluir</span>
             </button>
+          )}
         </div>
 
       </div>
