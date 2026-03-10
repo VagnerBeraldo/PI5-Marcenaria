@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import { ProjetoProvider } from './context/ProjetoProvider';
 import PlanoDeCorte from './pages/PlanoDeCorte';
 import MenuMarcenaria from './pages/MenuMarcenaria';
 import Despesas from './pages/Despesas';
@@ -29,11 +30,13 @@ function AnimatedRoutes() {
 
 function App() {
   return (
-    <Router>
-      <div className="app-container">
-        <AnimatedRoutes />
-      </div>
-    </Router>
+    <ProjetoProvider> {/* <-- APLICAÇÃO ENVELOPADA AQUI */}
+      <Router>
+        <div className="app-container">
+          <AnimatedRoutes />
+        </div>
+      </Router>
+    </ProjetoProvider>
   );
 }
 
