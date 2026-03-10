@@ -1,9 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const {postPlanoDeCorte, getPlanos, putPlanoDeCorte, deletePlanoDeCorte} = require('../controllers/planoCorteController');
+const {
+  postPlanoDeCorte, 
+  getPlanos, 
+  putPlanoDeCorte, 
+  deletePlanoDeCorte,
+  getPlanoPorOrcamento
+} = require('../controllers/planoCorteController');
 
 router.post('/', postPlanoDeCorte);
 router.get('/', getPlanos);
+router.get('/orcamento/:id_orcamento', getPlanoPorOrcamento);
 router.put('/:id', putPlanoDeCorte);
 router.delete('/:id', deletePlanoDeCorte);
 

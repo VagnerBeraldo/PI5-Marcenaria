@@ -9,21 +9,24 @@ const postPlanoDeCorte = async (req, res) => {
         // 2. Chama o Service
         const resultado = await planoCorteService.salvarPlanoCompleto(dadosValidados);
 
-        // 3. Resposta de Sucesso
-        res.status(201).json({ message: 'Plano de corte salvo com sucesso!', id_plano: resultado.id_plano });
+        // 3. Resposta de Sucesso (CORRIGIDO: Enviando id_orcamento para o Front)
+        res.status(201).json({ 
+            message: 'Plano de corte salvo com sucesso!', 
+            id_plano: resultado.id_plano,
+            id_orcamento: resultado.id_orcamento // <-- Faltava esta linha!
+        });
 
-    } catch (error) {
+    } catch (err) {
         // Tratamento de erro do Zod
-        if (error.name === 'ZodError') {
-            return res.status(400).json({ error: 'Erro de validação', detalhes: error.errors });
+        if (err.name === 'ZodError') {
+            return res.status(400).json({ error: 'Erro de validação', detalhes: err.errors });
         }
         
         // Erro do Banco/Servidor
-        console.error('Erro no controller de Plano de Corte:', error);
+        console.error("Erro ao carregar orçamento", err);
         res.status(500).json({ error: 'Erro interno ao salvar o plano de corte.' });
     }
 };
-
 
 const getPlanos = async (req, res) => {
     try {
@@ -68,4 +71,18 @@ const deletePlanoDeCorte = async (req, res) => {
     }
 };
 
-module.exports = { postPlanoDeCorte, getPlanos, putPlanoDeCorte, deletePlanoDeCorte };
+const getPlanoPorOrcamento = async (req, res) => {
+    try {
+        const { id_orcamento } = req.params;
+        const plano = await planoCorteService.buscarPlanoPorOrcamento(id_orcamento);
+        if (!plano) {
+            return res.status(404).json({ error: 'Plano de corte não encontrado para este orçamento.' });
+        }
+        res.status(200).json(plano);
+    } catch (error) {
+        console.error('Erro ao buscar plano por orçamento:', error);
+        res.status(500).json({ error: 'Erro interno ao buscar plano de corte.' });
+    }
+};
+
+module.exports = { postPlanoDeCorte, getPlanos, putPlanoDeCorte, deletePlanoDeCorte, getPlanoPorOrcamento };

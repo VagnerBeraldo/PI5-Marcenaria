@@ -58,4 +58,15 @@ const deleteOrcamento = async (req, res) => {
     }
 };
 
-module.exports = { postOrcamento, getOrcamentos, putOrcamento, deleteOrcamento };
+const getOrcamentosPorCliente = async (req, res) => {
+    try {
+        const { id_cliente } = req.params;
+        const orcamentos = await orcamentoService.buscarOrcamentosPorCliente(id_cliente);
+        res.status(200).json(orcamentos);
+    } catch (error) {
+        console.error('Erro ao buscar orçamentos do cliente:', error);
+        res.status(500).json({ error: 'Erro interno ao buscar orçamentos do cliente.' });
+    }
+};
+
+module.exports = { postOrcamento, getOrcamentos, putOrcamento, deleteOrcamento, getOrcamentosPorCliente };

@@ -1,27 +1,38 @@
 const db = require('../config/db'); 
 
 const salvarPlanoCompleto = async (dadosMestre) => {
-    const { nome_servico, espessura_serra, chapas, pecas } = dadosMestre;
+    const { id_orcamento, nome_servico, espessura_serra, chapas, pecas } = dadosMestre;
     const connection = await db.getConnection();
     await connection.beginTransaction();
 
     try {
-        // 1. Insere o Plano (Mestre)
+        let orcamentoId = id_orcamento;
+
+        // REGRA DE OURO: Se não veio ID de orçamento, cria um agora só com o nome
+        // Isso evita que o Plano de Corte fique "órfão"
+        if (!orcamentoId) {
+            const [orcamentoResult] = await connection.execute(
+                'INSERT INTO orcamento (nome_projeto) VALUES (?)',
+                [nome_servico]
+            );
+            orcamentoId = orcamentoResult.insertId;
+        }
+
+        // 1. Insere o Plano vinculado ao ID do Orçamento (novo ou existente)
         const [planoResult] = await connection.execute(
-            'INSERT INTO plano_corte (nome_servico, espessura_serra) VALUES (?, ?)',
-            [nome_servico, espessura_serra]
+            'INSERT INTO plano_corte (id_orcamento, espessura_serra) VALUES (?, ?)',
+            [orcamentoId, espessura_serra]
         );
         const id_plano = planoResult.insertId;
 
         // 2. Insere Chapas e Peças
         for (const chapa of chapas) {
             const [chapaResult] = await connection.execute(
-                'INSERT INTO plano_corte_chapa (id_plano, largura, altura) VALUES (?, ?, ?)',
-                [id_plano, chapa.largura, chapa.altura]
+                'INSERT INTO plano_corte_chapa (id_plano, largura, altura, material) VALUES (?, ?, ?, ?)',
+                [id_plano, chapa.largura, chapa.altura, chapa.material || '']
             );
             const id_chapa_db = chapaResult.insertId;
 
-            // Filtra as peças desta chapa e ignora linhas vazias
             const pecasDaChapa = pecas.filter(p => p.chapaId === chapa.id && p.nome && p.largura > 0 && p.altura > 0);
 
             for (const peca of pecasDaChapa) {
@@ -33,16 +44,18 @@ const salvarPlanoCompleto = async (dadosMestre) => {
         }
 
         await connection.commit();
-        return { success: true, id_plano };
+        
+        // Retorna o sucesso e os IDs para o Frontend sincronizar o contexto
+        return { success: true, id_plano, id_orcamento: orcamentoId };
 
-    } catch (error) {
+    } catch (err) {
         await connection.rollback();
-        throw error; // Joga o erro para o Controller tratar
+        console.error("Erro ao carregar orçamento", err);
+        throw err;
     } finally {
         connection.release();
     }
 };
-
 
 const listarPlanos = async () => {
     const connection = await db.getConnection();
@@ -50,24 +63,20 @@ const listarPlanos = async () => {
         const [linhas] = await connection.execute(`
             SELECT 
                 p.id_plano, 
-                p.nome_servico, 
+                p.id_orcamento,
+                COALESCE(o.nome_projeto, 'Plano em rascunho (ID: ' || p.id_plano || ')') AS nome_servico, 
                 p.espessura_serra,
                 COALESCE(
-                    (SELECT JSON_ARRAYAGG(
-                        JSON_OBJECT('id', c.id_chapa, 'largura', c.largura, 'altura', c.altura)
-                    ) FROM plano_corte_chapa c WHERE c.id_plano = p.id_plano), 
-                    '[]'
+                    (SELECT JSON_ARRAYAGG(JSON_OBJECT('id', c.id_chapa, 'largura', c.largura, 'altura', c.altura, 'material', c.material))
+                    FROM plano_corte_chapa c WHERE c.id_plano = p.id_plano), '[]'
                 ) AS chapas,
                 COALESCE(
-                    (SELECT JSON_ARRAYAGG(
-                        JSON_OBJECT('id', pe.id_peca, 'chapaId', pe.id_chapa, 'nome', pe.nome_peca, 'largura', pe.largura, 'altura', pe.altura, 'qtd', pe.quantidade)
-                    ) 
-                    FROM plano_corte_peca pe 
-                    INNER JOIN plano_corte_chapa c ON pe.id_chapa = c.id_chapa 
-                    WHERE c.id_plano = p.id_plano), 
-                    '[]'
+                    (SELECT JSON_ARRAYAGG(JSON_OBJECT('id', pe.id_peca, 'chapaId', pe.id_chapa, 'nome', pe.nome_peca, 'largura', pe.largura, 'altura', pe.altura, 'qtd', pe.quantidade)) 
+                    FROM plano_corte_peca pe INNER JOIN plano_corte_chapa c ON pe.id_chapa = c.id_chapa 
+                    WHERE c.id_plano = p.id_plano), '[]'
                 ) AS pecas
             FROM plano_corte p
+            LEFT JOIN orcamento o ON p.id_orcamento = o.id_orcamento
             ORDER BY p.data_criacao DESC
         `);
         return linhas;
@@ -76,17 +85,24 @@ const listarPlanos = async () => {
     }
 };
 
-
 const editarPlanoCompleto = async (id_plano, dadosMestre) => {
-    const { nome_servico, espessura_serra, chapas, pecas } = dadosMestre;
+    const { id_orcamento, nome_servico, espessura_serra, chapas, pecas } = dadosMestre;
     const connection = await db.getConnection();
     await connection.beginTransaction();
 
     try {
+        // Sincroniza o nome do projeto na tabela orcamento, se o id existir
+        if (id_orcamento && nome_servico) {
+            await connection.execute(
+                'UPDATE orcamento SET nome_projeto = ? WHERE id_orcamento = ?',
+                [nome_servico, id_orcamento]
+            );
+        }
+
         // 1. Atualiza o Mestre (Plano)
         await connection.execute(
-            'UPDATE plano_corte SET nome_servico = ?, espessura_serra = ? WHERE id_plano = ?',
-            [nome_servico, espessura_serra, id_plano]
+            'UPDATE plano_corte SET id_orcamento = ?, espessura_serra = ? WHERE id_plano = ?',
+            [id_orcamento || null, espessura_serra, id_plano]
         );
 
         // 2. Apaga todas as Chapas antigas (As Peças são apagadas automaticamente pelo CASCADE)
@@ -95,8 +111,8 @@ const editarPlanoCompleto = async (id_plano, dadosMestre) => {
         // 3. Insere as novas Chapas e Peças atualizadas
         for (const chapa of chapas) {
             const [chapaResult] = await connection.execute(
-                'INSERT INTO plano_corte_chapa (id_plano, largura, altura) VALUES (?, ?, ?)',
-                [id_plano, chapa.largura, chapa.altura]
+                'INSERT INTO plano_corte_chapa (id_plano, largura, altura, material) VALUES (?, ?, ?, ?)',
+                [id_plano, chapa.largura, chapa.altura, chapa.material || '']
             );
             const id_chapa_db = chapaResult.insertId;
 
@@ -113,9 +129,10 @@ const editarPlanoCompleto = async (id_plano, dadosMestre) => {
         await connection.commit();
         return { success: true };
 
-    } catch (error) {
+    } catch (err) {
         await connection.rollback();
-        throw error;
+        console.error("Erro ao carregar orçamento", err);
+        throw err;
     } finally {
         connection.release();
     }
@@ -126,11 +143,43 @@ const excluirPlano = async (id_plano) => {
     try {
         const [result] = await connection.execute('DELETE FROM plano_corte WHERE id_plano = ?', [id_plano]);
         return result.affectedRows > 0;
+    } catch (err) {
+        console.error("Erro ao carregar orçamento", err);
+        throw err;
     } finally {
         connection.release();
     }
 };
 
-module.exports = { salvarPlanoCompleto, listarPlanos, editarPlanoCompleto, excluirPlano };
+const buscarPlanoPorOrcamento = async (id_orcamento) => {
+    const connection = await db.getConnection();
+    try {
+        const [linhas] = await connection.execute(`
+            SELECT 
+                p.id_plano, 
+                p.id_orcamento, 
+                o.nome_projeto AS nome_servico, 
+                p.espessura_serra,
+                COALESCE(
+                    (SELECT JSON_ARRAYAGG(JSON_OBJECT('id', c.id_chapa, 'largura', c.largura, 'altura', c.altura, 'material', c.material))
+                    FROM plano_corte_chapa c WHERE c.id_plano = p.id_plano), '[]'
+                ) AS chapas,
+                COALESCE(
+                    (SELECT JSON_ARRAYAGG(JSON_OBJECT('id', pe.id_peca, 'chapaId', pe.id_chapa, 'nome', pe.nome_peca, 'largura', pe.largura, 'altura', pe.altura, 'qtd', pe.quantidade)) 
+                    FROM plano_corte_peca pe INNER JOIN plano_corte_chapa c ON pe.id_chapa = c.id_chapa 
+                    WHERE c.id_plano = p.id_plano), '[]'
+                ) AS pecas
+            FROM plano_corte p
+            INNER JOIN orcamento o ON p.id_orcamento = o.id_orcamento
+            WHERE p.id_orcamento = ?
+        `, [id_orcamento]);
+        return linhas[0] || null; 
+    } catch (err) {
+        console.error("Erro ao carregar orçamento", err);
+        throw err;
+    } finally {
+        connection.release();
+    }
+};
 
-
+module.exports = { salvarPlanoCompleto, listarPlanos, editarPlanoCompleto, excluirPlano, buscarPlanoPorOrcamento };
