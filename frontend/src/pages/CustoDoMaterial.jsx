@@ -1,43 +1,810 @@
-import React, { useState, useMemo } from 'react';
+// import React, { useState, useMemo, useEffect } from 'react';
+// import PageTransition from "../components/Animation/PageTransition";
+// import BotaoVoltar from '../components/BotaoVoltar/BotaoVoltar';
+// import { FileEditIcon, Save, Trash2, Search, FilePlus, CirclePlus, CircleMinus } from 'lucide-react';
+// import Swal from 'sweetalert2';
+// import '../styles/CustoDoMaterial.css';
+// import api from '../../services/api';
+// import { useProjeto } from "../hooks/useProjeto"; 
+
+// export default function CustoDoMaterial() {
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [idProjetoSalvo, setIdProjetoSalvo] = useState(null);
+
+//   const { contextoGlobal, atualizarContexto } = useProjeto();
+
+//   // Estados do Mestre
+//   const [nomeProjeto, setNomeProjeto] = useState('');
+//   const [maoDeObra, setMaoDeObra] = useState(0);
+//   const [instalacao, setInstalacao] = useState(0);
+
+//   // Estado dos Detalhes (Tabela Dinâmica)
+//   const [materiais, setMateriais] = useState([
+//     { id: Date.now(), material: '', quantidade: '', unidade_medida: '', valor_unitario: 0 }
+//   ]);
+
+//   // 1. Escuta para preencher dados se vierem do contexto (Edição de Custo)
+//   useEffect(() => {
+//     if (contextoGlobal?.custo) {
+//       const proj = contextoGlobal.custo;
+//       setIdProjetoSalvo(proj.id_projeto);
+//       setNomeProjeto(proj.nome_projeto);
+//       setMaoDeObra(Number(proj.mao_de_obra));
+//       setInstalacao(Number(proj.instalacao));
+
+//       const materiaisParsed = typeof proj.materiais === 'string' ? JSON.parse(proj.materiais) : (proj.materiais || []);
+//       const materiaisCarregados = materiaisParsed.length > 0 
+//         ? materiaisParsed.map(m => ({ ...m, id: m.id_item || Date.now() + Math.random() }))
+//         : [{ id: Date.now(), material: '', quantidade: '', unidade_medida: '', valor_unitario: 0 }];
+
+//       setMateriais(materiaisCarregados);
+//     } 
+//   }, [contextoGlobal?.custo]);
+
+//   // 2. BUSCA AUTOMÁTICA: Se o nome vier de outra página (Plano/Orçamento), busca os dados do Plano no Banco
+//   useEffect(() => {
+//     const sincronizarEBuscarPlano = async () => {
+//       if (contextoGlobal.nomeProjetoGlobal && contextoGlobal.nomeProjetoGlobal !== nomeProjeto) {
+//         const novoNome = contextoGlobal.nomeProjetoGlobal;
+//         setNomeProjeto(novoNome);
+
+//         try {
+//           const response = await api.get('/planos-corte');
+//           const planoEncontrado = response.data.find(p => p.nome_servico === novoNome);
+          
+//           if (planoEncontrado) {
+//             const chapas = typeof planoEncontrado.chapas === 'string' ? JSON.parse(planoEncontrado.chapas) : (planoEncontrado.chapas || []);
+            
+//             setMateriais([
+//               {
+//                 id: Date.now(),
+//                 material: 'Chapa de MDF (Plano de Corte)',
+//                 quantidade: chapas.length,
+//                 unidade_medida: 'chapa',
+//                 valor_unitario: 0
+//               }
+//             ]);
+//           }
+//         } catch (error) {
+//           console.error("Erro na busca automática de plano:", error);
+//         }
+//       }
+//     };
+
+//     sincronizarEBuscarPlano();
+//   }, [contextoGlobal.nomeProjetoGlobal, nomeProjeto]);
+  
+//   const subtotalMateriais = useMemo(() => {
+//     return materiais.reduce((acc, item) => acc + ((Number(item.quantidade) || 0) * (item.valor_unitario || 0)), 0);
+//   }, [materiais]);
+
+//   const custoTotal = useMemo(() => subtotalMateriais + maoDeObra + instalacao, [subtotalMateriais, maoDeObra, instalacao]);
+
+//   const formatMoney = (valor) => valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+//   const formatInputBR = (valor) => (Number(valor) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+//   const adicionarLinha = () => {
+//     setMateriais([...materiais, { id: Date.now(), material: '', quantidade: '', unidade_medida: '', valor_unitario: 0 }]);
+//   };
+
+//   const removerLinha = (id) => {
+//     if (materiais.length === 1) return;
+//     setMateriais(materiais.filter(m => m.id !== id));
+//   };
+
+//   const atualizarItem = (id, campo, valor) => {
+//     setMateriais(materiais.map(m => m.id === id ? { ...m, [campo]: valor } : m));
+//   };
+
+//   const handleKeyDownTab = (e, index) => {
+//     if (e.key === 'Tab' && !e.shiftKey && index === materiais.length - 1) {
+//       adicionarLinha();
+//     }
+//   };
+
+//   const montarPayload = () => ({
+//     nome_projeto: nomeProjeto,
+//     mao_de_obra: maoDeObra,
+//     instalacao: instalacao,
+//     materiais: materiais.map(m => ({
+//       material: m.material,
+//       quantidade: Number(m.quantidade) || 0,
+//       unidade_medida: m.unidade_medida,
+//       valor_unitario: Number(m.valor_unitario) || 0 
+//     }))
+//   });
+
+//   const limparFormulario = () => {
+//     setIdProjetoSalvo(null);
+//     setNomeProjeto('');
+//     setMaoDeObra(0);
+//     setInstalacao(0);
+//     setMateriais([{ id: Date.now(), material: '', quantidade: '', unidade_medida: '', valor_unitario: 0 }]);
+//     atualizarContexto({ nomeProjetoGlobal: '', custo: null });
+//   };
+
+//   const handleBuscar = async () => {
+//     setIsLoading(true);
+//     try {
+//       const response = await api.get('/custos');
+//       const dadosNormalizados = response.data.map(projeto => ({
+//         ...projeto,
+//         materiais: typeof projeto.materiais === 'string' ? JSON.parse(projeto.materiais) : projeto.materiais
+//       }));
+
+//       if (!dadosNormalizados.length) {
+//         Swal.fire({ title: 'Aviso', text: 'Nenhum projeto encontrado.', icon: 'info' });
+//         return;
+//       }
+
+//       Swal.fire({ 
+//         title: 'Pesquisar Projetos',
+//         customClass: { popup: 'modal-pesquisa' },
+//         html: `<input type="text" id="swal-search" class="swal2-input input-pesquisa" placeholder="Digite o nome..."><div id="swal-results" class="lista-resultados"></div>`,
+//         showConfirmButton: false,
+//         showCancelButton: true,
+//         cancelButtonText: 'Fechar',
+//         didOpen: () => {
+//           const input = document.getElementById('swal-search');
+//           const list = document.getElementById('swal-results');
+//           const render = (val) => {
+//             const filtered = dadosNormalizados.filter(p => (p.nome_projeto || "").toLowerCase().includes(val.toLowerCase()));
+//             list.innerHTML = filtered.map(p => `
+//               <div class="swal-res-item item-resultado" data-id="${p.id_projeto}">
+//                 <span class="item-titulo">${p.nome_projeto}</span>
+//               </div>`).join('');
+            
+//             document.querySelectorAll('.swal-res-item').forEach(el => el.onclick = async () => {
+//               const proj = dadosNormalizados.find(x => x.id_projeto == el.dataset.id);
+//               setIdProjetoSalvo(proj.id_projeto);
+//               setNomeProjeto(proj.nome_projeto);
+//               setMaoDeObra(Number(proj.mao_de_obra));
+//               setInstalacao(Number(proj.instalacao));
+//               setMateriais(proj.materiais.map(m => ({ ...m, id: m.id_item })));
+//               atualizarContexto({ nomeProjetoGlobal: proj.nome_projeto, custo: proj });
+//               Swal.close();
+//             });
+//           };
+//           render('');
+//           input.focus();
+//           input.oninput = (e) => render(e.target.value);        
+//         }
+//       });
+//     } catch (e) { console.error(e); } finally { setIsLoading(false); }
+//   };
+
+//   const handleBuscarPlanoDeCorte = async () => {
+//     setIsLoading(true); 
+//     try {
+//       const response = await api.get('/planos-corte');
+//       const planos = response.data;
+//       if (!planos.length) {
+//         Swal.fire({ title: 'Aviso', text: 'Nenhum plano encontrado.', icon: 'info' });
+//         return;
+//       }
+
+//       Swal.fire({
+//         title: 'Importar Plano de Corte',
+//         customClass: { popup: 'modal-pesquisa' },
+//         html: `<input type="text" id="swal-search-plano" class="swal2-input input-pesquisa" placeholder="Buscar projeto..."><div id="swal-results-plano" class="lista-resultados"></div>`,
+//         showConfirmButton: false,
+//         showCancelButton: true,
+//         didOpen: () => {
+//           const input = document.getElementById('swal-search-plano');
+//           const list = document.getElementById('swal-results-plano');
+//           const render = (val) => {
+//             const filtered = planos.filter(p => (p.nome_servico || "").toLowerCase().includes(val.toLowerCase()));
+//             list.innerHTML = filtered.map(p => `
+//               <div class="swal-res-item item-resultado" data-id="${p.id_plano}">
+//                 <span class="item-titulo">${p.nome_servico || `ID: ${p.id_plano}`}</span>
+//               </div>`).join('');
+            
+//             document.querySelectorAll('.swal-res-item').forEach(el => el.onclick = () => {
+//               const plano = planos.find(x => x.id_plano == el.dataset.id);
+//               const chapas = typeof plano.chapas === 'string' ? JSON.parse(plano.chapas) : (plano.chapas || []);
+//               setNomeProjeto(plano.nome_servico); 
+//               atualizarContexto({ nomeProjetoGlobal: plano.nome_servico });
+//               setMateriais([{ id: Date.now(), material: 'Chapa de MDF (Plano de Corte)', quantidade: chapas.length, unidade_medida: 'chapa', valor_unitario: 0 }]); 
+//               Swal.close();
+//             });
+//           };
+//           render('');
+//           input.focus();
+//           input.oninput = (e) => render(e.target.value);        
+//         }
+//       });
+//     } catch (error) { console.error(error); } finally { setIsLoading(false); }
+//   };
+
+//   const handleSalvar = async () => {
+//     if (!nomeProjeto.trim()) {
+//       Swal.fire({ icon: 'warning', title: 'O nome do projeto é obrigatório.' });
+//       return;
+//     }
+//     setIsLoading(true);
+//     try {
+//       const payload = montarPayload();
+//       const { data } = await api.post('/custos', payload);
+      
+//       // Define o ID recebido para permitir edição imediata sem precisar buscar
+//       setIdProjetoSalvo(data.id || data.id_projeto);
+
+//       // ATUALIZA O CONTEXTO GLOBAL: Importante para o Orçamento ler
+//       atualizarContexto({ 
+//         nomeProjetoGlobal: nomeProjeto, 
+//         custo: { ...payload, id_projeto: data.id || data.id_projeto } 
+//       });
+
+//       Swal.fire({ icon: 'success', title: 'Projeto salvo!', timer: 2000, showConfirmButton: false });
+      
+//       // REMOVIDO: limparFormulario(); para manter os dados no contexto ao mudar de página
+//     } catch (e) { 
+//       console.error(e); 
+//       Swal.fire({ icon: 'error', title: 'Erro ao salvar.' }); 
+//     } finally { setIsLoading(false); }
+//   };
+
+  
+//   const handleEditar = async () => {
+//     if (!idProjetoSalvo) return;
+//     setIsLoading(true);
+//     try {
+//       const payload = montarPayload();
+//       await api.put(`/custos/${idProjetoSalvo}`, payload);
+//       Swal.fire({ icon: 'success', title: 'Atualizado!', timer: 2000, showConfirmButton: false });
+//     } catch (e) { console.error(e); } finally { setIsLoading(false); }
+//   };
+
+//   const handleExcluir = async () => {
+//     if (!idProjetoSalvo) return;
+//     const result = await Swal.fire({ title: 'Excluir?', text: "Deseja remover este projeto?", icon: 'warning', showCancelButton: true });
+//     if (result.isConfirmed) {
+//       setIsLoading(true);
+//       try {
+//         await api.delete(`/custos/${idProjetoSalvo}`);
+//         limparFormulario();
+//         Swal.fire({ icon: 'success', title: 'Excluído!', timer: 2000, showConfirmButton: false });
+//       } catch (error) { console.error(error); } finally { setIsLoading(false); }
+//     }
+//   };
+  
+//   return (
+//     <PageTransition className="financeiro-container">
+//       <div className="header-actions">
+//         <BotaoVoltar />
+//         <button className="btn-novo-topo" onClick={limparFormulario}><FilePlus size={18} /><span>Novo</span></button>
+//       </div>
+//       <img src="/logo.svg" alt="Logo" className="logo-img" />
+//       <h1 className="nome-fantasia">GR Marcenaria</h1>
+//       <h1 className="titulo-pagina">Custo do Material</h1>
+//       <div className="form-group highlight">
+//         <h2 className="subtitulo">Nome do Projeto</h2>
+//         <div className='cotainer-nomeProjeto'>
+//           <input type="text" className='nomeProjeto' value={nomeProjeto} onChange={e => { setNomeProjeto(e.target.value); atualizarContexto({ nomeProjetoGlobal: e.target.value }); }} disabled={isLoading} />
+//           <button type="button" onClick={handleBuscarPlanoDeCorte} className="btn-icone-lupa"><Search size={18} /></button>
+//         </div>
+//       </div>
+//       <h2 className="subtitulo">Itens da Ficha Técnica</h2>
+//       <div className="tabela-materiais">
+//         <div className="tabela-header">
+//           <span className="col-mat">Material</span><span className="col-qtd">Qtd</span><span className="col-un">Un</span><span className="col-val">Valor Un.</span><span className="col-sub">Subtotal</span><span className="col-del"></span>
+//         </div>
+//         {materiais.map((item, index) => (
+//           <div key={item.id} className="tabela-row">
+//             <input className="col-mat" type="text" value={item.material} onChange={e => atualizarItem(item.id, 'material', e.target.value)} />
+//             <input className="col-qtd" type="number" value={item.quantidade} onChange={e => atualizarItem(item.id, 'quantidade', e.target.value)} />
+//             <input className="col-un" type="text" value={item.unidade_medida} onChange={e => atualizarItem(item.id, 'unidade_medida', e.target.value)} />
+//             <input className="col-val" type="text" value={formatInputBR(item.valor_unitario)} onChange={e => atualizarItem(item.id, 'valor_unitario', Number(e.target.value.replace(/\D/g, '')) / 100)} onKeyDown={(e) => handleKeyDownTab(e, index)} />
+//             <span className="col-sub">{formatMoney((Number(item.quantidade) || 0) * item.valor_unitario)}</span>
+//             <button className="btn-del-row" onClick={() => removerLinha(item.id)}><Trash2 size={16} /></button>
+//           </div>
+//         ))}
+//       </div>
+//       <button className="btn-add-row" onClick={adicionarLinha}><CirclePlus size={16} /> Adicionar Material</button>
+//       <div className="form-row" style={{ marginTop: '20px' }}>
+//         <div className="form-group flex-1"><label className="titulo-input">Mão de Obra</label><input type="text" value={formatInputBR(maoDeObra)} onChange={e => setMaoDeObra(Number(e.target.value.replace(/\D/g, '')) / 100)} /></div>
+//         <div className="form-group flex-1"><label className="titulo-input">Instalação</label><input type="text" value={formatInputBR(instalacao)} onChange={e => setInstalacao(Number(e.target.value.replace(/\D/g, '')) / 100)} /></div>
+//       </div>
+//       <div className="total-box"><span>Custo Total:</span><strong>{formatMoney(custoTotal)}</strong></div>
+//       <div className='btn-container-custo'>
+//         <div className='btn-wrapper-custo'>
+//           <div className='btn-wrapper-flex-custo'>
+//             <button className="btn-salvar-custo" onClick={handleSalvar} disabled={isLoading || idProjetoSalvo !== null}><Save size={18} /><span>Salvar</span></button>
+//             <button className="btn-editar-custo" onClick={handleEditar} disabled={isLoading || idProjetoSalvo === null}><FileEditIcon size={18} /><span>Editar</span></button>
+//           </div>
+//           <div className='btn-wrapper-flex-custo'>
+//             <button className="btn-buscar-custo" onClick={handleBuscar}><Search size={18} /><span>Buscar</span></button>
+//             <button className="btn-excluir-custo" onClick={handleExcluir}><CircleMinus size={18} /><span>Excluir</span></button>
+//           </div>
+//         </div>
+//       </div>
+//     </PageTransition>
+//   );
+// }
+
+// import React, { useState, useMemo, useEffect } from 'react';
+// import PageTransition from "../components/Animation/PageTransition";
+// import BotaoVoltar from '../components/BotaoVoltar/BotaoVoltar';
+// import { FileEditIcon, Save, Trash2, Search, FilePlus, CirclePlus, CircleMinus } from 'lucide-react';
+// import Swal from 'sweetalert2';
+// import '../styles/CustoDoMaterial.css';
+// import api from '../../services/api';
+// import { useProjeto } from "../hooks/useProjeto"; 
+
+// export default function CustoDoMaterial() {
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [idProjetoSalvo, setIdProjetoSalvo] = useState(null);
+
+//   const { contextoGlobal, atualizarContexto } = useProjeto();
+
+//   const [nomeProjeto, setNomeProjeto] = useState('');
+//   const [maoDeObra, setMaoDeObra] = useState(0);
+//   const [instalacao, setInstalacao] = useState(0);
+
+//   const [materiais, setMateriais] = useState([
+//     { id: Date.now(), material: '', quantidade: '', unidade_medida: '', valor_unitario: 0 }
+//   ]);
+
+//   useEffect(() => {
+//     if (contextoGlobal?.custo) {
+//       const proj = contextoGlobal.custo;
+//       setIdProjetoSalvo(proj.id_projeto);
+//       setNomeProjeto(proj.nome_projeto);
+//       setMaoDeObra(Number(proj.mao_de_obra));
+//       setInstalacao(Number(proj.instalacao));
+
+//       const materiaisParsed = typeof proj.materiais === 'string' ? JSON.parse(proj.materiais) : (proj.materiais || []);
+//       const materiaisCarregados = materiaisParsed.length > 0 
+//         ? materiaisParsed.map(m => ({ ...m, id: m.id_item || Date.now() + Math.random() }))
+//         : [{ id: Date.now(), material: '', quantidade: '', unidade_medida: '', valor_unitario: 0 }];
+
+//       setMateriais(materiaisCarregados);
+//     } 
+//   }, [contextoGlobal?.custo]);
+
+//   useEffect(() => {
+//     const sincronizarEBuscarPlano = async () => {
+//       if (contextoGlobal.nomeProjetoGlobal && contextoGlobal.nomeProjetoGlobal !== nomeProjeto) {
+//         const novoNome = contextoGlobal.nomeProjetoGlobal;
+//         setNomeProjeto(novoNome);
+
+//         try {
+//           const response = await api.get('/planos-corte');
+//           const planoEncontrado = response.data.find(p => p.nome_servico === novoNome);
+          
+//           if (planoEncontrado) {
+//             const chapas = typeof planoEncontrado.chapas === 'string' ? JSON.parse(planoEncontrado.chapas) : (planoEncontrado.chapas || []);
+//             atualizarContexto({
+//     orcamento: {
+//       id_orcamento: planoEncontrado.id_orcamento,
+//       nome_projeto: novoNome
+//     }
+//   });
+//             setMateriais([
+//               {
+//                 id: Date.now(),
+//                 material: 'Chapa de MDF (Plano de Corte)',
+//                 quantidade: chapas.length,
+//                 unidade_medida: 'chapa',
+//                 valor_unitario: 0
+//               }
+//             ]);
+//           }
+//         } catch (err) {
+//           console.error("Erro ao carregar orçamento", err);
+//         }
+//       }
+//     };
+
+//     sincronizarEBuscarPlano();
+//   }, [contextoGlobal.nomeProjetoGlobal, nomeProjeto]);
+  
+//   const subtotalMateriais = useMemo(() => {
+//     return materiais.reduce((acc, item) => acc + ((Number(item.quantidade) || 0) * (item.valor_unitario || 0)), 0);
+//   }, [materiais]);
+
+//   const custoTotal = useMemo(() => subtotalMateriais + maoDeObra + instalacao, [subtotalMateriais, maoDeObra, instalacao]);
+
+//   const formatMoney = (valor) => valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+//   const formatInputBR = (valor) => (Number(valor) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+//   const adicionarLinha = () => {
+//     setMateriais([...materiais, { id: Date.now(), material: '', quantidade: '', unidade_medida: '', valor_unitario: 0 }]);
+//   };
+
+//   const removerLinha = (id) => {
+//     if (materiais.length === 1) return;
+//     setMateriais(materiais.filter(m => m.id !== id));
+//   };
+
+//   const atualizarItem = (id, campo, valor) => {
+//     setMateriais(materiais.map(m => m.id === id ? { ...m, [campo]: valor } : m));
+//   };
+
+//   const handleKeyDownTab = (e, index) => {
+//     if (e.key === 'Tab' && !e.shiftKey && index === materiais.length - 1) {
+//       adicionarLinha();
+//     }
+//   };
+
+//   const montarPayload = () => ({
+//     id_orcamento: contextoGlobal?.orcamento?.id_orcamento || contextoGlobal?.orcamento?.id || null,
+//     nome_projeto: nomeProjeto,
+//     mao_de_obra: maoDeObra,
+//     instalacao: instalacao,
+//     materiais: materiais.map(m => ({
+//       material: m.material,
+//       quantidade: Number(m.quantidade) || 0,
+//       unidade_medida: m.unidade_medida,
+//       valor_unitario: Number(m.valor_unitario) || 0 
+//     }))
+//   });
+
+//   const limparFormulario = () => {
+//     setIdProjetoSalvo(null);
+//     setNomeProjeto('');
+//     setMaoDeObra(0);
+//     setInstalacao(0);
+//     setMateriais([{ id: Date.now(), material: '', quantidade: '', unidade_medida: '', valor_unitario: 0 }]);
+//     atualizarContexto({ nomeProjetoGlobal: '', custo: null });
+//   };
+
+//   const handleBuscar = async () => {
+//     setIsLoading(true);
+//     try {
+//       const response = await api.get('/custos');
+//       const dadosNormalizados = response.data.map(projeto => ({
+//         ...projeto,
+//         materiais: typeof projeto.materiais === 'string' ? JSON.parse(projeto.materiais) : projeto.materiais
+//       }));
+
+//       if (!dadosNormalizados.length) {
+//         Swal.fire({ title: 'Aviso', text: 'Nenhum projeto encontrado.', icon: 'info' });
+//         return;
+//       }
+
+//       Swal.fire({ 
+//         title: 'Pesquisar Projetos',
+//         customClass: { popup: 'modal-pesquisa' },
+//         html: `<input type="text" id="swal-search" class="swal2-input input-pesquisa" placeholder="Digite o nome..."><div id="swal-results" class="lista-resultados"></div>`,
+//         showConfirmButton: false,
+//         showCancelButton: true,
+//         cancelButtonText: 'Fechar',
+//         didOpen: () => {
+//           const input = document.getElementById('swal-search');
+//           const list = document.getElementById('swal-results');
+//           const render = (val) => {
+//             const filtered = dadosNormalizados.filter(p => (p.nome_projeto || "").toLowerCase().includes(val.toLowerCase()));
+//             list.innerHTML = filtered.map(p => `
+//               <div class="swal-res-item item-resultado" data-id="${p.id_projeto}">
+//                 <span class="item-titulo">${p.nome_projeto}</span>
+//               </div>`).join('');
+            
+//             document.querySelectorAll('.swal-res-item').forEach(el => el.onclick = async () => {
+//               const proj = dadosNormalizados.find(x => x.id_projeto == el.dataset.id);
+//               setIdProjetoSalvo(proj.id_projeto);
+//               setNomeProjeto(proj.nome_projeto);
+//               setMaoDeObra(Number(proj.mao_de_obra));
+//               setInstalacao(Number(proj.instalacao));
+//               setMateriais(proj.materiais.map(m => ({ ...m, id: m.id_item })));
+//               atualizarContexto({ nomeProjetoGlobal: proj.nome_projeto, custo: proj });
+//               Swal.close();
+//             });
+//           };
+//           render('');
+//           input.focus();
+//           input.oninput = (e) => render(e.target.value);        
+//         }
+//       });
+//     } catch (err) { console.error("Erro ao carregar orçamento", err); } finally { setIsLoading(false); }
+//   };
+
+//   const handleBuscarPlanoDeCorte = async () => {
+//     setIsLoading(true); 
+//     try {
+//       const response = await api.get('/planos-corte');
+//       const planos = response.data;
+//       if (!planos.length) {
+//         Swal.fire({ title: 'Aviso', text: 'Nenhum plano encontrado.', icon: 'info' });
+//         return;
+//       }
+
+//       Swal.fire({
+//         title: 'Importar Plano de Corte',
+//         customClass: { popup: 'modal-pesquisa' },
+//         html: `<input type="text" id="swal-search-plano" class="swal2-input input-pesquisa" placeholder="Buscar projeto..."><div id="swal-results-plano" class="lista-resultados"></div>`,
+//         showConfirmButton: false,
+//         showCancelButton: true,
+//         didOpen: () => {
+//           const input = document.getElementById('swal-search-plano');
+//           const list = document.getElementById('swal-results-plano');
+//           const render = (val) => {
+//             const filtered = planos.filter(p => (p.nome_servico || "").toLowerCase().includes(val.toLowerCase()));
+//             list.innerHTML = filtered.map(p => `
+//               <div class="swal-res-item item-resultado" data-id="${p.id_plano}">
+//                 <span class="item-titulo">${p.nome_servico || `ID: ${p.id_plano}`}</span>
+//               </div>`).join('');
+            
+//             document.querySelectorAll('.swal-res-item').forEach(el => el.onclick = () => {
+//               const plano = planos.find(x => x.id_plano == el.dataset.id);
+//               const chapas = typeof plano.chapas === 'string' ? JSON.parse(plano.chapas) : (plano.chapas || []);
+//               setNomeProjeto(plano.nome_servico); 
+//              atualizarContexto({ 
+//     nomeProjetoGlobal: plano.nome_servico,
+//     orcamento: { 
+//       id_orcamento: plano.id_orcamento, 
+//       nome_projeto: plano.nome_servico 
+//     }
+//   });
+//               setMateriais([{ id: Date.now(), material: 'Chapa de MDF (Plano de Corte)', quantidade: chapas.length, unidade_medida: 'chapa', valor_unitario: 0 }]); 
+//               Swal.close();
+//             });
+//           };
+//           render('');
+//           input.focus();
+//           input.oninput = (e) => render(e.target.value);        
+//         }
+//       });
+//     } catch (err) { console.error("Erro ao carregar orçamento", err); } finally { setIsLoading(false); }
+//   };
+
+//   const handleSalvar = async () => {
+//     if (!nomeProjeto.trim()) {
+//       Swal.fire({ icon: 'warning', title: 'O nome do projeto é obrigatório.' });
+//       return;
+//     }
+//     setIsLoading(true);
+//     try {
+//       const payload = montarPayload();
+//       const { data } = await api.post('/custos', payload);
+      
+//       setIdProjetoSalvo(data.id || data.id_projeto);
+
+//       atualizarContexto({ 
+//         nomeProjetoGlobal: nomeProjeto,
+//         orcamento: {
+//           id_orcamento: data.id_orcamento || payload.id_orcamento,
+//           nome_projeto: nomeProjeto
+//         },
+//         custo: { ...payload, id_projeto: data.id || data.id_projeto } 
+//       });
+
+//       Swal.fire({ icon: 'success', title: 'Projeto salvo!', timer: 2000, showConfirmButton: false });
+      
+//     } catch (err) { 
+//       console.error("Erro ao carregar orçamento", err); 
+//       Swal.fire({ icon: 'error', title: 'Erro ao salvar.' }); 
+//     } finally { setIsLoading(false); }
+//   };
+
+  
+//   const handleEditar = async () => {
+//     if (!idProjetoSalvo) return;
+//     setIsLoading(true);
+//     try {
+//       const payload = montarPayload();
+//       await api.put(`/custos/${idProjetoSalvo}`, payload);
+//       Swal.fire({ icon: 'success', title: 'Atualizado!', timer: 2000, showConfirmButton: false });
+//     } catch (err) { console.error("Erro ao carregar orçamento", err); } finally { setIsLoading(false); }
+//   };
+
+//   const handleExcluir = async () => {
+//     if (!idProjetoSalvo) return;
+//     const result = await Swal.fire({ title: 'Excluir?', text: "Deseja remover este projeto?", icon: 'warning', showCancelButton: true });
+//     if (result.isConfirmed) {
+//       setIsLoading(true);
+//       try {
+//         await api.delete(`/custos/${idProjetoSalvo}`);
+//         limparFormulario();
+//         Swal.fire({ icon: 'success', title: 'Excluído!', timer: 2000, showConfirmButton: false });
+//       } catch (err) { console.error("Erro ao carregar orçamento", err); } finally { setIsLoading(false); }
+//     }
+//   };
+  
+//   return (
+//     <PageTransition className="financeiro-container">
+//       <div className="header-actions">
+//         <BotaoVoltar />
+//         <button className="btn-novo-topo" onClick={limparFormulario}><FilePlus size={18} /><span>Novo</span></button>
+//       </div>
+//       <img src="/logo.svg" alt="Logo" className="logo-img" />
+//       <h1 className="nome-fantasia">GR Marcenaria</h1>
+//       <h1 className="titulo-pagina">Custo do Material</h1>
+//       <div className="form-group highlight">
+//         <h2 className="subtitulo">Nome do Projeto</h2>
+//         <div className='cotainer-nomeProjeto'>
+//           <input type="text" className='nomeProjeto' value={nomeProjeto} onChange={e => { setNomeProjeto(e.target.value); atualizarContexto({ nomeProjetoGlobal: e.target.value }); }} disabled={isLoading} />
+//           <button type="button" onClick={handleBuscarPlanoDeCorte} className="btn-icone-lupa"><Search size={18} /></button>
+//         </div>
+//       </div>
+//       <h2 className="subtitulo">Itens da Ficha Técnica</h2>
+//       <div className="tabela-materiais">
+//         <div className="tabela-header">
+//           <span className="col-mat">Material</span><span className="col-qtd">Qtd</span><span className="col-un">Un</span><span className="col-val">Valor Un.</span><span className="col-sub">Subtotal</span><span className="col-del"></span>
+//         </div>
+//         {materiais.map((item, index) => (
+//           <div key={item.id} className="tabela-row">
+//             <input className="col-mat" type="text" value={item.material} onChange={e => atualizarItem(item.id, 'material', e.target.value)} />
+//             <input className="col-qtd" type="number" value={item.quantidade} onChange={e => atualizarItem(item.id, 'quantidade', e.target.value)} />
+//             <input className="col-un" type="text" value={item.unidade_medida} onChange={e => atualizarItem(item.id, 'unidade_medida', e.target.value)} />
+//             <input className="col-val" type="text" value={formatInputBR(item.valor_unitario)} onChange={e => atualizarItem(item.id, 'valor_unitario', Number(e.target.value.replace(/\D/g, '')) / 100)} onKeyDown={(e) => handleKeyDownTab(e, index)} />
+//             <span className="col-sub">{formatMoney((Number(item.quantidade) || 0) * item.valor_unitario)}</span>
+//             <button className="btn-del-row" onClick={() => removerLinha(item.id)}><Trash2 size={16} /></button>
+//           </div>
+//         ))}
+//       </div>
+//       <button className="btn-add-row" onClick={adicionarLinha}><CirclePlus size={16} /> Adicionar Material</button>
+//       <div className="form-row" style={{ marginTop: '20px' }}>
+//         <div className="form-group flex-1"><label className="titulo-input">Mão de Obra</label><input type="text" value={formatInputBR(maoDeObra)} onChange={e => setMaoDeObra(Number(e.target.value.replace(/\D/g, '')) / 100)} /></div>
+//         <div className="form-group flex-1"><label className="titulo-input">Instalação</label><input type="text" value={formatInputBR(instalacao)} onChange={e => setInstalacao(Number(e.target.value.replace(/\D/g, '')) / 100)} /></div>
+//       </div>
+//       <div className="total-box"><span>Custo Total:</span><strong>{formatMoney(custoTotal)}</strong></div>
+//       <div className='btn-container-custo'>
+//         <div className='btn-wrapper-custo'>
+//           <div className='btn-wrapper-flex-custo'>
+//             <button className="btn-salvar-custo" onClick={handleSalvar} disabled={isLoading || idProjetoSalvo !== null}><Save size={18} /><span>Salvar</span></button>
+//             <button className="btn-editar-custo" onClick={handleEditar} disabled={isLoading || idProjetoSalvo === null}><FileEditIcon size={18} /><span>Editar</span></button>
+//           </div>
+//           <div className='btn-wrapper-flex-custo'>
+//             <button className="btn-buscar-custo" onClick={handleBuscar}><Search size={18} /><span>Buscar</span></button>
+//             <button className="btn-excluir-custo" onClick={handleExcluir}><CircleMinus size={18} /><span>Excluir</span></button>
+//           </div>
+//         </div>
+//       </div>
+//     </PageTransition>
+//   );
+// }
+
+
+import React, { useState, useMemo, useEffect } from 'react';
 import PageTransition from "../components/Animation/PageTransition";
 import BotaoVoltar from '../components/BotaoVoltar/BotaoVoltar';
 import { FileEditIcon, Save, Trash2, Search, FilePlus, CirclePlus, CircleMinus } from 'lucide-react';
 import Swal from 'sweetalert2';
-import DOMPurify from 'dompurify';
-import { z } from 'zod';
 import '../styles/CustoDoMaterial.css';
 import api from '../../services/api';
-
-// Schema de Validação
-const materialItemSchema = z.object({
-  material: z.string().trim().min(1, "O material não pode estar vazio."),
-  quantidade: z.coerce.number().positive("Quantidade inválida."),
-  unidade_medida: z.string().trim().min(1, "Unidade inválida."),
-  valor_unitario: z.coerce.number().min(0, "Valor inválido.")
-});
-
-const projetoSchema = z.object({
-  nome_projeto: z.string().trim().min(1, "O nome do projeto é obrigatório."),
-  mao_de_obra: z.coerce.number().min(0).optional(),
-  instalacao: z.coerce.number().min(0).optional(),
-  materiais: z.array(materialItemSchema).min(1, "Adicione pelo menos um material.")
-});
+import { useProjeto } from "../hooks/useProjeto"; 
 
 export default function CustoDoMaterial() {
   const [isLoading, setIsLoading] = useState(false);
   const [idProjetoSalvo, setIdProjetoSalvo] = useState(null);
 
-  // Estados do Mestre
+  const { contextoGlobal, atualizarContexto } = useProjeto();
+
   const [nomeProjeto, setNomeProjeto] = useState('');
   const [maoDeObra, setMaoDeObra] = useState(0);
   const [instalacao, setInstalacao] = useState(0);
 
-  // Estado dos Detalhes (Tabela Dinâmica)
   const [materiais, setMateriais] = useState([
     { id: Date.now(), material: '', quantidade: '', unidade_medida: '', valor_unitario: 0 }
   ]);
 
-  // Cálculos dinâmicos
+  useEffect(() => {
+    if (contextoGlobal?.custo) {
+      const proj = contextoGlobal.custo;
+      setIdProjetoSalvo(proj.id_projeto);
+      setNomeProjeto(proj.nome_projeto);
+      setMaoDeObra(Number(proj.mao_de_obra));
+      setInstalacao(Number(proj.instalacao));
+
+      const materiaisParsed = typeof proj.materiais === 'string' ? JSON.parse(proj.materiais) : (proj.materiais || []);
+      const materiaisCarregados = materiaisParsed.length > 0 
+        ? materiaisParsed.map(m => ({ ...m, id: m.id_item || Date.now() + Math.random() }))
+        : [{ id: Date.now(), material: '', quantidade: '', unidade_medida: '', valor_unitario: 0 }];
+
+      setMateriais(materiaisCarregados);
+    } 
+  }, [contextoGlobal?.custo]);
+
+
+useEffect(() => {
+    const sincronizarEBuscarPlano = async () => {
+      if (contextoGlobal.nomeProjetoGlobal && contextoGlobal.nomeProjetoGlobal !== nomeProjeto) {
+        const novoNome = contextoGlobal.nomeProjetoGlobal;
+        setNomeProjeto(novoNome);
+
+        try {
+          const response = await api.get('/planos-corte');
+          const planoEncontrado = response.data.find(p => p.nome_servico === novoNome);
+          
+          if (planoEncontrado) {
+            // 1. Converte as chapas que vieram do banco
+            const chapas = typeof planoEncontrado.chapas === 'string' 
+              ? JSON.parse(planoEncontrado.chapas) 
+              : (planoEncontrado.chapas || []);
+            
+            atualizarContexto({
+              orcamento: {
+                id_orcamento: planoEncontrado.id_orcamento,
+                nome_projeto: novoNome
+              },
+              // Importante: Guardar o plano no contexto para o useEffect não rodar em loop
+              planoCorte: planoEncontrado 
+            });
+
+            // 2. Lógica de Agrupamento por Nome do Material
+            const grupos = {};
+            chapas.forEach((c) => {
+              // Se c.material existir, usa ele. Se não, usa o nome genérico.
+              const nomeMaterial = c.material && c.material.trim() !== "" 
+                ? c.material 
+                : 'Chapa de MDF (Sem descrição)';
+                
+              grupos[nomeMaterial] = (grupos[nomeMaterial] || 0) + 1;
+            });
+
+            // 3. Transforma o agrupamento no formato da tabela de materiais
+            const materiaisAgrupados = Object.entries(grupos).map(([nome, qtd], idx) => ({
+              id: Date.now() + idx,
+              material: nome,
+              quantidade: qtd,
+              unidade_medida: 'chapa',
+              valor_unitario: 0
+            }));
+
+            setMateriais(materiaisAgrupados.length > 0 
+              ? materiaisAgrupados 
+              : [{ id: Date.now(), material: '', quantidade: '', unidade_medida: '', valor_unitario: 0 }]
+            );
+          }
+        } catch (err) {
+          console.error("Erro ao carregar orçamento", err);
+        }
+      }
+    };
+
+    sincronizarEBuscarPlano();
+  }, [contextoGlobal.nomeProjetoGlobal, nomeProjeto]);
+
+
+  // useEffect(() => {
+  //   const sincronizarEBuscarPlano = async () => {
+  //     if (contextoGlobal.nomeProjetoGlobal && contextoGlobal.nomeProjetoGlobal !== nomeProjeto) {
+  //       const novoNome = contextoGlobal.nomeProjetoGlobal;
+  //       setNomeProjeto(novoNome);
+
+  //       try {
+  //         const response = await api.get('/planos-corte');
+  //         const planoEncontrado = response.data.find(p => p.nome_servico === novoNome);
+          
+  //         if (planoEncontrado) {
+  //           const chapas = typeof planoEncontrado.chapas === 'string' ? JSON.parse(planoEncontrado.chapas) : (planoEncontrado.chapas || []);
+            
+  //           atualizarContexto({
+  //             orcamento: {
+  //               id_orcamento: planoEncontrado.id_orcamento,
+  //               nome_projeto: novoNome
+  //             }
+  //           });
+
+  //           // Agrupa chapas pelo nome/material
+  //           const grupos = {};
+  //           chapas.forEach((c) => {
+  //             const nome = c.material?.trim() ? c.material : 'Chapa de MDF (Sem descrição)';
+  //             grupos[nome] = (grupos[nome] || 0) + 1;
+  //           });
+
+  //           const materiaisAgrupados = Object.entries(grupos).map(([mat, qtd], idx) => ({
+  //             id: Date.now() + idx,
+  //             material: mat,
+  //             quantidade: qtd,
+  //             unidade_medida: 'chapa',
+  //             valor_unitario: 0
+  //           }));
+
+  //           setMateriais(materiaisAgrupados.length > 0 ? materiaisAgrupados : [{ id: Date.now(), material: '', quantidade: '', unidade_medida: '', valor_unitario: 0 }]);
+
+
+  //         }
+  //       } catch (err) {
+  //         console.error("Erro ao carregar orçamento", err);
+  //       }
+  //     }
+  //   };
+
+  //   sincronizarEBuscarPlano();
+  // }, [contextoGlobal.nomeProjetoGlobal, nomeProjeto]);
+  
   const subtotalMateriais = useMemo(() => {
     return materiais.reduce((acc, item) => acc + ((Number(item.quantidade) || 0) * (item.valor_unitario || 0)), 0);
   }, [materiais]);
@@ -47,7 +814,6 @@ export default function CustoDoMaterial() {
   const formatMoney = (valor) => valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   const formatInputBR = (valor) => (Number(valor) || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-  // Funções da Tabela
   const adicionarLinha = () => {
     setMateriais([...materiais, { id: Date.now(), material: '', quantidade: '', unidade_medida: '', valor_unitario: 0 }]);
   };
@@ -61,7 +827,6 @@ export default function CustoDoMaterial() {
     setMateriais(materiais.map(m => m.id === id ? { ...m, [campo]: valor } : m));
   };
 
-  // Atalho TAB na última linha
   const handleKeyDownTab = (e, index) => {
     if (e.key === 'Tab' && !e.shiftKey && index === materiais.length - 1) {
       adicionarLinha();
@@ -69,14 +834,15 @@ export default function CustoDoMaterial() {
   };
 
   const montarPayload = () => ({
-    nome_projeto: DOMPurify.sanitize(nomeProjeto),
+    id_orcamento: contextoGlobal?.orcamento?.id_orcamento || contextoGlobal?.orcamento?.id || null,
+    nome_projeto: nomeProjeto,
     mao_de_obra: maoDeObra,
     instalacao: instalacao,
     materiais: materiais.map(m => ({
-      material: DOMPurify.sanitize(m.material),
-      quantidade: Number(m.quantidade) || 0, // Força a conversão para número
-      unidade_medida: DOMPurify.sanitize(m.unidade_medida),
-      valor_unitario: Number(m.valor_unitario) || 0 // Força a conversão para número
+      material: m.material,
+      quantidade: Number(m.quantidade) || 0,
+      unidade_medida: m.unidade_medida,
+      valor_unitario: Number(m.valor_unitario) || 0 
     }))
   });
 
@@ -86,233 +852,174 @@ export default function CustoDoMaterial() {
     setMaoDeObra(0);
     setInstalacao(0);
     setMateriais([{ id: Date.now(), material: '', quantidade: '', unidade_medida: '', valor_unitario: 0 }]);
+    atualizarContexto({ nomeProjetoGlobal: '', custo: null });
   };
 
   const handleBuscar = async () => {
     setIsLoading(true);
     try {
       const response = await api.get('/custos');
-      
       const dadosNormalizados = response.data.map(projeto => ({
         ...projeto,
         materiais: typeof projeto.materiais === 'string' ? JSON.parse(projeto.materiais) : projeto.materiais
       }));
 
       if (!dadosNormalizados.length) {
-        Swal.fire({ title: 'Aviso', text: 'Nenhum projeto encontrado.', icon: 'info', customClass: { popup: 'modal-pesquisa' }});
+        Swal.fire({ title: 'Aviso', text: 'Nenhum projeto encontrado.', icon: 'info' });
         return;
       }
 
       Swal.fire({ 
         title: 'Pesquisar Projetos',
         customClass: { popup: 'modal-pesquisa' },
-        html: `
-          <input type="text" id="swal-search" class="swal2-input input-pesquisa" placeholder="Digite o nome do projeto...">
-          <div id="swal-results" class="lista-resultados"></div>
-        `,
+        html: `<input type="text" id="swal-search" class="swal2-input input-pesquisa" placeholder="Digite o nome..."><div id="swal-results" class="lista-resultados"></div>`,
         showConfirmButton: false,
         showCancelButton: true,
         cancelButtonText: 'Fechar',
         didOpen: () => {
           const input = document.getElementById('swal-search');
           const list = document.getElementById('swal-results');
-          
           const render = (val) => {
-            const filtered = dadosNormalizados.filter(p => p.nome_projeto.toLowerCase().includes(val.toLowerCase()));
-            
-            if (filtered.length === 0) {
-              list.innerHTML = '<div class="item-vazio">Nenhum projeto encontrado.</div>';
-              return;
-            }
-
+            const filtered = dadosNormalizados.filter(p => (p.nome_projeto || "").toLowerCase().includes(val.toLowerCase()));
             list.innerHTML = filtered.map(p => `
               <div class="swal-res-item item-resultado" data-id="${p.id_projeto}">
                 <span class="item-titulo">${p.nome_projeto}</span>
-                <span class="item-badge">${p.materiais.length} ${p.materiais.length === 1 ? 'item' : 'itens'}</span>
               </div>`).join('');
             
-            document.querySelectorAll('.swal-res-item').forEach(el => el.onclick = () => {
+            document.querySelectorAll('.swal-res-item').forEach(el => el.onclick = async () => {
               const proj = dadosNormalizados.find(x => x.id_projeto == el.dataset.id);
               setIdProjetoSalvo(proj.id_projeto);
               setNomeProjeto(proj.nome_projeto);
               setMaoDeObra(Number(proj.mao_de_obra));
               setInstalacao(Number(proj.instalacao));
               setMateriais(proj.materiais.map(m => ({ ...m, id: m.id_item })));
+              atualizarContexto({ nomeProjetoGlobal: proj.nome_projeto, custo: proj });
               Swal.close();
             });
           };
-          
           render('');
-          input.focus(); // Foca automaticamente no campo ao abrir
+          input.focus();
           input.oninput = (e) => render(e.target.value);        
         }
       });
-    } catch (e) { 
-      console.error('Falha ao buscar dados', e); 
-      Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Falha ao buscar dados.', showConfirmButton: false, timer: 3000, customClass: { popup: 'mensagem-erro' } }); 
-    } finally { 
-      setIsLoading(false); 
-    }
+    } catch (err) { console.error("Erro ao carregar orçamento", err); } finally { setIsLoading(false); }
   };
 
   const handleBuscarPlanoDeCorte = async () => {
-    setIsLoading(true); // Certifique-se de ter esse state ou remova esta linha
+    setIsLoading(true); 
     try {
       const response = await api.get('/planos-corte');
-      
-      const planosNormalizados = response.data.map(plano => ({
-        ...plano,
-        chapas: typeof plano.chapas === 'string' ? JSON.parse(plano.chapas) : plano.chapas
-      }));
-
-      if (!planosNormalizados.length) {
-        Swal.fire({ title: 'Aviso', text: 'Nenhum plano de corte encontrado.', icon: 'info', customClass: { popup: 'modal-pesquisa' }});
+      const planos = response.data;
+      if (!planos.length) {
+        Swal.fire({ title: 'Aviso', text: 'Nenhum plano encontrado.', icon: 'info' });
         return;
       }
 
       Swal.fire({
         title: 'Importar Plano de Corte',
         customClass: { popup: 'modal-pesquisa' },
-        html: `
-          <input type="text" id="swal-search-plano" class="swal2-input input-pesquisa" placeholder="Buscar projeto...">
-          <div id="swal-results-plano" class="lista-resultados"></div>
-        `,
+        html: `<input type="text" id="swal-search-plano" class="swal2-input input-pesquisa" placeholder="Buscar projeto..."><div id="swal-results-plano" class="lista-resultados"></div>`,
         showConfirmButton: false,
         showCancelButton: true,
-        cancelButtonText: 'Fechar',
         didOpen: () => {
           const input = document.getElementById('swal-search-plano');
           const list = document.getElementById('swal-results-plano');
-          
           const render = (val) => {
-            const filtered = planosNormalizados.filter(p => p.nome_servico.toLowerCase().includes(val.toLowerCase()));
-            
-            if (filtered.length === 0) {
-              list.innerHTML = '<div class="item-vazio">Nenhum plano encontrado.</div>';
-              return;
-            }
-
+            const filtered = planos.filter(p => (p.nome_servico || "").toLowerCase().includes(val.toLowerCase()));
             list.innerHTML = filtered.map(p => `
               <div class="swal-res-item item-resultado" data-id="${p.id_plano}">
-                <span class="item-titulo">${p.nome_servico}</span>
-                <span class="item-badge">${p.chapas.length} ${p.chapas.length === 1 ? 'chapa' : 'chapas'}</span>
+                <span class="item-titulo">${p.nome_servico || `ID: ${p.id_plano}`}</span>
               </div>`).join('');
             
             document.querySelectorAll('.swal-res-item').forEach(el => el.onclick = () => {
-              const plano = planosNormalizados.find(x => x.id_plano == el.dataset.id);
+              const plano = planos.find(x => x.id_plano == el.dataset.id);
+              const chapas = typeof plano.chapas === 'string' ? JSON.parse(plano.chapas) : (plano.chapas || []);
+              setNomeProjeto(plano.nome_servico); 
               
-              // 1. Atualiza o Nome do Projeto
-              setNomeProjeto(plano.nome_servico); // Ajuste para o nome exato do seu state
-              
-              // 2. Atualiza a quantidade de chapas na sua lista de materiais
-              setMateriais(prevMateriais => {
-                const novoMaterial = {
-                  id: Date.now(),
-                  material: 'Chapa de MDF',
-                  quantidade: plano.chapas.length,
-                  unidade_medida: 'un',
-                  valor_unitario: 0 // Deixa zerado para o usuário preencher o preço
-                };
-
-                // Se a lista tiver apenas 1 item e ele estiver vazio, substitui ele
-                if (prevMateriais.length === 1 && prevMateriais[0].material === '') {
-                  return [{ ...novoMaterial, id: prevMateriais[0].id }];
+              atualizarContexto({ 
+                nomeProjetoGlobal: plano.nome_servico,
+                orcamento: { 
+                  id_orcamento: plano.id_orcamento, 
+                  nome_projeto: plano.nome_servico 
                 }
-                
-                // Senão, adiciona o material na próxima linha vazia
-                return [...prevMateriais, novoMaterial];
-              }); 
-              
+              });
+
+              // Agrupa chapas pelo nome/material
+              const grupos = {};
+              chapas.forEach((c) => {
+                const nome = c.material?.trim() ? c.material : 'Chapa de MDF (Sem descrição)';
+                grupos[nome] = (grupos[nome] || 0) + 1;
+              });
+
+              const materiaisAgrupados = Object.entries(grupos).map(([mat, qtd], idx) => ({
+                id: Date.now() + idx,
+                quantidade: qtd,
+                material: mat,
+                unidade_medida: 'chapa',
+                valor_unitario: 0
+              }));
+
+              setMateriais(materiaisAgrupados.length > 0 ? materiaisAgrupados : [{ id: Date.now(), material: '', quantidade: '', unidade_medida: '', valor_unitario: 0 }]); 
               Swal.close();
             });
           };
-          
           render('');
-          input.focus();
           input.oninput = (e) => render(e.target.value);        
+          input.focus();
         }
       });
-    } catch (error) {
-      console.error('Erro ao importar plano:', error);
-      Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Falha ao buscar planos.', showConfirmButton: false, timer: 3000, customClass: { popup: 'mensagem-erro' } });
-    } finally {
-      setIsLoading(false);
-    }
+    } catch (err) { console.error("Erro ao carregar orçamento", err); } finally { setIsLoading(false); }
   };
-
 
   const handleSalvar = async () => {
+    if (!nomeProjeto.trim()) {
+      Swal.fire({ icon: 'warning', title: 'O nome do projeto é obrigatório.' });
+      return;
+    }
     setIsLoading(true);
     try {
       const payload = montarPayload();
-      const validacao = projetoSchema.safeParse(payload);
-      if (!validacao.success) {
-        Swal.fire({ toast: true, position: 'top-end', icon: 'warning', title: validacao.error.issues[0].message, showConfirmButton: false, timer: 3000, customClass: { popup: 'mensagem-erro' } });
-        setIsLoading(false); return;
-      }
-      
-      const { data } = await api.post('/custos', validacao.data);
-      setIdProjetoSalvo(data.id);
-      
-      Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Projeto salvo com sucesso!', showConfirmButton: false, timer: 2500, customClass: { popup: 'mensagem-confirmacao' } });
-      limparFormulario();
-    } catch (e) { 
-      console.error('Falha ao salvar dados', e); 
-      Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Falha ao salvar o projeto.', showConfirmButton: false, timer: 3000, customClass: { popup: 'mensagem-erro' } }); 
-      limparFormulario();  
-    } finally { 
-      setIsLoading(false); 
-    }
-  };
+      const { data } = await api.post('/custos', payload);
+      // console.log("Resposta integral do servidor:", data);
+      setIdProjetoSalvo(data.id_projeto);
 
+      atualizarContexto({ 
+        nomeProjetoGlobal: nomeProjeto, 
+        orcamento: {
+          id_orcamento: data.id_orcamento || payload.id_orcamento,
+          nome_projeto: nomeProjeto
+        },
+        custo: { ...payload, id_projeto: data.id || data.id_projeto } 
+      });
+
+      Swal.fire({ icon: 'success', title: 'Projeto salvo!', timer: 2000, showConfirmButton: false });
+      
+    } catch (err) { 
+      console.error("Erro ao carregar orçamento", err); 
+      Swal.fire({ icon: 'error', title: 'Erro ao salvar.' }); 
+    } finally { setIsLoading(false); }
+  };
+  
   const handleEditar = async () => {
+    if (!idProjetoSalvo) return;
     setIsLoading(true);
     try {
       const payload = montarPayload();
-      const validacao = projetoSchema.safeParse(payload);
-      if (!validacao.success) {
-        Swal.fire({ toast: true, position: 'top-end', icon: 'warning', title: validacao.error.issues[0].message, showConfirmButton: false, timer: 3000, customClass: { popup: 'mensagem-erro' } });
-        setIsLoading(false); return;
-      }
-      
-      await api.put(`/custos/${idProjetoSalvo}`, validacao.data);
-      
-      Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Atualizado com sucesso!', showConfirmButton: false, timer: 3000, customClass: { popup: 'mensagem-confirmacao' } });
-    } catch (e) { 
-      console.error('Falha ao atualizar', e); 
-      Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Falha ao atualizar.', showConfirmButton: false, timer: 3000, customClass: { popup: 'mensagem-erro' } }); 
-    } finally { 
-      setIsLoading(false); 
-    }
+      await api.put(`/custos/${idProjetoSalvo}`, payload);
+      Swal.fire({ icon: 'success', title: 'Atualizado!', timer: 2000, showConfirmButton: false });
+    } catch (err) { console.error("Erro ao carregar orçamento", err); } finally { setIsLoading(false); }
   };
 
   const handleExcluir = async () => {
     if (!idProjetoSalvo) return;
-    
-    const result = await Swal.fire({
-      title: 'Excluir registro?',
-      text: "Deseja remover este projeto?",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#e74c3c', 
-      cancelButtonColor: '#27ae60',
-      confirmButtonText: 'Sim, excluir!',
-      cancelButtonText: 'Cancelar'
-    });
-
+    const result = await Swal.fire({ title: 'Excluir?', text: "Deseja remover este projeto?", icon: 'warning', showCancelButton: true });
     if (result.isConfirmed) {
       setIsLoading(true);
       try {
         await api.delete(`/custos/${idProjetoSalvo}`);
         limparFormulario();
-        
-        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Registro excluído com sucesso!', showConfirmButton: false, timer: 2500, customClass: { popup: 'mensagem-confirmacao' } });
-      } catch (error) {
-        console.error("Erro ao excluir:", error);
-        Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Erro ao excluir o registro.', showConfirmButton: false, timer: 3000, customClass: { popup: 'mensagem-erro' } });
-      } finally {
-        setIsLoading(false);
-      }
+        Swal.fire({ icon: 'success', title: 'Excluído!', timer: 2000, showConfirmButton: false });
+      } catch (err) { console.error("Erro ao carregar orçamento", err); } finally { setIsLoading(false); }
     }
   };
   
@@ -320,89 +1027,50 @@ export default function CustoDoMaterial() {
     <PageTransition className="financeiro-container">
       <div className="header-actions">
         <BotaoVoltar />
-        <button className="btn-novo-topo" onClick={limparFormulario} title="Iniciar novo projeto">
-          <FilePlus size={18} strokeWidth={2} />
-          <span>Novo</span>
-        </button>
+        <button className="btn-novo-topo" onClick={limparFormulario}><FilePlus size={18} /><span>Novo</span></button>
       </div>
-      
-      
-        <img src="/logo.svg" alt="Logo" className="logo-img" />
-      
+      <img src="/logo.svg" alt="Logo" className="logo-img" />
       <h1 className="nome-fantasia">GR Marcenaria</h1>
       <h1 className="titulo-pagina">Custo do Material</h1>
-
       <div className="form-group highlight">
-        
         <h2 className="subtitulo">Nome do Projeto</h2>
         <div className='cotainer-nomeProjeto'>
-        <input type="text" className='nomeProjeto' value={nomeProjeto} onChange={e => setNomeProjeto(e.target.value)} disabled={isLoading} placeholder="Ex: Cozinha Completa" />
-      <button type="button" onClick={handleBuscarPlanoDeCorte} className="btn-icone-lupa">
-  <Search size={18} />
-</button>
-</div>
+          <input type="text" className='nomeProjeto' value={nomeProjeto} onChange={e => { setNomeProjeto(e.target.value); atualizarContexto({ nomeProjetoGlobal: e.target.value }); }} disabled={isLoading} />
+          <button type="button" onClick={handleBuscarPlanoDeCorte} className="btn-icone-lupa"><Search size={18} /></button>
+        </div>
       </div>
-
       <h2 className="subtitulo">Itens da Ficha Técnica</h2>
       <div className="tabela-materiais">
         <div className="tabela-header">
-          <span className="col-mat">Material</span>
-          <span className="col-qtd">Qtd</span>
-          <span className="col-un">Un</span>
-          <span className="col-val">Valor Un.</span>
-          <span className="col-sub">Subtotal</span>
-          <span className="col-del"></span>
+          <span className="col-mat">Material</span><span className="col-qtd">Qtd</span><span className="col-un">Un</span><span className="col-val">Valor Un.</span><span className="col-sub">Subtotal</span><span className="col-del"></span>
         </div>
-        
         {materiais.map((item, index) => (
           <div key={item.id} className="tabela-row">
-            <input className="col-mat" type="text" value={item.material} onChange={e => atualizarItem(item.id, 'material', e.target.value)} placeholder="MDF Branco 15mm" />
+            <input className="col-mat" type="text" value={item.material} onChange={e => atualizarItem(item.id, 'material', e.target.value)} />
             <input className="col-qtd" type="number" value={item.quantidade} onChange={e => atualizarItem(item.id, 'quantidade', e.target.value)} />
-            <input className="col-un" type="text" value={item.unidade_medida} onChange={e => atualizarItem(item.id, 'unidade_medida', e.target.value)} placeholder="chapa" />
-            <input 
-              className="col-val" 
-              type="text" 
-              value={formatInputBR(item.valor_unitario)} 
-              onChange={e => {
-                const val = Number(e.target.value.replace(/\D/g, '')) / 100;
-                atualizarItem(item.id, 'valor_unitario', val);
-              }}
-              onKeyDown={(e) => handleKeyDownTab(e, index)}
-            />
+            <input className="col-un" type="text" value={item.unidade_medida} onChange={e => atualizarItem(item.id, 'unidade_medida', e.target.value)} />
+            <input className="col-val" type="text" value={formatInputBR(item.valor_unitario)} onChange={e => atualizarItem(item.id, 'valor_unitario', Number(e.target.value.replace(/\D/g, '')) / 100)} onKeyDown={(e) => handleKeyDownTab(e, index)} />
             <span className="col-sub">{formatMoney((Number(item.quantidade) || 0) * item.valor_unitario)}</span>
             <button className="btn-del-row" onClick={() => removerLinha(item.id)}><Trash2 size={16} /></button>
           </div>
         ))}
       </div>
-
-      <button className="btn-add-row" onClick={adicionarLinha}><CirclePlus size={16} strokeWidth={2} /> Adicionar Material</button>
-
+      <button className="btn-add-row" onClick={adicionarLinha}><CirclePlus size={16} /> Adicionar Material</button>
       <div className="form-row" style={{ marginTop: '20px' }}>
-        <div className="form-group flex-1">
-          <label className="titulo-input">Mão de Obra</label>
-          <input type="text" value={formatInputBR(maoDeObra)} onChange={e => setMaoDeObra(Number(e.target.value.replace(/\D/g, '')) / 100)} />
-        </div>
-        <div className="form-group flex-1">
-          <label className="titulo-input">Instalação</label>
-          <input type="text" value={formatInputBR(instalacao)} onChange={e => setInstalacao(Number(e.target.value.replace(/\D/g, '')) / 100)} />
-        </div>
+        <div className="form-group flex-1"><label className="titulo-input">Mão de Obra</label><input type="text" value={formatInputBR(maoDeObra)} onChange={e => setMaoDeObra(Number(e.target.value.replace(/\D/g, '')) / 100)} /></div>
+        <div className="form-group flex-1"><label className="titulo-input">Instalação</label><input type="text" value={formatInputBR(instalacao)} onChange={e => setInstalacao(Number(e.target.value.replace(/\D/g, '')) / 100)} /></div>
       </div>
-
-      <div className="total-box">
-        <span>Custo Total do Projeto:</span>
-        <strong>{formatMoney(custoTotal)}</strong>
-      </div>
-
+      <div className="total-box"><span>Custo Total:</span><strong>{formatMoney(custoTotal)}</strong></div>
       <div className='btn-container-custo'>
         <div className='btn-wrapper-custo'>
           <div className='btn-wrapper-flex-custo'>
-          <button className="btn-salvar-custo" onClick={handleSalvar} disabled={isLoading || idProjetoSalvo !== null}><Save size={18} strokeWidth={2}/><span>Salvar</span></button>
-          <button className="btn-editar-custo" onClick={handleEditar} disabled={isLoading || idProjetoSalvo === null}><FileEditIcon size={18} strokeWidth={2}/><span>Editar</span></button>
+            <button className="btn-salvar-custo" onClick={handleSalvar} disabled={isLoading || idProjetoSalvo !== null}><Save size={18} /><span>Salvar</span></button>
+            <button className="btn-editar-custo" onClick={handleEditar} disabled={isLoading || idProjetoSalvo === null}><FileEditIcon size={18} /><span>Editar</span></button>
           </div>
-          <div  className='btn-wrapper-flex-custo'>
-          <button className="btn-buscar-custo" onClick={handleBuscar} ><Search size={18} strokeWidth={2}/><span>Buscar</span></button>
-          <button className="btn-excluir-custo" onClick={handleExcluir} ><CircleMinus size={18} strokeWidth={2}/><span>Excluir</span></button>
-            </div>
+          <div className='btn-wrapper-flex-custo'>
+            <button className="btn-buscar-custo" onClick={handleBuscar}><Search size={18} /><span>Buscar</span></button>
+            <button className="btn-excluir-custo" onClick={handleExcluir}><CircleMinus size={18} /><span>Excluir</span></button>
+          </div>
         </div>
       </div>
     </PageTransition>
