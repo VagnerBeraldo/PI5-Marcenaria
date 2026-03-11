@@ -126,6 +126,9 @@ const excluirOrcamento = async (id_orcamento) => {
     try {
         const [result] = await connection.execute('DELETE FROM orcamento WHERE id_orcamento = ?', [id_orcamento]);
         return result.affectedRows > 0;
+    } catch (err) {
+        console.error("Erro ao carregar orçamento", err);
+        throw err;
     } finally {
         connection.release();
     }
