@@ -235,6 +235,7 @@ export default function Orcamento() {
     setIdOrcamentoSalvo(null);
     setProjetoId("");
     setNomeProjeto("");
+    setClienteId("");
     setNomeCliente("");
     setQuantidade(1);
     setDiasTrabalho(1);
@@ -251,6 +252,7 @@ export default function Orcamento() {
 
     atualizarContexto({ 
       nomeProjetoGlobal: "", 
+      cliente: null,
       orcamento: null, 
       planoCorte: null, 
       custo: null 
