@@ -3,39 +3,8 @@ import PageTransition from "../components/Animation/PageTransition";
 import BotaoVoltar from "../components/BotaoVoltar/BotaoVoltar";
 import { CirclePlus, FileEditIcon, Save, Trash2 } from "lucide-react";
 import Swal from "sweetalert2";
-import DOMPurify from "dompurify";
-import { z } from "zod";
 import "../styles/Despesas.css";
 import api from "../../services/api";
-
-// Schema de Validação do Frontend com Coerção (Conversão Automática)
-const itemSchema = z.object({
-  id: z.coerce.number(),
-  nome: z
-    .string()
-    .trim()
-    .min(1, "A descrição das despesas extras não pode estar vazia."),
-  valor: z.coerce
-    .number()
-    .min(0.01, "O valor das despesas extras deve ser maior que zero."),
-});
-
-const despesasSchema = z.object({
-  faturamento: z.coerce.number().min(0, "Faturamento inválido."),
-  despesasFixas: z.object({
-    manutencao: z.coerce.number().min(0),
-    internet: z.coerce.number().min(0),
-    contador: z.coerce.number().min(0),
-    outrasFixas: z.array(itemSchema),
-  }),
-  despesasVariaveis: z.object({
-    energia: z.coerce.number().min(0),
-    impostoPerc: z.coerce.number().min(0),
-    taxaCartaoPerc: z.coerce.number().min(0),
-    fornecedores: z.coerce.number().min(0),
-    outrasVariaveis: z.array(itemSchema),
-  }),
-});
 
 export default function Despesas() {
   const [isLoading, setIsLoading] = useState(false);
@@ -117,18 +86,12 @@ export default function Despesas() {
           // Atualiza o payload com a lista nova (sem o item removido)
           payloadBruto.despesasFixas.outrasFixas = novasFixas.map((item) => ({
             ...item,
-            nome: DOMPurify.sanitize(item.nome),
+            nome: item.nome,
             valor: item.valor,
           }));
 
-          // Obriga a passar pelo Zod para fazer a coerção (conversão de strings numéricas)
-          const validacao = despesasSchema.safeParse(payloadBruto);
-
-          if (!validacao.success)
-            throw new Error("Falha de conversão ao remover item.");
-
-          // Envia o payload limpo e tipado
-          await api.put(`/despesas/${idDespesaSalva}`, validacao.data);
+          // Envia o payload limpo sem o Zod
+          await api.put(`/despesas/${idDespesaSalva}`, payloadBruto);
 
           Swal.fire({
             toast: true,
@@ -193,19 +156,13 @@ export default function Despesas() {
           payloadBruto.despesasVariaveis.outrasVariaveis = novasVariaveis.map(
             (item) => ({
               ...item,
-              nome: DOMPurify.sanitize(item.nome),
+              nome: item.nome,
               valor: item.valor,
             }),
           );
 
-          // Obriga a passar pelo Zod para fazer a coerção
-          const validacao = despesasSchema.safeParse(payloadBruto);
-
-          if (!validacao.success)
-            throw new Error("Falha de conversão ao remover item.");
-
-          // Envia o payload limpo e tipado
-          await api.put(`/despesas/${idDespesaSalva}`, validacao.data);
+          // Envia o payload limpo sem o Zod
+          await api.put(`/despesas/${idDespesaSalva}`, payloadBruto);
 
           Swal.fire({
             toast: true,
@@ -274,7 +231,7 @@ export default function Despesas() {
       contador,
       outrasFixas: outrasFixas.map((item) => ({
         ...item,
-        nome: DOMPurify.sanitize(item.nome),
+        nome: item.nome,
         valor: item.valor,
       })),
     },
@@ -285,7 +242,7 @@ export default function Despesas() {
       fornecedores,
       outrasVariaveis: outrasVariaveis.map((item) => ({
         ...item,
-        nome: DOMPurify.sanitize(item.nome),
+        nome: item.nome,
         valor: item.valor,
       })),
     },
@@ -295,25 +252,9 @@ export default function Despesas() {
     setIsLoading(true);
     try {
       const payloadBruto = montarPayload();
-      const validacao = despesasSchema.safeParse(payloadBruto);
 
-      if (!validacao.success) {
-        const erroMensagem = validacao.error.issues[0].message;
-        Swal.fire({
-          toast: true,
-          position: "top-end",
-          icon: "warning",
-          title: erroMensagem || "Verifique os dados preenchidos.",
-          showConfirmButton: false,
-          timer: 3500,
-          customClass: { popup: "mensagem-erro" },
-        });
-        setIsLoading(false);
-        return;
-      }
-
-      // Envia os dados limpos e tipados pelo Zod (validacao.data) para a API
-      const response = await api.post("/despesas", validacao.data);
+      // Envia os dados diretos para a API
+      const response = await api.post("/despesas", payloadBruto);
       if (response.status === 201) {
         setIdDespesaSalva(response.data.id || 1);
         Swal.fire({
@@ -347,25 +288,9 @@ export default function Despesas() {
     setIsLoading(true);
     try {
       const payloadBruto = montarPayload();
-      const validacao = despesasSchema.safeParse(payloadBruto);
 
-      if (!validacao.success) {
-        const erroMensagem = validacao.error.issues[0].message;
-        Swal.fire({
-          toast: true,
-          position: "top-end",
-          icon: "warning",
-          title: erroMensagem || "Verifique os dados preenchidos.",
-          showConfirmButton: false,
-          timer: 3500,
-          customClass: { popup: "mensagem-erro" },
-        });
-        setIsLoading(false);
-        return;
-      }
-
-      // Envia os dados limpos e tipados pelo Zod (validacao.data) para a API
-      await api.put(`/despesas/${idDespesaSalva}`, validacao.data);
+      // Envia os dados diretos para a API
+      await api.put(`/despesas/${idDespesaSalva}`, payloadBruto);
       Swal.fire({
         toast: true,
         position: "top-end",
