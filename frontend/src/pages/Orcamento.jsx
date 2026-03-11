@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import Swal from "sweetalert2";
 import api from "../../services/api";
-import { useProjeto } from "../hooks/useProjeto"; 
+import { useProjeto } from "../hooks/useProjeto";
 import "../styles/Orcamento.css";
 
 export default function Orcamento() {
@@ -70,10 +70,12 @@ export default function Orcamento() {
             typeof adicionais === "string"
               ? JSON.parse(adicionais)
               : adicionais;
-          
-          const extrasFixas = listaAdicionais
-            .reduce((acc, curr) => acc + Number(curr.valor || 0), 0);
-          
+
+          const extrasFixas = listaAdicionais.reduce(
+            (acc, curr) => acc + Number(curr.valor || 0),
+            0,
+          );
+
           somaFixas += extrasFixas;
         }
 
@@ -82,8 +84,12 @@ export default function Orcamento() {
         const taxaCartao = Number(variaveis.taxaCartaoPerc || 0);
 
         const outrasVar = variaveis.outrasVariaveis || [];
-        const listaOutrasVar = typeof outrasVar === "string" ? JSON.parse(outrasVar) : outrasVar;
-        const somaOutrasVar = listaOutrasVar.reduce((acc, curr) => acc + Number(curr.valor || 0), 0);
+        const listaOutrasVar =
+          typeof outrasVar === "string" ? JSON.parse(outrasVar) : outrasVar;
+        const somaOutrasVar = listaOutrasVar.reduce(
+          (acc, curr) => acc + Number(curr.valor || 0),
+          0,
+        );
 
         setBaseDespesas({
           custoFixoTotal: somaFixas,
@@ -107,7 +113,7 @@ export default function Orcamento() {
     () => (baseDespesas.custoFixoTotal / 22) * diasTrabalho,
     [baseDespesas.custoFixoTotal, diasTrabalho],
   );
-  
+
   const energiaRateada = useMemo(
     () => (baseDespesas.energiaTotal / 22) * diasTrabalho,
     [baseDespesas.energiaTotal, diasTrabalho],
@@ -122,7 +128,7 @@ export default function Orcamento() {
     () => valorCustoBase * quantidade,
     [valorCustoBase, parseInt(quantidade)],
   );
-  
+
   const totalExtras = useMemo(
     () => extras.reduce((acc, item) => acc + (Number(item.valor) || 0), 0),
     [extras],
@@ -158,7 +164,7 @@ export default function Orcamento() {
     () => Math.ceil(precoSugerido / 10) * 10,
     [precoSugerido],
   );
-  
+
   const precoFinalImpresso =
     precoManual !== null ? precoManual : precoArredondado;
 
@@ -171,7 +177,7 @@ export default function Orcamento() {
       style: "currency",
       currency: "BRL",
     });
-    
+
   const handleMoneyInput = (val, setter) =>
     setter(Number(val.replace(/\D/g, "")) / 100);
 
@@ -186,7 +192,11 @@ export default function Orcamento() {
     try {
       const { data } = await api.get("/clientes");
       if (!data || data.length === 0) {
-        Swal.fire({ title: "Aviso", text: "Nenhum cliente cadastrado.", icon: "info" });
+        Swal.fire({
+          title: "Aviso",
+          text: "Nenhum cliente cadastrado.",
+          icon: "info",
+        });
         return;
       }
 
@@ -202,11 +212,17 @@ export default function Orcamento() {
           const list = document.getElementById("swal-results-cli");
 
           const render = (val) => {
-            const filtered = data.filter((c) => (c.nome || "").toLowerCase().includes(val.toLowerCase()));
-            list.innerHTML = filtered.map((c) => `
+            const filtered = data.filter((c) =>
+              (c.nome || "").toLowerCase().includes(val.toLowerCase()),
+            );
+            list.innerHTML = filtered
+              .map(
+                (c) => `
               <div class="swal-res-item item-resultado" data-id="${c.id_cliente}" data-nome="${c.nome}">
                 <span class="item-titulo">${c.nome}</span>
-              </div>`).join("");
+              </div>`,
+              )
+              .join("");
 
             document.querySelectorAll(".swal-res-item").forEach((el) => {
               el.onclick = () => {
@@ -214,7 +230,9 @@ export default function Orcamento() {
                 const nomeCli = el.dataset.nome;
                 setClienteId(idCli);
                 setNomeCliente(nomeCli);
-                atualizarContexto({ cliente: { id_cliente: idCli, nome: nomeCli } });
+                atualizarContexto({
+                  cliente: { id_cliente: idCli, nome: nomeCli },
+                });
                 Swal.close();
               };
             });
@@ -250,30 +268,40 @@ export default function Orcamento() {
     setPrecoManual(null);
     setOutrasVariaveisSalvas(null);
 
-    atualizarContexto({ 
-      nomeProjetoGlobal: "", 
+    atualizarContexto({
+      nomeProjetoGlobal: "",
       cliente: null,
-      orcamento: null, 
-      planoCorte: null, 
-      custo: null 
+      orcamento: null,
+      planoCorte: null,
+      custo: null,
     });
   };
 
   const handleSalvar = async () => {
     if (!nomeProjeto.trim()) {
-      Swal.fire({ icon: "warning", title: "Atenção", text: "O Nome do Serviço é obrigatório." });
+      Swal.fire({
+        icon: "warning",
+        title: "Atenção",
+        text: "O Nome do Serviço é obrigatório.",
+      });
       return;
     }
 
     setIsLoading(true);
 
-    let idAtual = idOrcamentoSalvo || contextoGlobal?.orcamento?.id_orcamento || contextoGlobal?.orcamento?.id;
+    let idAtual =
+      idOrcamentoSalvo ||
+      contextoGlobal?.orcamento?.id_orcamento ||
+      contextoGlobal?.orcamento?.id;
 
     try {
       if (!idAtual) {
         const { data: orcamentosExistentes } = await api.get("/orcamentos");
         const orcExistente = orcamentosExistentes.find(
-          (o) => o.nome_projeto && o.nome_projeto.trim().toLowerCase() === nomeProjeto.trim().toLowerCase()
+          (o) =>
+            o.nome_projeto &&
+            o.nome_projeto.trim().toLowerCase() ===
+              nomeProjeto.trim().toLowerCase(),
         );
         if (orcExistente) {
           idAtual = orcExistente.id_orcamento || orcExistente.id;
@@ -295,6 +323,7 @@ export default function Orcamento() {
 
       const payload = {
         id_cliente: clienteId ? Number(clienteId) : null,
+        nome_cliente: nomeCliente,
         id_projeto: projetoId ? Number(projetoId) : null,
         nome_projeto: nomeProjeto,
         quantidade: Number(quantidade),
@@ -302,7 +331,7 @@ export default function Orcamento() {
         valor_custo: valorCustoBase,
         imposto_importacao: impostoImportacao,
         frete,
-        custo_fixo: custoFixoRateado, 
+        custo_fixo: custoFixoRateado,
         energia_eletrica: energiaRateada,
         imposto: impostoPerc,
         taxa_cartao: taxaCartaoPerc,
@@ -316,17 +345,46 @@ export default function Orcamento() {
       if (idAtual) {
         await api.put(`/orcamentos/${idAtual}`, payload);
         setIdOrcamentoSalvo(idAtual);
-        Swal.fire({ toast: true, position: "top-end", icon: "success", title: "Orçamento atualizado!", showConfirmButton: false, timer: 3000 });
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: "Orçamento atualizado!",
+          showConfirmButton: false,
+          timer: 3000,
+        });
       } else {
         const response = await api.post("/orcamentos", payload);
         const novoId = response.data.id || response.data.id_orcamento;
+        const novoIdCliente = response.data.id_cliente;
         setIdOrcamentoSalvo(novoId);
-        Swal.fire({ toast: true, position: "top-end", icon: "success", title: "Orçamento salvo!", showConfirmButton: false, timer: 3000 });
+        if (novoIdCliente) {
+          setClienteId(novoIdCliente);
+          // ✅ ATUALIZA O CONTEXTO AQUI TAMBÉM para o useEffect não sobrescrever com vazio
+          atualizarContexto({
+            cliente: { id_cliente: novoIdCliente, nome: nomeCliente },
+          });
+        }
+        // if (response.data.id_cliente) {
+        //      setClienteId(response.data.id_cliente);
+        //      atualizarContexto({ cliente: { id_cliente: response.data.id_cliente, nome: nomeCliente } });
+        // }
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: "Orçamento salvo!",
+          showConfirmButton: false,
+          timer: 3000,
+        });
       }
-
     } catch (err) {
       console.error("Erro ao carregar orçamento", err);
-      Swal.fire({ icon: "error", title: "Erro", text: "Não foi possível salvar os dados." });
+      Swal.fire({
+        icon: "error",
+        title: "Erro",
+        text: "Não foi possível salvar os dados.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -336,7 +394,7 @@ export default function Orcamento() {
     const id = orc.id_orcamento || orc.id;
     setIdOrcamentoSalvo(id);
     setClienteId(orc.id_cliente || "");
-    setNomeCliente(orc.nome_cliente || ""); 
+    setNomeCliente(orc.nome_cliente || "");
     setProjetoId(orc.id_projeto || "");
     setNomeProjeto(orc.nome_projeto || "");
     setQuantidade(Number(orc.quantidade) || 1);
@@ -351,69 +409,107 @@ export default function Orcamento() {
     setPrecoManual(Number(orc.preco_final_impresso) || null);
 
     atualizarContexto({
-        nomeProjetoGlobal: orc.nome_projeto || "",
-        orcamento: orc
+      nomeProjetoGlobal: orc.nome_projeto || "",
+      orcamento: orc,
     });
 
     try {
-      const extrasParsed = typeof orc.extras === "string" ? JSON.parse(orc.extras) : orc.extras || [];
-      
-      const rateioSalvo = extrasParsed.find(e => e.descricao === "Rateio Outras Variáveis");
-      const extrasManuais = extrasParsed.filter(e => e.descricao !== "Rateio Outras Variáveis");
+      const extrasParsed =
+        typeof orc.extras === "string"
+          ? JSON.parse(orc.extras)
+          : orc.extras || [];
+
+      const rateioSalvo = extrasParsed.find(
+        (e) => e.descricao === "Rateio Outras Variáveis",
+      );
+      const extrasManuais = extrasParsed.filter(
+        (e) => e.descricao !== "Rateio Outras Variáveis",
+      );
 
       setOutrasVariaveisSalvas(rateioSalvo ? Number(rateioSalvo.valor) : null);
 
-      setExtras(extrasManuais.map((e, idx) => ({
+      setExtras(
+        extrasManuais.map((e, idx) => ({
           id: Date.now() + idx,
           descricao: e.descricao,
           valor: Number(e.valor),
-      })));
-    } catch (err) { 
-      console.error("Erro ao carregar orçamento", err); 
-      setExtras([]); 
+        })),
+      );
+    } catch (err) {
+      console.error("Erro ao carregar orçamento", err);
+      setExtras([]);
       setOutrasVariaveisSalvas(null);
     }
   };
 
   useEffect(() => {
     if (contextoGlobal?.orcamento) {
-      const orcId = contextoGlobal.orcamento.id_orcamento || contextoGlobal.orcamento.id;
-      if (orcId !== idOrcamentoSalvo) carregarOrcamento(contextoGlobal.orcamento);
+      const orcId =
+        contextoGlobal.orcamento.id_orcamento || contextoGlobal.orcamento.id;
+      if (orcId !== idOrcamentoSalvo)
+        carregarOrcamento(contextoGlobal.orcamento);
     }
-    
-    if (contextoGlobal?.cliente?.nome && contextoGlobal.cliente.nome !== nomeCliente) {
+
+    if (
+      contextoGlobal?.cliente?.nome &&
+      contextoGlobal.cliente.nome !== nomeCliente &&
+      contextoGlobal.cliente.id_cliente
+    ) {
       setNomeCliente(contextoGlobal.cliente.nome);
       setClienteId(contextoGlobal.cliente.id_cliente);
     }
 
-    if (contextoGlobal?.nomeProjetoGlobal !== undefined && contextoGlobal.nomeProjetoGlobal !== nomeProjeto) {
+    if (
+      contextoGlobal?.nomeProjetoGlobal !== undefined &&
+      contextoGlobal.nomeProjetoGlobal !== nomeProjeto
+    ) {
       setNomeProjeto(contextoGlobal.nomeProjetoGlobal);
     }
-    
-    if (contextoGlobal?.custo && contextoGlobal.custo.id_projeto !== projetoId) {
-        const p = contextoGlobal.custo;
-        const mat = typeof p.materiais === "string" ? JSON.parse(p.materiais) : p.materiais || [];
-        const custoMat = mat.reduce((acc, m) => acc + (Number(m.quantidade || 0) * Number(m.valor_unitario || 0)), 0);
-        const totalFicha = Number(p.mao_de_obra || 0) + Number(p.instalacao || 0) + custoMat;
-        setValorCustoBase(totalFicha);
-        setProjetoId(p.id_projeto);
+
+    if (
+      contextoGlobal?.custo &&
+      contextoGlobal.custo.id_projeto !== projetoId
+    ) {
+      const p = contextoGlobal.custo;
+      const mat =
+        typeof p.materiais === "string"
+          ? JSON.parse(p.materiais)
+          : p.materiais || [];
+      const custoMat = mat.reduce(
+        (acc, m) =>
+          acc + Number(m.quantidade || 0) * Number(m.valor_unitario || 0),
+        0,
+      );
+      const totalFicha =
+        Number(p.mao_de_obra || 0) + Number(p.instalacao || 0) + custoMat;
+      setValorCustoBase(totalFicha);
+      setProjetoId(p.id_projeto);
     }
   }, [contextoGlobal, idOrcamentoSalvo, nomeCliente, nomeProjeto, projetoId]);
 
-  
   const handleBuscarOrcamento = async (situacaoDesejada) => {
     setIsLoading(true);
     try {
       const { data } = await api.get("/orcamentos");
       if (!data || data.length === 0) {
-        Swal.fire({ title: "Aviso", text: "Nenhum orçamento salvo encontrado.", icon: "info" });
+        Swal.fire({
+          title: "Aviso",
+          text: "Nenhum orçamento salvo encontrado.",
+          icon: "info",
+        });
         return;
       }
 
-      const dadosFiltradosPorSituacao = data.filter(o => o.situacao === situacaoDesejada);
+      const dadosFiltradosPorSituacao = data.filter(
+        (o) => o.situacao === situacaoDesejada,
+      );
 
       if (dadosFiltradosPorSituacao.length === 0) {
-        Swal.fire({ title: "Aviso", text: `Nenhum orçamento "${situacaoDesejada}" encontrado.`, icon: "info" });
+        Swal.fire({
+          title: "Aviso",
+          text: `Nenhum orçamento "${situacaoDesejada}" encontrado.`,
+          icon: "info",
+        });
         return;
       }
 
@@ -429,17 +525,26 @@ export default function Orcamento() {
           const list = document.getElementById("swal-results-orc");
 
           const render = (val) => {
-            const filtered = dadosFiltradosPorSituacao.filter((o) => (o.nome_projeto || "").toLowerCase().includes(val.toLowerCase()));
-            
-            list.innerHTML = filtered.map((o) => `
+            const filtered = dadosFiltradosPorSituacao.filter((o) =>
+              (o.nome_projeto || "").toLowerCase().includes(val.toLowerCase()),
+            );
+
+            list.innerHTML = filtered
+              .map(
+                (o) => `
               <div class="swal-res-item item-resultado" data-id="${o.id_orcamento || o.id}">
                 <span class="item-titulo">${o.nome_projeto}</span>
                 <span class="item-badge">${formatMoney(o.preco_final_impresso)}</span>
-              </div>`).join("");
+              </div>`,
+              )
+              .join("");
 
             document.querySelectorAll(".swal-res-item").forEach((el) => {
               el.onclick = () => {
-                const selectedOrc = dadosFiltradosPorSituacao.find((item) => (item.id_orcamento || item.id) === Number(el.dataset.id));
+                const selectedOrc = dadosFiltradosPorSituacao.find(
+                  (item) =>
+                    (item.id_orcamento || item.id) === Number(el.dataset.id),
+                );
                 if (selectedOrc) carregarOrcamento(selectedOrc);
                 Swal.close();
               };
@@ -450,22 +555,37 @@ export default function Orcamento() {
           input.oninput = (e) => render(e.target.value);
         },
       });
-    } catch (err) { 
-        console.error("Erro ao carregar orçamento", err); 
-    } finally { 
-        setIsLoading(false); 
+    } catch (err) {
+      console.error("Erro ao carregar orçamento", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleExcluir = async () => {
     if (!idOrcamentoSalvo) return;
-    const result = await Swal.fire({ title: "Excluir Orçamento?", text: "Esta ação não pode ser desfeita!", icon: "warning", showCancelButton: true, confirmButtonColor: "#d33" });
+    const result = await Swal.fire({
+      title: "Excluir Orçamento?",
+      text: "Esta ação não pode ser desfeita!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+    });
     if (result.isConfirmed) {
       try {
         await api.delete(`/orcamentos/${idOrcamentoSalvo}`);
         limparFormulario();
-        Swal.fire({ toast: true, position: "top-end", icon: "success", title: "Orçamento excluído!", showConfirmButton: false, timer: 3000 });
-      } catch (err) { console.error("Erro ao carregar orçamento", err); }
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: "Orçamento excluído!",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } catch (err) {
+        console.error("Erro ao carregar orçamento", err);
+      }
     }
   };
 
@@ -489,8 +609,33 @@ export default function Orcamento() {
             <div className="form-group highlight flex-2">
               <label className="titulo-input">Cliente</label>
               <div className="container-lupa">
-                <input type="text" className="input-lupa-flex" value={nomeCliente} readOnly placeholder="Nome do cliente..."  /> 
-                <button type="button" onClick={handleBuscarCliente} className="btn-icone-lupa"><Search size={20} /></button>
+                <input
+                  type="text"
+                  className="input-lupa-flex"
+                  value={nomeCliente}
+                  onChange={(e) => {
+                    const novoNome = e.target.value;
+                    setNomeCliente(novoNome);
+                    if (novoNome.trim() === "") {
+                      setClienteId("");
+                      atualizarContexto({
+                        cliente: { id_cliente: "", nome: "" },
+                      });
+                    } else {
+                      atualizarContexto({
+                        cliente: { id_cliente: clienteId, nome: novoNome },
+                      });
+                    }
+                  }}
+                  placeholder="Nome do cliente..."
+                />
+                <button
+                  type="button"
+                  onClick={handleBuscarCliente}
+                  className="btn-icone-lupa"
+                >
+                  <Search size={20} />
+                </button>
               </div>
             </div>
           </div>
@@ -498,17 +643,42 @@ export default function Orcamento() {
             <div className="form-group highlight flex-2">
               <label className="titulo-input">Nome do Serviço / Projeto</label>
               <div className="container-lupa">
-                <input type="text" className="input-lupa-flex" value={nomeProjeto} onChange={(e) => { setNomeProjeto(e.target.value); atualizarContexto({ nomeProjetoGlobal: e.target.value }); }} placeholder="Ex: Cozinha Planejada" />
-                <button type="button" onClick={() => handleBuscarOrcamento('aberto')} className="btn-icone-lupa"><Search size={20} /></button>
+                <input
+                  type="text"
+                  className="input-lupa-flex"
+                  value={nomeProjeto}
+                  onChange={(e) => {
+                    setNomeProjeto(e.target.value);
+                    atualizarContexto({ nomeProjetoGlobal: e.target.value });
+                  }}
+                  placeholder="Ex: Cozinha Planejada"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleBuscarOrcamento("aberto")}
+                  className="btn-icone-lupa"
+                >
+                  <Search size={20} />
+                </button>
               </div>
             </div>
             <div className="form-group flex-1">
               <label className="titulo-input">Quantidade</label>
-              <input type="number" value={quantidade} onChange={(e) => setQuantidade(e.target.value)} min="1" />
+              <input
+                type="number"
+                value={quantidade}
+                onChange={(e) => setQuantidade(e.target.value)}
+                min="1"
+              />
             </div>
             <div className="form-group flex-1">
               <label className="titulo-input">Dias de Trabalho</label>
-              <input type="number" value={diasTrabalho} onChange={(e) => setDiasTrabalho(Number(e.target.value))} min="1" />
+              <input
+                type="number"
+                value={diasTrabalho}
+                onChange={(e) => setDiasTrabalho(Number(e.target.value))}
+                min="1"
+              />
             </div>
           </div>
         </div>
@@ -517,19 +687,63 @@ export default function Orcamento() {
           <h2 className="subtitulo">Custos de Base</h2>
           <div className="form-row">
             <div className="form-group flex-1">
-            <div className="form-group flex-1"><label className="titulo-input">Entrada (R$)</label><input type="text" value={formatMoney(entrada)} onChange={(e) => handleMoneyInput(e.target.value, setEntrada)} /></div>
+              <div className="form-group flex-1">
+                <label className="titulo-input">Entrada (R$)</label>
+                <input
+                  type="text"
+                  value={formatMoney(entrada)}
+                  onChange={(e) => handleMoneyInput(e.target.value, setEntrada)}
+                />
+              </div>
               <label className="titulo-input">Custo do Material (Base)</label>
-              <input type="text" value={formatMoney(valorCustoBase * quantidade)} onChange={(e) => handleMoneyInput(e.target.value, setValorCustoBase)} />
+              <input
+                type="text"
+                value={formatMoney(valorCustoBase * quantidade)}
+                onChange={(e) =>
+                  handleMoneyInput(e.target.value, setValorCustoBase)
+                }
+              />
             </div>
             <div className="container-custo-energia">
-              <div className="form-group flex-1 readonly-box"><label className="mobile">Custo Fixo</label><div className="readonly-val">{formatMoney(custoFixoRateado)}</div></div>
-              <div className="form-group flex-1 readonly-box"><label className="mobile">Energia Elétrica</label><div className="readonly-val">{formatMoney(energiaRateada)}</div></div>
-              <div className="form-group flex-1 readonly-box"><label className="mobile">Outras Var.</label><div className="readonly-val">{formatMoney(outrasVariaveisRateadas)}</div></div>
+              <div className="form-group flex-1 readonly-box">
+                <label className="mobile">Custo Fixo</label>
+                <div className="readonly-val">
+                  {formatMoney(custoFixoRateado)}
+                </div>
+              </div>
+              <div className="form-group flex-1 readonly-box">
+                <label className="mobile">Energia Elétrica</label>
+                <div className="readonly-val">
+                  {formatMoney(energiaRateada)}
+                </div>
+              </div>
+              <div className="form-group flex-1 readonly-box">
+                <label className="mobile">Outras Var.</label>
+                <div className="readonly-val">
+                  {formatMoney(outrasVariaveisRateadas)}
+                </div>
+              </div>
             </div>
           </div>
           <div className="form-row mt-15">
-            <div className="form-group flex-1"><label className="titulo-input">Importação (R$)</label><input type="text" value={formatMoney(impostoImportacao)} onChange={(e) => handleMoneyInput(e.target.value, setImpostoImportacao)} /></div>
-            <div className="form-group flex-1"><label className="titulo-input">Frete (R$)</label><input type="text" value={formatMoney(frete)} onChange={(e) => handleMoneyInput(e.target.value, setFrete)} /></div>
+            <div className="form-group flex-1">
+              <label className="titulo-input">Importação (R$)</label>
+              <input
+                type="text"
+                value={formatMoney(impostoImportacao)}
+                onChange={(e) =>
+                  handleMoneyInput(e.target.value, setImpostoImportacao)
+                }
+              />
+            </div>
+            <div className="form-group flex-1">
+              <label className="titulo-input">Frete (R$)</label>
+              <input
+                type="text"
+                value={formatMoney(frete)}
+                onChange={(e) => handleMoneyInput(e.target.value, setFrete)}
+              />
+            </div>
           </div>
         </div>
 
@@ -537,99 +751,180 @@ export default function Orcamento() {
           <h2 className="subtitulo">Outras Despesas</h2>
           {extras.map((extra) => (
             <div key={extra.id} className="form-row extra-row">
-              <input type="text" className="input-extra flex-2" value={extra.descricao} onChange={(e) => atualizarExtra(extra.id, "descricao", e.target.value)} placeholder="Descrição..." />
-              <input type="text" className="input-extra flex-1" value={formatMoney(extra.valor)} onChange={(e) => { const val = Number(e.target.value.replace(/\D/g, "")) / 100; atualizarExtra(extra.id, "valor", val); }} />
-              <button className="btn-del-extra" onClick={() => removerExtra(extra.id)}><Trash2 size={18} /></button>
+              <input
+                type="text"
+                className="input-extra flex-2"
+                value={extra.descricao}
+                onChange={(e) =>
+                  atualizarExtra(extra.id, "descricao", e.target.value)
+                }
+                placeholder="Descrição..."
+              />
+              <input
+                type="text"
+                className="input-extra flex-1"
+                value={formatMoney(extra.valor)}
+                onChange={(e) => {
+                  const val = Number(e.target.value.replace(/\D/g, "")) / 100;
+                  atualizarExtra(extra.id, "valor", val);
+                }}
+              />
+              <button
+                className="btn-del-extra"
+                onClick={() => removerExtra(extra.id)}
+              >
+                <Trash2 size={18} />
+              </button>
             </div>
           ))}
-          <button className="btn-add-row" onClick={adicionarExtra}><CirclePlus size={18} /> Adicionar Despesa Extra</button>
+          <button className="btn-add-row" onClick={adicionarExtra}>
+            <CirclePlus size={18} /> Adicionar Despesa Extra
+          </button>
         </div>
 
         <div className="secao-form">
           <h2 className="subtitulo">Imposto / Taxa / Margem</h2>
           <div className="form-row">
-            <div className="form-group flex-1"><label className="titulo-input">Imposto (%)</label><input type="number" value={impostoPerc} onChange={(e) => setImpostoPerc(Number(e.target.value))} min="1"/></div>
-            <div className="form-group flex-1"><label className="titulo-input">Taxa Cartão (%)</label><input type="number" value={taxaCartaoPerc} onChange={(e) => setTaxaCartaoPerc(Number(e.target.value))} min="1"/></div>
-            <div className="form-group flex-1"><label className="titulo-input">Margem (%)</label><input type="number" value={margemLucroPerc} onChange={(e) => setMargemLucroPerc(Number(e.target.value))} min="1"/></div>
+            <div className="form-group flex-1">
+              <label className="titulo-input">Imposto (%)</label>
+              <input
+                type="number"
+                value={impostoPerc}
+                onChange={(e) => setImpostoPerc(Number(e.target.value))}
+                min="1"
+              />
+            </div>
+            <div className="form-group flex-1">
+              <label className="titulo-input">Taxa Cartão (%)</label>
+              <input
+                type="number"
+                value={taxaCartaoPerc}
+                onChange={(e) => setTaxaCartaoPerc(Number(e.target.value))}
+                min="1"
+              />
+            </div>
+            <div className="form-group flex-1">
+              <label className="titulo-input">Margem (%)</label>
+              <input
+                type="number"
+                value={margemLucroPerc}
+                onChange={(e) => setMargemLucroPerc(Number(e.target.value))}
+                min="1"
+              />
+            </div>
           </div>
         </div>
 
         <div className="resumo-box">
-          <div className="resumo-item"><span>Custo Total:</span> <strong>{formatMoney(custoTotal)}</strong></div>
-          <div className="resumo-item"><span>Preço Sugerido:</span> <strong>{formatMoney(precoSugerido)}</strong></div>
+          <div className="resumo-item">
+            <span>Custo Total:</span> <strong>{formatMoney(custoTotal)}</strong>
+          </div>
+          <div className="resumo-item">
+            <span>Preço Sugerido:</span>{" "}
+            <strong>{formatMoney(precoSugerido)}</strong>
+          </div>
           <div className="resumo-item destaque">
             <span>Preço Fechado:</span>
-            <input type="text" className="input-preco-fechado" value={formatMoney(precoFinalImpresso)} onChange={(e) => handleMoneyInput(e.target.value, setPrecoManual)} />
+            <input
+              type="text"
+              className="input-preco-fechado"
+              value={formatMoney(precoFinalImpresso)}
+              onChange={(e) => handleMoneyInput(e.target.value, setPrecoManual)}
+            />
           </div>
           {entrada > 0 && (
-              <div className="resumo-item">
-                <span>Saldo a Pagar:</span>
-                <strong>{formatMoney(precoFinalImpresso - entrada)}</strong>
-              </div>
-            )}
+            <div className="resumo-item">
+              <span>Saldo a Pagar:</span>
+              <strong>{formatMoney(precoFinalImpresso - entrada)}</strong>
+            </div>
+          )}
         </div>
 
         <div className="btn-container-acoes">
-          <button className="btn-acao-salvar" onClick={handleSalvar} disabled={isLoading}><Save size={18} /><span>Salvar</span></button>
-          <button className="btn-acao-buscar" onClick={() => handleBuscarOrcamento('gerado')} disabled={isLoading}><Search size={18} /><span>Buscar</span></button>
-          <button className="btn-acao-imprimir" onClick={() => window.print()}><Printer size={18} /><span>Imprimir</span></button>
-          <button className="btn-acao-excluir" onClick={handleExcluir}><Trash2 size={18} /><span>Excluir</span></button>
+          <button
+            className="btn-acao-salvar"
+            onClick={handleSalvar}
+            disabled={isLoading}
+          >
+            <Save size={18} />
+            <span>Salvar</span>
+          </button>
+          <button
+            className="btn-acao-buscar"
+            onClick={() => handleBuscarOrcamento("gerado")}
+            disabled={isLoading}
+          >
+            <Search size={18} />
+            <span>Buscar</span>
+          </button>
+          <button className="btn-acao-imprimir" onClick={() => window.print()}>
+            <Printer size={18} />
+            <span>Imprimir</span>
+          </button>
+          <button className="btn-acao-excluir" onClick={handleExcluir}>
+            <Trash2 size={18} />
+            <span>Excluir</span>
+          </button>
         </div>
       </div>
 
       {/* --- ÁREA EXCLUSIVA DE IMPRESSÃO --- */}
-       <div className="recibo-impressao">
-         <div className="cabecalho-impressao">
-           <img
-             src="/logo.svg"
-             alt="Logo GR Marcenaria"
-             className="logo-impressao"
-           />
-           <h2>GR Marcenaria</h2>
-         </div>
+      <div className="recibo-impressao">
+        <div className="cabecalho-impressao">
+          <img
+            src="/logo.svg"
+            alt="Logo GR Marcenaria"
+            className="logo-impressao"
+          />
+          <h2>GR Marcenaria</h2>
+        </div>
 
-         <div className="dados-impressao">
-           <div className="linha-dado">
-             <strong>Cliente:</strong> <span>{nomeCliente || (clienteId ? `ID ${clienteId}` : 'Nome não informado')}</span>
-           </div>
-           <div className="linha-dado">
-             <strong>Projeto:</strong>{" "}
-             <span>{nomeProjeto || "Não especificado"}</span>
-           </div>
-           <div className="linha-dado">
-             <strong>Data:</strong>{" "}
-             <span>{new Date().toLocaleDateString("pt-BR")}</span>
-           </div>
-         </div>
+        <div className="dados-impressao">
+          <div className="linha-dado">
+            <strong>Cliente:</strong>{" "}
+            <span>
+              {nomeCliente ||
+                (clienteId ? `ID ${clienteId}` : "Nome não informado")}
+            </span>
+          </div>
+          <div className="linha-dado">
+            <strong>Projeto:</strong>{" "}
+            <span>{nomeProjeto || "Não especificado"}</span>
+          </div>
+          <div className="linha-dado">
+            <strong>Data:</strong>{" "}
+            <span>{new Date().toLocaleDateString("pt-BR")}</span>
+          </div>
+        </div>
 
-         <div className="valores-impressao">
-           <div className="linha-valor">
-             <span>Valor do Orçamento:</span>
-             <strong>{formatMoney(precoFinalImpresso)}</strong>
-           </div>
-           <div className="linha-valor">
-             <span>Entrada:</span>
-             <strong>{formatMoney(entrada)}</strong>
-           </div>
+        <div className="valores-impressao">
+          <div className="linha-valor">
+            <span>Valor do Orçamento:</span>
+            <strong>{formatMoney(precoFinalImpresso)}</strong>
+          </div>
+          <div className="linha-valor">
+            <span>Entrada:</span>
+            <strong>{formatMoney(entrada)}</strong>
+          </div>
 
-           {entrada > 0 && (
-             <div className="linha-valor destaque-saldo">
-               <span>Saldo a Pagar:</span>
-               <strong>{formatMoney(precoFinalImpresso - entrada)}</strong>
-             </div>
-           )}
-         </div>
-         <div className="assinaturas-impressao">
-           <div className="linha-assinatura">
-             <hr />
-             <span>GR Marcenaria</span>
-           </div>
-           <div className="linha-assinatura">
-             <hr />
-             <span>De Acordo (Cliente)</span>
-           </div>
-         </div>
-       </div>
+          {entrada > 0 && (
+            <div className="linha-valor destaque-saldo">
+              <span>Saldo a Pagar:</span>
+              <strong>{formatMoney(precoFinalImpresso - entrada)}</strong>
+            </div>
+          )}
+        </div>
+        <div className="assinaturas-impressao">
+          <div className="linha-assinatura">
+            <hr />
+            <span>GR Marcenaria</span>
+          </div>
+          <div className="linha-assinatura">
+            <hr />
+            <span>De Acordo (Cliente)</span>
+          </div>
+        </div>
+      </div>
     </PageTransition>
   );
 }
