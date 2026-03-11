@@ -9,7 +9,7 @@
   background-color: var(--cor-secundaria);
   color: var(--texto);
   position: relative;
-  top: 15px;
+  top: 35px;
   margin-left: 8px;
   transition: transform 0.2s ease;
  -webkit-tap-highlight-color: transparent;
