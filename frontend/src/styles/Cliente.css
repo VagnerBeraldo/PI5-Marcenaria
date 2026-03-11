@@ -53,6 +53,6 @@
 
 @media (max-width: 425px) {
     .card-cliente{
-        padding: 10px;
+        padding: 0px;
     }
 }

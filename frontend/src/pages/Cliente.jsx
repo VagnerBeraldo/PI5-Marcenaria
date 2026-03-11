@@ -5,6 +5,7 @@ import { Save, Trash2, Search, FilePlus, MapPin } from "lucide-react";
 import Swal from "sweetalert2";
 import api from "../../services/api";
 import { useProjeto } from "../hooks/useProjeto"; 
+import '../styles/LayoutsCompartilhados.css';
 import "../styles/Cliente.css";
 
 export default function Cliente() {
@@ -292,13 +293,14 @@ export default function Cliente() {
   return (
     <PageTransition className="cliente-container">
       <div className="card-cliente">
+        <div className="wrapper-header-actions">
         <div className="header-actions">
           <BotaoVoltar />
           <button className="btn-novo-topo" onClick={limparFormulario}>
             <FilePlus size={18} /><span>Novo</span>
           </button>
         </div>
-        
+        </div>
         <img src="/logo.svg" alt="Logo" className="logo-img" />
         <h1 className="nome-fantasia">GR Marcenaria</h1>  
         

@@ -3,6 +3,7 @@ import PageTransition from "../components/Animation/PageTransition";
 import BotaoVoltar from '../components/BotaoVoltar/BotaoVoltar';
 import { FileEditIcon, Save, Trash2, Search, FilePlus, CirclePlus, CircleMinus } from 'lucide-react';
 import Swal from 'sweetalert2';
+import '../styles/LayoutsCompartilhados.css';
 import '../styles/CustoDoMaterial.css';
 import api from '../../services/api';
 import { useProjeto } from "../hooks/useProjeto"; 
@@ -320,9 +321,11 @@ useEffect(() => {
   
   return (
     <PageTransition className="financeiro-container">
+      <div className='wrapper-header-actions'>
       <div className="header-actions">
         <BotaoVoltar />
         <button className="btn-novo-topo" onClick={limparFormulario}><FilePlus size={18} /><span>Novo</span></button>
+      </div>
       </div>
       <img src="/logo.svg" alt="Logo" className="logo-img" />
       <h1 className="nome-fantasia">GR Marcenaria</h1>

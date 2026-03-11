@@ -4,54 +4,6 @@
   background-color: var(--body-bg);  
 }
 
-.header-actions-plano{
-    display: flex;
-    justify-content: space-between;
-    align-items: center; 
-    width: 100%;
-    margin: 0 0 15px 0;
-    /* padding-top: 95px; */
-}
-
-/* início para anular o botão voltar */
-.header-actions-plano > * {
-  position: relative !important;
-  top: -20px !important;
-  margin: 0 30px !important;
-}
-
-/* --- Barra Superior para o voltar e botão novo --- */
-.header-actions-plano {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 50px;
-  width: 100%;
-}
-
-.btn-novo-topo-plano {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background-color: var(--cor-primaria); 
-  color: var(--branco);
-  border: none;
-  outline: none;
-  padding: 12px 16px;
-  border-radius: 8px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: filter 0.2s ease;
-  }
-  
-  .btn-novo-topo-plano:hover {
-    filter: brightness(0.8);
-  }
-  /* fim para anular o botão voltar */
-
-
 .titulo {
   padding-bottom: 30px;
   border-bottom: 1px solid var(--branco);
@@ -77,15 +29,13 @@
 /* --- Identificação do Serviço --- */
 .secao-nome-servico {
   margin: 10px 0px 20px 0px;
-  padding: 0 20px 20px 20px;
+  padding: 20px;
   background-color: var(--cor-secundaria);
   border-left: 4px solid var(--cor-primaria);
   border-top-left-radius: 8px;
   border-top-right-radius: 0px;
   border-bottom-right-radius: 8px;
   border-bottom-left-radius: 8px;
-  /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); */
-  /* box-shadow: -10px 18px 25px -10px rgba(0, 0, 0, 0.1); */
   box-shadow: -10px 18px 25px -20px rgba(0, 0, 0, 0.1);
 }
 
@@ -94,7 +44,6 @@
   border-left: 4px solid var(--cor-primaria);
   border-radius: 8px;
   overflow: hidden;
-  /* box-shadow: -20px 4px 20px rgba(0, 0, 0, 0.1); */
   box-shadow: 0 12px 20px -10px rgba(0, 0, 0, 0.1);
 }
 
@@ -237,7 +186,7 @@
   color: var(--texto);
 }
 
-/* --- Estilo Base (Mobile: Nome em cima, resto embaixo) --- */
+/* --- Estilo Base --- */
 .item-peca {
   display: flex;
   flex-wrap: wrap; 

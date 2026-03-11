@@ -1,0 +1,64 @@
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* início para anular o botão voltar */
+.header-actions > * {
+  position: relative !important;
+  top: 20px !important;
+  margin: 0px 15px 25px 15px !important;
+}
+
+/* --- Barra Superior para o voltar e botão novo --- */
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.btn-novo-topo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--cor-primaria);
+  color: var(--branco);
+  border: none;
+  outline: none;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: filter 0.2s ease;
+}
+
+.btn-novo-topo:hover {
+  filter: brightness(0.8);
+}
+/* fim para anular o botão voltar */
+
+@media (max-width: 450px) {
+  .header-actions > * {
+  position: relative !important;
+  top: 20px !important;
+  margin: 0px 3px 25px 3px !important;
+}
+
+.wrapper-header-actions{
+  margin: 0 10px;
+}
+
+  .header-actions {
+    width: 100%!important;
+    margin: 0!important;
+    padding: 10px 0px 0px 0px !important;
+    box-sizing: border-box;
+  }
+
+
+}

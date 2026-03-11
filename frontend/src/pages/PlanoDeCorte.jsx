@@ -15,7 +15,8 @@ import BotaoVoltar from "../components/BotaoVoltar/BotaoVoltar";
 import Swal from "sweetalert2";
 import logoMarcenaria from "/logo.svg";
 import api from "../../services/api";
-import { useProjeto } from "../hooks/useProjeto"; 
+import { useProjeto } from "../hooks/useProjeto";
+import '../styles/LayoutsCompartilhados.css'; 
 import "../styles/PlanoDeCorte.css";
 import "../styles/Visualizador.css";
 
@@ -449,9 +450,11 @@ export default function PlanoDeCorte() {
   return (
     <PageTransition className="card-principal">
       <div className="secao-nome-servico ocultar-na-impressao">
-        <div className="header-actions-plano ocultar-na-impressao">
+        <div className="wrapper-header-actions">
+        <div className="header-actions ocultar-na-impressao">
           <BotaoVoltar />
-          <button className="btn-novo-topo-plano" onClick={handleNovo} title="Novo"><FilePlus size={18} /><span>Novo</span></button>
+          <button className="btn-novo-topo" onClick={handleNovo} title="Novo"><FilePlus size={18} /><span>Novo</span></button>
+        </div>
         </div>
         <img src={logoMarcenaria} alt="Logo" className="logo-img" />
         <h1 className="nome-fantasia">GR Marcenaria</h1>
