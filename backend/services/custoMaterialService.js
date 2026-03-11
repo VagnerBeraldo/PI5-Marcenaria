@@ -27,14 +27,14 @@ const obterCustos = async () => {
 };
 
 const salvarCusto = async (dados) => {
-  const conexao = await db.getConnection();
+  const connection = await db.getConnection();
   try {
-    await conexao.beginTransaction();
+    await connection.beginTransaction();
     
     let orcamentoId = dados.id_orcamento;
 
     // 1. Salva o Mestre (Projeto) PRIMEIRO, pois a tabela orcamento depende do id_projeto gerado aqui
-    const [resultProjeto] = await conexao.query(
+    const [resultProjeto] = await connection.query(
       `INSERT INTO custo_projeto (nome_modelo, mao_de_obra, instalacao) VALUES (?, ?, ?)`,
       [dados.nome_projeto, dados.mao_de_obra, dados.instalacao]
     );
@@ -43,14 +43,14 @@ const salvarCusto = async (dados) => {
     // (Ajustada para a sua modelagem)
     if (!orcamentoId) {
         // Se não existir orçamento, cria um novo já vinculando o id_projeto gerado
-        const [orcamentoResult] = await conexao.query(
+        const [orcamentoResult] = await connection.query(
             'INSERT INTO orcamento (nome_projeto, id_projeto) VALUES (?, ?)',
             [dados.nome_projeto, idProjeto]
         );
         orcamentoId = orcamentoResult.insertId;
     } else {
         // Se já existir um orçamento (ex: veio do Plano de Corte), apenas atualiza a linha vinculando o id_projeto
-        await conexao.query(
+        await connection.query(
             'UPDATE orcamento SET id_projeto = ? WHERE id_orcamento = ?',
             [idProjeto, orcamentoId]
         );
@@ -58,79 +58,79 @@ const salvarCusto = async (dados) => {
 
     // 2. Salva os Detalhes (Materiais)
     for (const item of dados.materiais) {
-      await conexao.query(
+      await connection.query(
         `INSERT INTO custo_material_item (projeto_id, material, quantidade, unidade_medida, valor_unitario) VALUES (?, ?, ?, ?, ?)`,
         [idProjeto, item.material, item.quantidade, item.unidade_medida, item.valor_unitario]
       );
     }
     
-    await conexao.commit();
+    await connection.commit();
     return { id_projeto: idProjeto, id_orcamento: orcamentoId };
   } catch (erro) {
-    await conexao.rollback();
+    await connection.rollback();
     console.error("Erro ao carregar orçamento", erro);
     throw erro;
   } finally {
-    conexao.release();
+    connection.release();
   }
 };
 
 
 const atualizarCusto = async (id, dados) => {
-  const conexao = await db.getConnection();
+  const connection = await db.getConnection();
   try {
-    await conexao.beginTransaction();
+    await connection.beginTransaction();
     
     // 1. Atualiza o Mestre - Atualizando a coluna nome_modelo
-    await conexao.query(
+    await connection.query(
       `UPDATE custo_projeto SET nome_modelo = ?, mao_de_obra = ?, instalacao = ? WHERE id_projeto = ?`,
       [dados.nome_projeto, dados.mao_de_obra, dados.instalacao, id]
     );
 
     // Sincroniza o nome do projeto na tabela orcamento vinculada
-    await conexao.query(
+    await connection.query(
       `UPDATE orcamento SET nome_projeto = ? WHERE id_projeto = ?`,
       [dados.nome_projeto, id]
     );
     
     // 2. Apaga os materiais antigos e reinsere os novos
-    await conexao.query(`DELETE FROM custo_material_item WHERE projeto_id = ?`, [id]);
+    await connection.query(`DELETE FROM custo_material_item WHERE projeto_id = ?`, [id]);
     
     for (const item of dados.materiais) {
-      await conexao.query(
+      await connection.query(
         `INSERT INTO custo_material_item (projeto_id, material, quantidade, unidade_medida, valor_unitario) VALUES (?, ?, ?, ?, ?)`,
         [id, item.material, item.quantidade, item.unidade_medida, item.valor_unitario]
       );
     }
     
-    await conexao.commit();
+    await connection.commit();
   } catch (erro) {
-    await conexao.rollback();
+    await connection.rollback();
     console.error("Erro ao carregar orçamento", erro);
     throw erro;
   } finally {
-    conexao.release();
+    connection.release();
   }
 };
 
 const excluirCusto = async (id) => {
-  const conexao = await db.getConnection();
+  const connection = await db.getConnection();
   try {
-    await conexao.beginTransaction();
+    await connection.beginTransaction();
     
     // Desvincula o projeto do orçamento para não dar erro de restrição de chave e não afetar orçamentos existentes
-    await conexao.query(`UPDATE orcamento SET id_projeto = NULL WHERE id_projeto = ?`, [id]);
+    await connection.query(`UPDATE orcamento SET id_projeto = NULL WHERE id_projeto = ?`, [id]);
     
     // Apagar o projeto apaga automaticamente os itens devido ao ON DELETE CASCADE
-    await conexao.query(`DELETE FROM custo_projeto WHERE id_projeto = ?`, [id]);
+    await connection.query(`DELETE FROM custo_projeto WHERE id_projeto = ?`, [id]);
     
-    await conexao.commit();
+    await connection.commit();
   } catch (erro) {
-    await conexao.rollback();
+    await connection.rollback();
     console.error("Erro ao carregar orçamento", erro);
     throw erro;
   } finally {
-    conexao.release();
+    connection.release();
   }
 };
 

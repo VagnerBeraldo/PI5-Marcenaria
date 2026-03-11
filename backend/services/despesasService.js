@@ -28,12 +28,12 @@ const obterDespesaAtual = async () => {
 };
 
 const salvarDespesas = async (dados) => {
-  const conexao = await db.getConnection();
+  const connection = await db.getConnection();
   try {
-    await conexao.beginTransaction();
+    await connection.beginTransaction();
     const dataAtual = new Date().toISOString().split('T')[0];
     
-    const [resultDespesas] = await conexao.query(
+    const [resultDespesas] = await connection.query(
       `INSERT INTO despesas (mes_referencia, faturamento_bruto, manutencao_maquinas, internet_telefone, contador, energia_eletrica, imposto_perc, taxa_cartao_perc, fornecedores) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [dataAtual, dados.faturamento || 0, dados.despesasFixas.manutencao || 0, dados.despesasFixas.internet || 0, dados.despesasFixas.contador || 0, dados.despesasVariaveis.energia || 0, dados.despesasVariaveis.impostoPerc || 0, dados.despesasVariaveis.taxaCartaoPerc || 0, dados.despesasVariaveis.fornecedores || 0]
     );
@@ -45,47 +45,47 @@ const salvarDespesas = async (dados) => {
     dados.despesasVariaveis.outrasVariaveis?.forEach(i => i.nome && i.valor && adicionais.push([idDespesa, 'VARIAVEL', i.nome, i.valor]));
 
     if (adicionais.length > 0) {
-      await conexao.query(`INSERT INTO despesas_adicionais (id_despesa, tipo, descricao, valor) VALUES ?`, [adicionais]); 
+      await connection.query(`INSERT INTO despesas_adicionais (id_despesa, tipo, descricao, valor) VALUES ?`, [adicionais]); 
     }
 
-    await conexao.commit();
+    await connection.commit();
     return { id_despesa: idDespesa };
   } catch (erro) {
-    await conexao.rollback();
+    await connection.rollback();
     throw erro;
   } finally {
-    conexao.release();
+    connection.release();
   }
 };
 
 const atualizarDespesas = async (id, dados) => {
-  const conexao = await db.getConnection();
+  const connection = await db.getConnection();
   try {
-    await conexao.beginTransaction();
+    await connection.beginTransaction();
 
     // 1. Atualiza a tabela principal
-    await conexao.query(
+    await connection.query(
       `UPDATE despesas SET faturamento_bruto = ?, manutencao_maquinas = ?, internet_telefone = ?, contador = ?, energia_eletrica = ?, imposto_perc = ?, taxa_cartao_perc = ?, fornecedores = ? WHERE id_despesa = ?`,
       [dados.faturamento || 0, dados.despesasFixas.manutencao || 0, dados.despesasFixas.internet || 0, dados.despesasFixas.contador || 0, dados.despesasVariaveis.energia || 0, dados.despesasVariaveis.impostoPerc || 0, dados.despesasVariaveis.taxaCartaoPerc || 0, dados.despesasVariaveis.fornecedores || 0, id]
     );
 
     // 2. Remove os itens dinâmicos antigos e insere os novos 
-    await conexao.query(`DELETE FROM despesas_adicionais WHERE id_despesa = ?`, [id]);
+    await connection.query(`DELETE FROM despesas_adicionais WHERE id_despesa = ?`, [id]);
 
     const adicionais = [];
     dados.despesasFixas.outrasFixas?.forEach(i => i.nome && i.valor && adicionais.push([id, 'FIXA', i.nome, i.valor]));
     dados.despesasVariaveis.outrasVariaveis?.forEach(i => i.nome && i.valor && adicionais.push([id, 'VARIAVEL', i.nome, i.valor]));
 
     if (adicionais.length > 0) {
-      await conexao.query(`INSERT INTO despesas_adicionais (id_despesa, tipo, descricao, valor) VALUES ?`, [adicionais]);
+      await connection.query(`INSERT INTO despesas_adicionais (id_despesa, tipo, descricao, valor) VALUES ?`, [adicionais]);
     }
 
-    await conexao.commit();
+    await connection.commit();
   } catch (erro) {
-    await conexao.rollback();
+    await connection.rollback();
     throw erro;
   } finally {
-    conexao.release();
+    connection.release();
   }
 };
 
