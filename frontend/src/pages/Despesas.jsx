@@ -90,7 +90,6 @@ export default function Despesas() {
             valor: item.valor,
           }));
 
-          // Envia o payload limpo sem o Zod
           await api.put(`/despesas/${idDespesaSalva}`, payloadBruto);
 
           Swal.fire({
@@ -152,7 +151,7 @@ export default function Despesas() {
         setIsLoading(true);
         try {
           const payloadBruto = montarPayload();
-          // Atualiza o payload com a lista nova (sem o item removido)
+          
           payloadBruto.despesasVariaveis.outrasVariaveis = novasVariaveis.map(
             (item) => ({
               ...item,
@@ -161,7 +160,6 @@ export default function Despesas() {
             }),
           );
 
-          // Envia o payload limpo sem o Zod
           await api.put(`/despesas/${idDespesaSalva}`, payloadBruto);
 
           Swal.fire({

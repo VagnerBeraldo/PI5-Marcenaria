@@ -112,7 +112,7 @@ export default function PlanoDeCorte() {
 
  const adicionarChapa = () => {
     const novoId = chapas.length > 0 ? Math.max(...chapas.map((c) => c.id)) + 1 : 1;
-    // Pega o material da chapa atual para agilizar a criação
+    // Pega o material da chapa atual
     const materialAtual = chapaAtual.material || ""; 
     setChapas([...chapas, { id: novoId, largura: 2750, altura: 1840, material: materialAtual }]);
     setChapaAtivaId(novoId);
@@ -508,8 +508,7 @@ export default function PlanoDeCorte() {
           </div>
         </div>
 
-          {/* Substitua o código comentado por este: */}
-        <div className="grupo-input" style={{ marginTop: "10px", width: "100%" }}>
+         <div className="grupo-input" style={{ marginTop: "10px", width: "100%" }}>
           <label className="titulo-input">Descrição / Material da Chapa</label>
           <input 
             type="text" 

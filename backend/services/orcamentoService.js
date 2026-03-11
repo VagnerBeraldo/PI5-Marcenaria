@@ -42,8 +42,7 @@ const salvarOrcamento = async (dados) => {
 
     const id_orcamento = result.insertId;
 
-    // 2. VÍNCULO RETROATIVO (Sua Regra de Negócio)
-    // Se houver um nome de projeto, procuramos um plano de corte avulso com esse nome e vinculamos a este orçamento
+    // Se houver um nome de projeto, procura-se um plano de corte avulso com esse nome e vincula-o ao orçamento
     await connection.execute(
       `UPDATE plano_corte SET id_orcamento = ? 
              WHERE id_orcamento IS NULL AND id_plano IN (

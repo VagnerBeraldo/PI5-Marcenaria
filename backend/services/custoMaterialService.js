@@ -40,7 +40,6 @@ const salvarCusto = async (dados) => {
     );
     const idProjeto = resultProjeto.insertId;
 
-    // (Ajustada para a sua modelagem)
     if (!orcamentoId) {
         // Se não existir orçamento, cria um novo já vinculando o id_projeto gerado
         const [orcamentoResult] = await connection.query(

@@ -360,15 +360,11 @@ export default function Orcamento() {
         setIdOrcamentoSalvo(novoId);
         if (novoIdCliente) {
           setClienteId(novoIdCliente);
-          // ✅ ATUALIZA O CONTEXTO AQUI TAMBÉM para o useEffect não sobrescrever com vazio
           atualizarContexto({
             cliente: { id_cliente: novoIdCliente, nome: nomeCliente },
           });
         }
-        // if (response.data.id_cliente) {
-        //      setClienteId(response.data.id_cliente);
-        //      atualizarContexto({ cliente: { id_cliente: response.data.id_cliente, nome: nomeCliente } });
-        // }
+        
         Swal.fire({
           toast: true,
           position: "top-end",
