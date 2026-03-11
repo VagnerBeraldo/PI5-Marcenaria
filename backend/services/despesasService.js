@@ -90,8 +90,12 @@ const atualizarDespesas = async (id, dados) => {
 };
 
 const excluirDespesas = async (id) => {
-  // A constraint ON DELETE CASCADE do banco já exclui os registros da tabela despesas_adicionais automaticamente
-  await db.query(`DELETE FROM despesas WHERE id_despesa = ?`, [id]);
+  try {
+    await db.query(`DELETE FROM despesas WHERE id_despesa = ?`, [id]);
+  } catch (err) {
+    console.error("Erro ao carregar orçamento", err);
+    throw err;
+  }
 };
 
 module.exports = { obterDespesaAtual, salvarDespesas, atualizarDespesas, excluirDespesas };
