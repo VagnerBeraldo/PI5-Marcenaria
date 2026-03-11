@@ -151,7 +151,7 @@ export default function Despesas() {
         setIsLoading(true);
         try {
           const payloadBruto = montarPayload();
-          
+
           payloadBruto.despesasVariaveis.outrasVariaveis = novasVariaveis.map(
             (item) => ({
               ...item,
@@ -375,9 +375,7 @@ export default function Despesas() {
   return (
     <PageTransition className="financeiro-container">
       <BotaoVoltar />
-      
-        <img src="/logo.svg" alt="Logo da Empresa" className="logo-img" />
-      
+      <img src="/logo.svg" alt="Logo da Empresa" className="logo-img" />
       <h1 className="nome-fantasia">GR Marcenaria</h1>
       <h1 className="titulo-pagina">Despesas</h1>
       <h2 className="subtitulo">Custos</h2>
@@ -395,7 +393,9 @@ export default function Despesas() {
 
       <h2 className="subtitulo">Despesas Fixas</h2>
       <div className="form-group">
-        <label className="titulo-input">Manutenção Preventiva de Máquinas</label>
+        <label className="titulo-input">
+          Manutenção Preventiva de Máquinas
+        </label>
         <input
           type="text"
           value={formatInputBR(manutencao)}

@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from "react";
 import PageTransition from "../components/Animation/PageTransition";
-import BotaoVoltar from '../components/BotaoVoltar/BotaoVoltar';
-import '../styles/PontoDeEquilibrio.css';
-import api from '../../services/api';
+import BotaoVoltar from "../components/BotaoVoltar/BotaoVoltar";
+import "../styles/PontoDeEquilibrio.css";
+import api from "../../services/api";
 
 export default function PontoDeEquilibrio() {
   const [isLoading, setIsLoading] = useState(true);
@@ -11,7 +11,7 @@ export default function PontoDeEquilibrio() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get('/despesas');
+        const response = await api.get("/despesas");
         if (response.data) {
           setDados(response.data);
         }
@@ -31,17 +31,36 @@ export default function PontoDeEquilibrio() {
 
   const totalFixas = useMemo(() => {
     if (!dados) return 0;
-    const somaOutras = dados.despesasFixas.outrasFixas.reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
-    return Number(dados.despesasFixas.manutencao) + Number(dados.despesasFixas.internet) + Number(dados.despesasFixas.contador) + somaOutras;
+    const somaOutras = dados.despesasFixas.outrasFixas.reduce(
+      (acc, item) => acc + (Number(item.valor) || 0),
+      0,
+    );
+    return (
+      Number(dados.despesasFixas.manutencao) +
+      Number(dados.despesasFixas.internet) +
+      Number(dados.despesasFixas.contador) +
+      somaOutras
+    );
   }, [dados]);
 
   const totalVariaveis = useMemo(() => {
     if (!dados) return 0;
-    const impostoValor = (faturamento * Number(dados.despesasVariaveis.impostoPerc)) / 100;
-    const taxaCartaoValor = (faturamento * Number(dados.despesasVariaveis.taxaCartaoPerc)) / 100;
-    const somaOutras = dados.despesasVariaveis.outrasVariaveis.reduce((acc, item) => acc + (Number(item.valor) || 0), 0);
-    
-    return Number(dados.despesasVariaveis.energia) + impostoValor + taxaCartaoValor + Number(dados.despesasVariaveis.fornecedores) + somaOutras;
+    const impostoValor =
+      (faturamento * Number(dados.despesasVariaveis.impostoPerc)) / 100;
+    const taxaCartaoValor =
+      (faturamento * Number(dados.despesasVariaveis.taxaCartaoPerc)) / 100;
+    const somaOutras = dados.despesasVariaveis.outrasVariaveis.reduce(
+      (acc, item) => acc + (Number(item.valor) || 0),
+      0,
+    );
+
+    return (
+      Number(dados.despesasVariaveis.energia) +
+      impostoValor +
+      taxaCartaoValor +
+      Number(dados.despesasVariaveis.fornecedores) +
+      somaOutras
+    );
   }, [dados, faturamento]);
 
   const totalDespesas = totalFixas + totalVariaveis;
@@ -50,18 +69,20 @@ export default function PontoDeEquilibrio() {
   // Cálculo do Ponto de Equilíbrio com tratamento de Margem Negativa
   const pontoEquilibrio = useMemo(() => {
     if (faturamento <= 0) return 0;
-    
+
     // Se o custo variável empata ou supera o faturamento, é impossível ter lucro.
-    if (totalVariaveis >= faturamento) return null; 
-    
+    if (totalVariaveis >= faturamento) return null;
+
     const margemContribuicao = faturamento - totalVariaveis;
     const indiceMC = margemContribuicao / faturamento;
     return totalFixas / indiceMC;
   }, [faturamento, totalFixas, totalVariaveis]);
 
   // Helpers de formatação
-  const calcPerc = (valor) => (faturamento > 0 ? ((valor / faturamento) * 100).toFixed(2) : '0.00');
-  const formatMoney = (valor) => valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  const calcPerc = (valor) =>
+    faturamento > 0 ? ((valor / faturamento) * 100).toFixed(2) : "0.00";
+  const formatMoney = (valor) =>
+    valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
   if (isLoading) {
     return (
@@ -76,7 +97,10 @@ export default function PontoDeEquilibrio() {
     return (
       <PageTransition className="financeiro-container">
         <BotaoVoltar />
-        <div className="empty-state">Ops.... Nenhum registro de despesas encontrado! Cadastre as despesas primeiro.</div>
+        <div className="empty-state">
+          Ops.... Nenhum registro de despesas encontrado! Cadastre as despesas
+          primeiro.
+        </div>
       </PageTransition>
     );
   }
@@ -87,7 +111,7 @@ export default function PontoDeEquilibrio() {
   return (
     <PageTransition className="financeiro-container">
       <BotaoVoltar />
-        <img src="/logo.svg" alt="Logo da Empresa" className="logo-img" />
+      <img src="/logo.svg" alt="Logo da Empresa" className="logo-img" />
       <h1 className="nome-fantasia">GR Marcenaria</h1>
       <h1 className="titulo-pagina">Ponto de Equilíbrio</h1>
 
@@ -96,37 +120,59 @@ export default function PontoDeEquilibrio() {
           <span>Faturamento Bruto</span>
           <span className="valor-normal">{formatMoney(faturamento)}</span>
         </div>
-        
+
         <div className="resumo-linha">
           <span>Despesas Fixas</span>
-          <span className="valor-normal">{formatMoney(totalFixas)} ({calcPerc(totalFixas)}%)</span>
-        </div>
-        
-        <div className="resumo-linha">
-          <span>Despesas Variáveis</span>
-          <span className="valor-normal">{formatMoney(totalVariaveis)} ({calcPerc(totalVariaveis)}%)</span>
-        </div>
-        
-        <div className="resumo-linha linha-destaque">
-          <span>Total de Despesas</span>
-          <span>{formatMoney(totalDespesas)} ({calcPerc(totalDespesas)}%)</span>
-        </div>
-        
-        <div className="resumo-linha linha-lucro" style={{ color: lucro < 0 ? '#e74c3c' : '#27ae60', backgroundColor: lucro < 0 ? '#fdedec' : '#eafaf1' }}>
-          <span>Lucro</span>
-          <span>{formatMoney(lucro)} ({calcPerc(lucro)}%)</span>
+          <span className="valor-normal">
+            {formatMoney(totalFixas)} ({calcPerc(totalFixas)}%)
+          </span>
         </div>
 
-        <div className="resumo-linha linha-ponto-equilibrio" style={{ backgroundColor: isPEInviavel ? '#e74c3c' : 'var(--cor-primaria)' }}>
+        <div className="resumo-linha">
+          <span>Despesas Variáveis</span>
+          <span className="valor-normal">
+            {formatMoney(totalVariaveis)} ({calcPerc(totalVariaveis)}%)
+          </span>
+        </div>
+
+        <div className="resumo-linha linha-destaque">
+          <span>Total de Despesas</span>
+          <span>
+            {formatMoney(totalDespesas)} ({calcPerc(totalDespesas)}%)
+          </span>
+        </div>
+
+        <div
+          className="resumo-linha linha-lucro"
+          style={{
+            color: lucro < 0 ? "#e74c3c" : "#27ae60",
+            backgroundColor: lucro < 0 ? "#fdedec" : "#eafaf1",
+          }}
+        >
+          <span>Lucro</span>
+          <span>
+            {formatMoney(lucro)} ({calcPerc(lucro)}%)
+          </span>
+        </div>
+
+        <div
+          className="resumo-linha linha-ponto-equilibrio"
+          style={{
+            backgroundColor: isPEInviavel ? "#e74c3c" : "var(--cor-primaria)",
+          }}
+        >
           <div className="pe-info">
             <span className="pe-titulo">Ponto de Equilíbrio (R$)</span>
             <span className="pe-subtitulo">
-              {isPEInviavel 
-                ? "Custos Variáveis superam o Faturamento. Ajuste os preços!" 
+              {isPEInviavel
+                ? "Custos Variáveis superam o Faturamento. Ajuste os preços!"
                 : "Faturamento mínimo necessário para não ter prejuízo"}
             </span>
           </div>
-          <span className="pe-valor" style={{ fontSize: isPEInviavel ? '1.4rem' : '1.8rem' }}>
+          <span
+            className="pe-valor"
+            style={{ fontSize: isPEInviavel ? "1.4rem" : "1.8rem" }}
+          >
             {isPEInviavel ? "Inviável" : formatMoney(pontoEquilibrio)}
           </span>
         </div>
