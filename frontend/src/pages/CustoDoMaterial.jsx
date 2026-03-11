@@ -96,6 +96,7 @@ useEffect(() => {
     };
 
     sincronizarEBuscarPlano();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contextoGlobal.nomeProjetoGlobal, nomeProjeto]);
 
   
