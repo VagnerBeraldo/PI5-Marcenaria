@@ -34,27 +34,17 @@ const MenuMarcenaria = () => {
           onClick={() => navigate("/despesas")}
         >
           <CalendarCheck size={24} />
-          <span>Despesas</span>
+          <span>1. Despesas</span>
         </div>
 
         <div className="grid-item item-topo-centro" onClick={() => navigate("/ponto-de-equilibrio")}>
           <ThumbsUp size={24} />
-          <span>Ponto de Equilíbrio</span>
-        </div>
-
-        <div className="grid-item item-abaixo-1" onClick={() => navigate("/custo-do-material")}>
-          <CircleDollarSignIcon size={24} />
-          <span>Custo do Material</span>
-        </div>
-
-        <div className="grid-item item-centro-baixo" onClick={() => navigate("/orcamentos")}>
-          <ClipboardList size={24} />
-          <span>Orçamento</span>
+          <span>2. Ponto de Equilíbrio</span>
         </div>
 
         <div className="grid-item item-col-direita" onClick={() => navigate("/clientes")}>
           <Users size={24} />
-          <span>Clientes</span>
+          <span>3. Clientes</span>
         </div>
 
         <div
@@ -62,8 +52,20 @@ const MenuMarcenaria = () => {
           onClick={() => navigate("/plano-de-corte")}
         >
           <LayoutDashboard size={24} />
-          <span>Plano de Corte</span>
+          <span>4. Plano de Corte</span>
         </div>
+
+        <div className="grid-item item-abaixo-1" onClick={() => navigate("/custo-do-material")}>
+          <CircleDollarSignIcon size={24} />
+          <span>5. Custo do Material</span>
+        </div>
+
+        <div className="grid-item item-centro-baixo" onClick={() => navigate("/orcamentos")}>
+          <ClipboardList size={24} />
+          <span>6. Orçamento</span>
+        </div>
+
+
       </div>
     </PageTransition>
   );
