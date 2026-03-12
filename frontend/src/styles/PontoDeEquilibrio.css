@@ -125,6 +125,12 @@
   }
 }
 
+@media (max-width: 550px) {
+  .financeiro-container {
+    padding: 30px 0px 10px 0px !important;
+  }
+}
+
 @media (max-width: 560px) {
   .financeiro-container {
     padding: 5px;
@@ -140,28 +146,19 @@
     font-size: 1rem;
   }
 
-  .linha-lucro {
-    font-size: 1rem;
-    padding: 15px 5px;
-  }
-
-  .pe-titulo {
-    font-size: 1rem;
-  }
-
-  .pe-subtitulo {
-    font-weight: 500;
-  }
-
   .pe-valor {
     font-size: 1.1rem !important;
     padding: 10px 10px;
+  }
+
+  .linha-ponto-equilibrio {
+    padding: 20px 10px !important;
   }
 }
 
 @media (max-width: 380px) {
   .financeiro-container {
-    padding: 10px 0px;
+    padding: 30px 0px 10px 0px !important;
   }
   .resumo-linha {
     font-size: 0.85rem;
@@ -169,7 +166,6 @@
 
   .linha-lucro {
     font-size: 0.85rem;
-    padding: 15px 2px;
   }
 
   .pe-titulo {
@@ -178,5 +174,18 @@
 
   .pe-subtitulo {
     font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 330px) {
+  .pe-titulo {
+    font-size: 0.7rem !important;
+    text-align: left;
+  }
+
+  .pe-subtitulo {
+    font-size: 0.7rem !important;
+    font-weight: 500;
+    text-align: left;
   }
 }
