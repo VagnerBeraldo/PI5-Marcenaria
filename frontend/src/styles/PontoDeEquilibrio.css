@@ -129,8 +129,9 @@
   .financeiro-container {
     padding: 5px;
   }
+
   .painel-resultados {
-    padding: 5px;
+    padding: 5px 5px 25px 5px;
   }
 }
 

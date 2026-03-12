@@ -316,7 +316,7 @@ export default function Cliente() {
                 type="text" 
                 value={nome} 
                 onChange={(e) => setNome(e.target.value)} 
-                placeholder="Ex: Zezinho da Silva ou Empresa XPTO"
+                placeholder="Ex: Cliente ou Empresa"
               />
             </div>
           </div>

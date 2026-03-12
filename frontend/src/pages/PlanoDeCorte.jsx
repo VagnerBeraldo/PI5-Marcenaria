@@ -511,13 +511,13 @@ export default function PlanoDeCorte() {
           </div>
         </div>
 
-         <div className="grupo-input" style={{ marginTop: "10px", width: "100%" }}>
+         <div className="grupo-input input-nome" >
           <label className="titulo-input">Descrição / Material da Chapa</label>
           <input 
             type="text" 
             value={chapaAtual.material || ""} 
             className="input-padrao" 
-            placeholder="Ex: MDF Branco TX 15mm" 
+            placeholder="Ex: MDF Branco 15mm" 
             onChange={(e) => atualizarDadosChapa("material", e.target.value)} 
           />
         </div>

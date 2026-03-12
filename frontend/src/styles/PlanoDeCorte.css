@@ -156,6 +156,11 @@
 }
 
 
+.input-nome {
+  margin: 0 20px; 
+}
+
+
 .input-padrao {
   width: 100%;
   padding: 10px;
@@ -463,6 +468,11 @@
   .swal2-popup.modal-pesquisa {
     max-width: 340px !important;
   }
+
+
+  .input-nome {
+  margin: 0 10px; 
+}
 
   .btn-wrapper-corte{
     display: flex;
