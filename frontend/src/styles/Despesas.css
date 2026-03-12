@@ -1,7 +1,7 @@
 .financeiro-container {
   max-width: 900px;
   margin: 10px auto;
-  padding: 0 20px 20px 20px;
+  padding: 0 20px 30px 20px;
   border-radius: 8px;
   background-color: var(--cor-secundaria);
   border-left: 4px solid var(--cor-primaria);
@@ -154,10 +154,14 @@
   cursor: not-allowed;
 }
 
-
-
+@media(max-width: 768px){
+  .financeiro-container {
+    padding: 0 20px 20px 20px!important; 
+  }
+}
 
 @media (max-width: 600px) {
+  
   .btn-wrapper {
     display: flex;
     flex-direction: column;
@@ -193,4 +197,18 @@
   .form-group {
     padding: 0px 5px;
   }
+}
+
+@media (max-width: 350px) {
+  .btn-salvar,
+  .btn-editar,
+  .btn-excluir {
+    padding: 15px 80px;
+  }
+
+  .btn-add span{
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
 }
