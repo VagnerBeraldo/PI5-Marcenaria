@@ -473,7 +473,7 @@ export default function PlanoDeCorte() {
               }}
               disabled={isLoading}
             />
-            <button type="button" onClick={handleBuscar} style={{ background: "none", border: "1px solid #ccc", padding: "8px", borderRadius: "4px", cursor: "pointer" }}>
+            <button type="button" className="btn-lupa" onClick={handleBuscar}>
               <Search size={20} />
             </button>
           </div>

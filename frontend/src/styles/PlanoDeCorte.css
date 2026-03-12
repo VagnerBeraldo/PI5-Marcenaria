@@ -39,6 +39,26 @@
   box-shadow: -10px 18px 25px -20px rgba(0, 0, 0, 0.1);
 }
 
+.btn-lupa{
+  background-color: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  color: var(--cor-primaria);
+  padding: 8px 10px; 
+  border-radius: 8px;
+  transition: background-color 0.5s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-lupa:hover{
+  background-color: var(--cor-primaria);
+  color: var(--branco)
+}
+
+
 .container-navegacao {
   background-color: var(--cor-secundaria);
   border-left: 4px solid var(--cor-primaria);
