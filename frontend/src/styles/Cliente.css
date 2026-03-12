@@ -5,6 +5,11 @@
   padding: 10px 0;
 }
 
+.cotainer-nomeCliente{
+  display: flex;
+  gap: 8px;
+}
+
 .card-cliente {
   background-color: var(--cor-secundaria);
   border-radius: 8px;
@@ -15,10 +20,6 @@
 
 .estado-box {
   flex: 0 0 80px; /* Campo UF menor */
-}
-
-.btn-icone-lupa{
-    outline: none;
 }
 
 

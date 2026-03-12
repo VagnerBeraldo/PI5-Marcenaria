@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PageTransition from "../components/Animation/PageTransition";
 import BotaoVoltar from "../components/BotaoVoltar/BotaoVoltar";
-import { Save, Trash2, Search, FilePlus, MapPin } from "lucide-react";
+import { Save, Trash2, Search, FilePlus, MapPin, FileEdit } from "lucide-react";
 import Swal from "sweetalert2";
 import api from "../../services/api";
 import { useProjeto } from "../hooks/useProjeto"; 
@@ -169,7 +169,50 @@ export default function Cliente() {
     }
   };
 
-  // --- SALVAR CLIENTE ---
+  // // --- SALVAR CLIENTE ---
+  // const handleSalvar = async () => {
+  //   if (!nome.trim() || !logradouro.trim()) {
+  //     Swal.fire({ icon: "warning", title: "Atenção", text: "Nome e Logradouro são obrigatórios." });
+  //     return;
+  //   }
+
+  //   setIsLoading(true);
+  //   try {
+  //     const payload = {
+  //       nome,
+  //       email,
+  //       telefone,
+  //       cep,
+  //       logradouro,
+  //       numero,
+  //       complemento,
+  //       bairro,
+  //       cidade,
+  //       estado
+  //     };
+
+  //     if (idClienteSalvo) {
+  //       await api.put(`/clientes/${idClienteSalvo}`, payload);
+  //       Swal.fire({ toast: true, position: "top-end", icon: "success", title: "Cliente atualizado!", showConfirmButton: false, timer: 3000 });
+  //     } else {
+  //       const response = await api.post("/clientes", payload);
+  //       setIdClienteSalvo(response.data.id);
+  //       atualizarContexto({ cliente: { ...payload, id_cliente: response.data.id } }); // Atualiza memória se for novo
+  //       Swal.fire({ toast: true, position: "top-end", icon: "success", title: "Cliente salvo!", showConfirmButton: false, timer: 3000 });
+  //     }
+  //   } catch (error) {
+  //     console.error("Erro ao salvar cliente:", error.response?.data || error);
+  //     const detalhesErro = error.response?.data?.detalhes;
+  //     const mensagemAlerta = detalhesErro && detalhesErro.length > 0 
+  //       ? `Campo inválido: ${detalhesErro[0].path[0]} - ${detalhesErro[0].message}`
+  //       : 'Não foi possível salvar o cliente. Verifique os dados.';
+  //     Swal.fire({ icon: "error", title: "Erro", text: mensagemAlerta });
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+// --- SALVAR CLIENTE ---
   const handleSalvar = async () => {
     if (!nome.trim() || !logradouro.trim()) {
       Swal.fire({ icon: "warning", title: "Atenção", text: "Nome e Logradouro são obrigatórios." });
@@ -191,18 +234,13 @@ export default function Cliente() {
         estado
       };
 
-      if (idClienteSalvo) {
-        await api.put(`/clientes/${idClienteSalvo}`, payload);
-        Swal.fire({ toast: true, position: "top-end", icon: "success", title: "Cliente atualizado!", showConfirmButton: false, timer: 3000 });
-      } else {
-        const response = await api.post("/clientes", payload);
-        setIdClienteSalvo(response.data.id);
-        atualizarContexto({ cliente: { ...payload, id_cliente: response.data.id } }); // Atualiza memória se for novo
-        Swal.fire({ toast: true, position: "top-end", icon: "success", title: "Cliente salvo!", showConfirmButton: false, timer: 3000 });
-      }
-    } catch (error) {
-      console.error("Erro ao salvar cliente:", error.response?.data || error);
-      const detalhesErro = error.response?.data?.detalhes;
+      const response = await api.post("/clientes", payload);
+      setIdClienteSalvo(response.data.id);
+      atualizarContexto({ cliente: { ...payload, id_cliente: response.data.id } }); // Atualiza memória se for novo
+      Swal.fire({ toast: true, position: "top-end", icon: "success", title: "Cliente salvo!", showConfirmButton: false, timer: 3000 });
+    } catch (err) {
+      console.error("Erro ao carregar orçamento", err);
+      const detalhesErro = err.response?.data?.detalhes;
       const mensagemAlerta = detalhesErro && detalhesErro.length > 0 
         ? `Campo inválido: ${detalhesErro[0].path[0]} - ${detalhesErro[0].message}`
         : 'Não foi possível salvar o cliente. Verifique os dados.';
@@ -212,8 +250,50 @@ export default function Cliente() {
     }
   };
 
+// --- EDITAR CLIENTE ---
+  const handleEditar = async () => {
+    if (!idClienteSalvo) {
+      Swal.fire({ icon: "warning", title: "Atenção", text: "Nenhum cliente selecionado para edição." });
+      return;
+    }
+
+    if (!nome.trim() || !logradouro.trim()) {
+      Swal.fire({ icon: "warning", title: "Atenção", text: "Nome e Logradouro são obrigatórios." });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const payload = {
+        nome,
+        email,
+        telefone,
+        cep,
+        logradouro,
+        numero,
+        complemento,
+        bairro,
+        cidade,
+        estado
+      };
+
+      await api.put(`/clientes/${idClienteSalvo}`, payload);
+      Swal.fire({ toast: true, position: "top-end", icon: "success", title: "Cliente atualizado!", showConfirmButton: false, timer: 3000 });
+    } catch (err) {
+      console.error("Erro ao carregar orçamento", err);
+      const detalhesErro = err.response?.data?.detalhes;
+      const mensagemAlerta = detalhesErro && detalhesErro.length > 0 
+        ? `Campo inválido: ${detalhesErro[0].path[0]} - ${detalhesErro[0].message}`
+        : 'Não foi possível editar o cliente. Verifique os dados.';
+      Swal.fire({ icon: "error", title: "Erro", text: mensagemAlerta });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+
   // --- BUSCAR CLIENTE (Lupa) ---
-  const handleBuscarCliente = async () => {
+  const handleBuscar = async () => {
     setIsLoading(true);
     try {
       const { data } = await api.get('/clientes');
@@ -311,13 +391,17 @@ export default function Cliente() {
           <h2 className="subtitulo">Dados Pessoais e Contato</h2>
           <div className="form-row">
             <div className="form-group flex-2 "> {/* highlight */}
-              <label className="titulo-input">Nome Completo / Empresa *</label>
+              <label className="titulo-input">Nome Cliente / Empresa *</label>
+              <div className='cotainer-nomeCliente'>
               <input 
                 type="text" 
                 value={nome} 
                 onChange={(e) => setNome(e.target.value)} 
-                placeholder="Ex: Cliente ou Empresa"
+                placeholder="Nome completo"
               />
+                        
+                <button type="button" onClick={handleBuscar} className="btn-icone-lupa"><Search size={18} /></button>
+                      </div>
             </div>
           </div>
           <div className="form-row">
@@ -426,15 +510,18 @@ export default function Cliente() {
             <Save size={18}/><span>{isLoading ? 'Salvando...' : 'Salvar'}</span>
           </button>
           
-          <button className="btn-acao-buscar" onClick={handleBuscarCliente} disabled={isLoading}>
+          <button className="btn-acao-buscar" onClick={handleEditar} disabled={isLoading}>
+            <FileEdit size={18}/><span>Editar</span>
+          </button>
+
+          <button className="btn-acao-buscar" onClick={handleBuscar} disabled={isLoading}>
             <Search size={18}/><span>Buscar</span>
           </button>
           
-          {idClienteSalvo && (
             <button className="btn-acao-excluir" onClick={handleExcluir}>
               <Trash2 size={18}/><span>Excluir</span>
             </button>
-          )}
+          
         </div>
 
       </div>

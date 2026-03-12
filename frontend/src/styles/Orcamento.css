@@ -80,26 +80,6 @@
   width: 100%;
 }
 
-.btn-icone-lupa {
-  background-color: transparent;
-  border: 1px solid rgba(0,0,0,0.1);
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
-  color: var(--cor-primaria);
-  padding: 8px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-}
-
-.btn-icone-lupa:hover {
-  background-color: var(--cor-primaria);
-  color: var(--branco);
-}
-
-
 .input-lupa-flex {
   flex: 1;
   width: 100%;

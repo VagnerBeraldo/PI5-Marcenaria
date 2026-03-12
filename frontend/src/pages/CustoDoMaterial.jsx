@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import PageTransition from "../components/Animation/PageTransition";
 import BotaoVoltar from '../components/BotaoVoltar/BotaoVoltar';
-import { FileEditIcon, Save, Trash2, Search, FilePlus, CirclePlus, CircleMinus } from 'lucide-react';
+import { FileEditIcon, Save, Trash2, Search, FilePlus, CirclePlus } from 'lucide-react';
 import Swal from 'sweetalert2';
 import '../styles/LayoutsCompartilhados.css';
 import '../styles/CustoDoMaterial.css';
@@ -367,7 +367,7 @@ useEffect(() => {
           </div>
           <div className='btn-wrapper-flex-custo'>
             <button className="btn-buscar-custo" onClick={handleBuscar}><Search size={18} /><span>Buscar</span></button>
-            <button className="btn-excluir-custo" onClick={handleExcluir}><CircleMinus size={18} /><span>Excluir</span></button>
+            <button className="btn-excluir-custo" onClick={handleExcluir}><Trash2 size={18} /><span>Excluir</span></button>
           </div>
         </div>
       </div>

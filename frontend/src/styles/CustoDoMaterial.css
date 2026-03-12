@@ -17,24 +17,6 @@
   width: 100%;
 }
 
-.btn-icone-lupa {
-  background-color: transparent;
-  border: none;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
-  color: var(--cor-primaria);
-  padding: 8px 10px; 
-  border-radius: 8px;
-  transition: background-color 0.5s ease;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-icone-lupa:hover {
-  background-color: var(--cor-primaria);
-  color: var(--branco);
-}
 
 .tabela-header,
 .tabela-row {

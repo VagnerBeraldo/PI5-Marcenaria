@@ -56,6 +56,28 @@ body {
   text-align: left;
   color: var(--texto)!important;
 }
+
+.btn-icone-lupa {
+  background-color: transparent;
+  outline: none;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  color: var(--cor-primaria);
+  padding: 8px 10px!important; 
+  border-radius: 8px!important;
+  transition: background-color 0.5s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icone-lupa:hover {
+  background-color: var(--cor-primaria);
+  color: var(--branco);
+}
+
+
 /* --- Início Modal SweetAlert2 --- */
 .swal2-popup {
     font-family: 'Montserrat', sans-serif !important;

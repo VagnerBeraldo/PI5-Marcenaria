@@ -633,7 +633,7 @@ export default function Orcamento() {
                   onClick={handleBuscarCliente}
                   className="btn-icone-lupa"
                 >
-                  <Search size={20} />
+                  <Search size={18} />
                 </button>
               </div>
             </div>
@@ -657,7 +657,7 @@ export default function Orcamento() {
                   onClick={() => handleBuscarOrcamento("aberto")}
                   className="btn-icone-lupa"
                 >
-                  <Search size={20} />
+                  <Search size={18} />
                 </button>
               </div>
             </div>
