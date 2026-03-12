@@ -316,6 +316,7 @@
   display: flex;
   justify-content: row;
   gap: 40px;
+  margin-bottom: 20px;
 }
 
 .btn-salvar-corte,
