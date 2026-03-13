@@ -34,12 +34,8 @@
     flex: 1 1 100%;
     max-width: 100%;
   }
-
-  .btn-container-acoes {
-    flex-direction: column;
-  }
  
-  .cliente-container .btn-container-acoes {
+  .cliente-container {
     display: flex;
     flex-direction: column;
     gap: 10px;

@@ -65,12 +65,11 @@
 .btn-del-row {
   background-color: transparent;
   color: var(--cor-primaria);
-  border: 1px solid var(--cor-secundaria);
+  border: 1px solid rgba(0,0,0, 0.1);
+  border-radius: 8px;
   padding: 10px;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
   background-color: var(--cor-secundaria);
-  border: none;
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -142,74 +141,6 @@
 .total-box strong {
   font-size: 1.1rem;
   color: var(--texto);
-}
-
-.btn-container-custo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-top: 2px solid var(--branco);
-  padding-top: 30px;
-  margin-top: 50px !important;
-  margin-bottom: 5px;
-}
-
-.btn-wrapper-custo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 60px;
-  margin: 0 0 -10px 0;
-  width: 100%;
-}
-
-.btn-wrapper-flex-custo {
-  display: flex;
-  justify-content: row;
-  gap: 40px;
-}
-
-.btn-salvar-custo,
-.btn-buscar-custo,
-.btn-editar-custo,
-.btn-excluir-custo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  max-width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  font-weight: bold;
-  transition:
-    background-color 0.3s,
-    opacity 0.2s;
-}
-
-.btn-salvar-custo,
-.btn-buscar-custo,
-.btn-editar-custo,
-.btn-excluir-custo {
-  padding: 15px 30px;
-  background-color: var(--cor-primaria);
-  color: var(--branco);
-}
-
-.btn-buscar-custo:hover {
-  filter: brightness(0.85) !important;
-}
-
-
-/* --- Modal de Busca de Projetos --- */
-.swal2-popup.modal-pesquisa {
-  max-width: 900px !important; 
-  padding: 24px 20px !important;
 }
 
 .input-pesquisa {
@@ -302,52 +233,6 @@
   font-style: italic;
 }
 
-.swal2-popup.modal-pesquisa .swal2-cancel {
-  background-color: var(--cor-primaria) !important;
-  color: var(--branco) !important;
-  border: none !important;
-  border-radius: 8px !important;
-  padding: 10px 24px !important;
-  font-weight: 500 !important;
-  font-family: "Montserrat", sans-serif !important;
-  transition: background-color 0.2s ease !important;
-}
-
-.swal2-popup.modal-pesquisa .swal2-cancel:hover {
-  filter: brightness(0.85) !important;
-}
-
-
-@media (max-width: 710px) {
-  
-  .btn-wrapper-custo {
-    gap: 30px;
-  }
-
-  .btn-wrapper-flex-custo {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .btn-salvar-custo {
-    padding: 15px 80px;
-  }
-
-  .btn-editar-custo {
-    padding: 15px 82px;
-  }
-
-  .btn-buscar-custo {
-    padding: 15px 80px;
-  }
-
-  .btn-excluir-custo {
-    padding: 15px 80px;
-  }
-
-}
-
 @media (max-width: 700px) {
   .tabela-header,
   .tabela-row {
@@ -366,80 +251,12 @@
   }
 }
 
-@media (max-width: 650px) {
-  .swal2-popup.modal-pesquisa {
-    max-width: 400px !important;
-  }
-
-  .btn-wrapper-flex {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .btn-salvar-custo {
-    padding: 15px 50px;
-  }
-
-  .btn-editar-custo {
-    padding: 15px 52px;
-  }
-
-  .btn-buscar-custo {
-    padding: 15px 50px;
-  }
-
-  .btn-excluir-custo {
-    padding: 15px 50px;
-  }
-}
-
-/* fim custo material */
-
 @media (max-width: 450px) {
-  .swal2-popup.modal-pesquisa {
-    max-width: 340px !important;
-  }
-
   .financeiro-container{
     padding: 0;
   }
   
   .total-box {
     margin: 15px 5px 0 5px;
-  }
-
-  .btn-wrapper-custo {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-  }
-
-  .btn-wrapper-flex-custo {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-  }
-
-  .btn-salvar-custo {
-    padding: 15px 80px;
-  }
-
-  .btn-editar-custo {
-    padding: 15px 82px;
-  }
-
-  .btn-buscar-custo {
-    padding: 15px 78px;
-  }
-
-  .btn-excluir-custo {
-    padding: 15px 80px;
-  }
-}
-
-@media (max-width: 375px) {
-  .swal2-popup.modal-pesquisa {
-    max-width: 290px !important;
   }
 }

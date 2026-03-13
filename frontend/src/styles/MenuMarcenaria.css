@@ -44,8 +44,8 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: 1.2fr 1.2fr 1fr 0.8fr;
-  gap: 12px;
-  
+  gap: 8px;
+
   grid-template-areas:
     "bloco1 bloco2 bloco5"
     "bloco1 bloco4 bloco5"
@@ -67,8 +67,9 @@ body {
   gap: 8px;
   font-weight: 600;
   color: var(--texto);
-  /* transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   position: relative;
   z-index: 1;
@@ -106,7 +107,6 @@ body {
     0 6px 6px rgba(0, 0, 0, 0.1);
 
   transform: translateY(-4px);
-    /* transition: transform 0.2s ease; */
   z-index: 10;
   color: var(--cor-primaria);
 }
@@ -117,35 +117,30 @@ body {
   transition: transform 0.4s ease;
 }
 
-@media (max-width: 550px) {
+@media (max-width: 620px) {
   .menu-container {
     margin: 10px auto;
-    
     padding: 20px 2px 2px;
   }
-
+  .grid-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
   .grid-item {
-   margin: 0 5px;
+    display: flex;
+    flex-direction: row;
+    margin: 0 5px;
+    flex-direction: row;
+    padding: 15px 0;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
   }
 }
 
 @media (max-width: 400px) {
   .menu-container {
     padding: 20px 2px 2px;
-  }
-
-  .grid-main {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-
-  .grid-item {
-    flex-direction: row;
-    padding: 15px 0;
-    
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
   }
 }

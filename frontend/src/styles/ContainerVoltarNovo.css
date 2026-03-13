@@ -34,7 +34,15 @@
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  transition: filter 0.2s ease;
+  transition: all 0.2s ease;
+  transform: scale(1);
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+.btn-novo-topo:active {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  transform: scale(0.98);
 }
 
 .btn-novo-topo:hover {

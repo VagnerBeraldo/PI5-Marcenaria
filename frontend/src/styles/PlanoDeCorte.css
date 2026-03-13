@@ -105,7 +105,7 @@
   justify-content: center;
   border: none;
   background: transparent;
-  padding: 10px 15px;
+  padding: 10px 14px;
   cursor: pointer;
   font-weight: 700;
   font-size: 0.9rem;
@@ -142,7 +142,7 @@
 
 /* Botão "+ Nova Chapa" */
 .btn-nova-chapa {
-  padding: 10px 25px;
+  padding: 10px 24px;
   margin-bottom: 3px;
   background-color: var(--input-bg);
   border: 1.6px dashed rgb(139, 69, 19, 0.5);
@@ -249,8 +249,8 @@
 .btn-remover {
   background-color: transparent;
   color: var(--cor-primaria);
-  border: 1px solid var(--cor-secundaria);
-  padding: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -296,8 +296,8 @@
   font-weight: bold;
 }
 
-.btn-adicionar:active {
-  transform: scale(0.98);
+.btn-adicionar:hover:not(:disabled), .btn-imprimir:hover:not(:disabled) {
+  filter: brightness(0.80) !important;
 }
 
 .espaco-impressao {
@@ -323,57 +323,6 @@
   margin-bottom: 5px;
 }
 
-.btn-wrapper-corte {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 60px;
-  margin: 0 0 20px 0;
-  width: 100%;
-}
-
-.btn-wrapper-flex-corte {
-  display: flex;
-  justify-content: row;
-  gap: 40px;
-  margin-bottom: 20px;
-}
-
-.btn-salvar-corte,
-.btn-buscar-corte,
-.btn-editar-corte,
-.btn-excluir-corte {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  max-width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  font-weight: bold;
-  transition:
-    background-color 0.3s,
-    opacity 0.2s;
-}
-
-.btn-salvar-corte,
-.btn-buscar-corte,
-.btn-editar-corte,
-.btn-excluir-corte {
-  padding: 15px 30px;
-  background-color: var(--cor-primaria);
-  color: var(--branco);
-}
-
-.btn-buscar-corte:hover {
-  filter: brightness(0.85) !important;
-}
 
 /* --- Responsividade --- */
 @media (max-width: 900px) {
@@ -402,36 +351,6 @@
 }
 
 
-@media (max-width: 710px) {
-     .btn-wrapper-corte {
-  gap: 30px;
-}
-
-.btn-wrapper-flex-corte {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .btn-salvar-corte {
-    padding: 15px 80px;
-  }
-  
-  .btn-editar-corte {
-    padding: 15px 82px;
-  }
-  
-  .btn-buscar-corte {
-    padding: 15px 80px;
-  }
-  
-  .btn-excluir-corte {
-    padding: 15px 80px;
-  }
-
-}
-
-
 @media (max-width: 650px) {
   .btn-container {
     flex-direction: column;
@@ -440,36 +359,6 @@
   .btn-adicionar,
   .btn-imprimir {
     min-width: 380px;
-  }
-
-  .swal2-popup.modal-pesquisa {
-    max-width: 400px !important;
-  }
-
-  .btn-wrapper-flex-corte {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .btn-salvar-corte {
-    padding: 15px 50px;
- 
-  }
-
-  .btn-editar-corte {
-    padding: 15px 52px;
- 
-  }
-
-  .btn-buscar-corte {
-    padding: 15px 50px;
- 
-  }
-
-  .btn-excluir-corte {
-    padding: 15px 50px;
- 
   }
 }
 
@@ -486,42 +375,10 @@
     min-width: 350px;
   }
 
-  .swal2-popup.modal-pesquisa {
-    max-width: 340px !important;
-  }
-
-
   .input-nome {
   margin: 0 10px; 
 }
 
-  .btn-wrapper-corte{
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-  }
-
-  .btn-wrapper-flex-corte {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-  }
-  
-  .btn-salvar-corte {
-    padding: 15px 80px;
-  }
-
-  .btn-editar-corte {
-    padding: 15px 82px;
-  }
-
-  .btn-buscar-corte {
-    padding: 15px 78px;
-  }
-
-  .btn-excluir-corte {
-    padding: 15px 80px;
-  }
 }
 
 
@@ -536,10 +393,6 @@
 }
 
 @media (max-width: 380px) {
-  .swal2-popup.modal-pesquisa {
-    max-width: 290px !important;
-  }
-
   .btn-adicionar,
   .btn-imprimir {
     min-width: 330px;

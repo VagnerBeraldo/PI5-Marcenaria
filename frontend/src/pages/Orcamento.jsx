@@ -12,7 +12,7 @@ import {
 import Swal from "sweetalert2";
 import api from "../../services/api";
 import { useProjeto } from "../hooks/useProjeto";
-import '../styles/LayoutsCompartilhados.css';
+import "../styles/ContainerVoltarNovo.css";
 import "../styles/Orcamento.css";
 
 export default function Orcamento() {
@@ -127,6 +127,7 @@ export default function Orcamento() {
 
   const custoMaterialTotal = useMemo(
     () => valorCustoBase * quantidade,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [valorCustoBase, parseInt(quantidade)],
   );
 
@@ -350,7 +351,8 @@ export default function Orcamento() {
           toast: true,
           position: "top-end",
           icon: "success",
-          title: "Orçamento atualizado!",
+          title: "Orçamento atualizado com sucesso",
+           customClass: { popup: "mensagem-confirmacao" },
           showConfirmButton: false,
           timer: 3000,
         });
@@ -365,12 +367,13 @@ export default function Orcamento() {
             cliente: { id_cliente: novoIdCliente, nome: nomeCliente },
           });
         }
-        
+
         Swal.fire({
           toast: true,
           position: "top-end",
           icon: "success",
-          title: "Orçamento salvo!",
+          title: "Orçamento salvo com sucesso",
+           customClass: { popup: "mensagem-confirmacao" },
           showConfirmButton: false,
           timer: 3000,
         });
@@ -380,6 +383,7 @@ export default function Orcamento() {
       Swal.fire({
         icon: "error",
         title: "Erro",
+         customClass: { popup: "mensagem-erro" },
         text: "Não foi possível salvar os dados.",
       });
     } finally {
@@ -401,7 +405,7 @@ export default function Orcamento() {
     setFrete(Number(orc.frete) || 0);
     setImpostoPerc(Number(orc.imposto) || 0);
     setTaxaCartaoPerc(Number(orc.taxa_cartao) || 0);
-    setMargemLucroPerc(Number(orc.margem_lucro) || 50);
+    setMargemLucroPerc(Number(orc.margem_lucro) || 20);
     setEntrada(Number(orc.entrada) || 0);
     setPrecoManual(Number(orc.preco_final_impresso) || null);
 
@@ -439,50 +443,54 @@ export default function Orcamento() {
     }
   };
 
-  useEffect(() => {
-    if (contextoGlobal?.orcamento) {
-      const orcId =
-        contextoGlobal.orcamento.id_orcamento || contextoGlobal.orcamento.id;
-      if (orcId !== idOrcamentoSalvo)
-        carregarOrcamento(contextoGlobal.orcamento);
-    }
+  useEffect(
+    () => {
+      if (contextoGlobal?.orcamento) {
+        const orcId =
+          contextoGlobal.orcamento.id_orcamento || contextoGlobal.orcamento.id;
+        if (orcId !== idOrcamentoSalvo)
+          carregarOrcamento(contextoGlobal.orcamento);
+      }
 
-    if (
-      contextoGlobal?.cliente?.nome &&
-      contextoGlobal.cliente.nome !== nomeCliente &&
-      contextoGlobal.cliente.id_cliente
-    ) {
-      setNomeCliente(contextoGlobal.cliente.nome);
-      setClienteId(contextoGlobal.cliente.id_cliente);
-    }
+      if (
+        contextoGlobal?.cliente?.nome &&
+        contextoGlobal.cliente.nome !== nomeCliente &&
+        contextoGlobal.cliente.id_cliente
+      ) {
+        setNomeCliente(contextoGlobal.cliente.nome);
+        setClienteId(contextoGlobal.cliente.id_cliente);
+      }
 
-    if (
-      contextoGlobal?.nomeProjetoGlobal !== undefined &&
-      contextoGlobal.nomeProjetoGlobal !== nomeProjeto
-    ) {
-      setNomeProjeto(contextoGlobal.nomeProjetoGlobal);
-    }
+      if (
+        contextoGlobal?.nomeProjetoGlobal !== undefined &&
+        contextoGlobal.nomeProjetoGlobal !== nomeProjeto
+      ) {
+        setNomeProjeto(contextoGlobal.nomeProjetoGlobal);
+      }
 
-    if (
-      contextoGlobal?.custo &&
-      contextoGlobal.custo.id_projeto !== projetoId
-    ) {
-      const p = contextoGlobal.custo;
-      const mat =
-        typeof p.materiais === "string"
-          ? JSON.parse(p.materiais)
-          : p.materiais || [];
-      const custoMat = mat.reduce(
-        (acc, m) =>
-          acc + Number(m.quantidade || 0) * Number(m.valor_unitario || 0),
-        0,
-      );
-      const totalFicha =
-        Number(p.mao_de_obra || 0) + Number(p.instalacao || 0) + custoMat;
-      setValorCustoBase(totalFicha);
-      setProjetoId(p.id_projeto);
-    }
-  }, [contextoGlobal, idOrcamentoSalvo, nomeCliente, nomeProjeto, projetoId]);
+      if (
+        contextoGlobal?.custo &&
+        contextoGlobal.custo.id_projeto !== projetoId
+      ) {
+        const p = contextoGlobal.custo;
+        const mat =
+          typeof p.materiais === "string"
+            ? JSON.parse(p.materiais)
+            : p.materiais || [];
+        const custoMat = mat.reduce(
+          (acc, m) =>
+            acc + Number(m.quantidade || 0) * Number(m.valor_unitario || 0),
+          0,
+        );
+        const totalFicha =
+          Number(p.mao_de_obra || 0) + Number(p.instalacao || 0) + custoMat;
+        setValorCustoBase(totalFicha);
+        setProjetoId(p.id_projeto);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [contextoGlobal, idOrcamentoSalvo, nomeCliente, nomeProjeto, projetoId],
+  );
 
   const handleBuscarOrcamento = async (situacaoDesejada) => {
     setIsLoading(true);
@@ -505,6 +513,7 @@ export default function Orcamento() {
         Swal.fire({
           title: "Aviso",
           text: `Nenhum orçamento "${situacaoDesejada}" encontrado.`,
+           customClass: { popup: "mensagem-erro" },
           icon: "info",
         });
         return;
@@ -562,11 +571,13 @@ export default function Orcamento() {
   const handleExcluir = async () => {
     if (!idOrcamentoSalvo) return;
     const result = await Swal.fire({
+      customClass: { popup: "modal-confirma-exclusaocao" },
       title: "Excluir Orçamento?",
       text: "Esta ação não pode ser desfeita!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#d33",
+      confirmButtonColor: "var(--btn-confirmar-exclusao)",
+      cancelButtonColor: "var(--btn-cancelar-exclusao)",
     });
     if (result.isConfirmed) {
       try {
@@ -590,13 +601,13 @@ export default function Orcamento() {
     <PageTransition className="orcamento-container">
       <div className="card-orcamento">
         <div className="wrapper-header-actions">
-        <div className="header-actions ocultar-na-impressao">
-          <BotaoVoltar />
-          <button className="btn-novo-topo" onClick={limparFormulario}>
-            <FilePlus size={18} />
-            <span>Novo</span>
-          </button>
-        </div>
+          <div className="header-actions ocultar-na-impressao">
+            <BotaoVoltar />
+            <button className="btn-novo-topo" onClick={limparFormulario}>
+              <FilePlus size={18} />
+              <span>Novo</span>
+            </button>
+          </div>
         </div>
         <img src="/logo.svg" alt="Logo" className="logo-img" />
         <h1 className="nome-fantasia">GR Marcenaria</h1>
@@ -605,7 +616,7 @@ export default function Orcamento() {
         <div className="secao-form">
           <h2 className="subtitulo">Dados do Serviço</h2>
           <div className="form-row">
-            <div className="form-group highlight flex-2">
+            <div className="form-group flex-2">
               <label className="titulo-input">Cliente</label>
               <div className="container-lupa">
                 <input
@@ -639,7 +650,7 @@ export default function Orcamento() {
             </div>
           </div>
           <div className="form-row">
-            <div className="form-group highlight flex-2">
+            <div className="form-group flex-2">
               <label className="titulo-input">Nome do Serviço / Projeto</label>
               <div className="container-lupa">
                 <input
@@ -839,31 +850,40 @@ export default function Orcamento() {
           )}
         </div>
 
-        <div className="btn-container-acoes">
-          <button
-            className="btn-acao-salvar"
-            onClick={handleSalvar}
-            disabled={isLoading}
-          >
-            <Save size={18} />
-            <span>Salvar</span>
-          </button>
-          <button
-            className="btn-acao-buscar"
-            onClick={() => handleBuscarOrcamento("gerado")}
-            disabled={isLoading}
-          >
-            <Search size={18} />
-            <span>Buscar</span>
-          </button>
-          <button className="btn-acao-imprimir" onClick={() => window.print()}>
-            <Printer size={18} />
-            <span>Imprimir</span>
-          </button>
-          <button className="btn-acao-excluir" onClick={handleExcluir}>
-            <Trash2 size={18} />
-            <span>Excluir</span>
-          </button>
+        <div className="btn-containver-acoes">
+          <div className="btn-wrapper-acoes">
+            <div className="btn-wrapper-flex-acoes">
+              <button
+                className="btn-salvar"
+                onClick={handleSalvar}
+                disabled={isLoading}
+              >
+                <Save size={18} />
+                <span>Salvar</span>
+              </button>
+              <button
+                className="btn-buscar"
+                onClick={() => handleBuscarOrcamento("gerado")}
+                disabled={isLoading}
+              >
+                <Search size={18} />
+                <span>Buscar</span>
+              </button>
+            </div>
+            <div className="btn-wrapper-flex-acoes">
+              <button
+                className="btn-imprimir-orcamento"
+                onClick={() => window.print()}
+              >
+                <Printer size={18} />
+                <span>Imprimir</span>
+              </button>
+              <button className="btn-excluir" onClick={handleExcluir}>
+                <Trash2 size={18} />
+                <span>Excluir</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 

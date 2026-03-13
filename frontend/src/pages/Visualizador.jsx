@@ -141,7 +141,7 @@ export default function Visualizador({ chapa, pecas, largCorte, escala }) {
                   left: `${p.left * escala}px`,
                   position: "absolute",
                   backgroundColor: "rgba(139, 69, 19, 0.7)",
-                  border: "1px solid #8B4513",
+                  border: "1px solid #000",
                 }}
               >
                 <span className="info-medida">
@@ -165,7 +165,7 @@ export default function Visualizador({ chapa, pecas, largCorte, escala }) {
                     top: `${espaco.y * escala}px`,
                     left: `${espaco.x * escala}px`,
                     position: "absolute",
-                    border: "1px dashed rgba(0, 0, 0, 0.3)",
+                    border: "1px dashed rgba(0, 0, 0, 0.5)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
