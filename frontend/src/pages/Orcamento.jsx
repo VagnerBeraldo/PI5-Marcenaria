@@ -697,14 +697,13 @@ export default function Orcamento() {
           <h2 className="subtitulo">Custos de Base</h2>
           <div className="form-row">
             <div className="form-group flex-1">
-              <div className="form-group flex-1">
+              
                 <label className="titulo-input">Entrada (R$)</label>
                 <input
                   type="text"
                   value={formatMoney(entrada)}
                   onChange={(e) => handleMoneyInput(e.target.value, setEntrada)}
                 />
-              </div>
               <label className="titulo-input">Custo do Material (Base)</label>
               <input
                 type="text"
@@ -722,7 +721,7 @@ export default function Orcamento() {
                 </div>
               </div>
               <div className="form-group flex-1 readonly-box">
-                <label className="mobile">Energia Elétrica</label>
+                <label className="mobile">Energia</label>
                 <div className="readonly-val">
                   {formatMoney(energiaRateada)}
                 </div>

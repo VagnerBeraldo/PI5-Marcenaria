@@ -89,7 +89,7 @@
 .container-custo-energia{
   display: flex;
   gap: 8px;
-  width: 450px;
+  width: 410px;
 }
 
 .readonly-box {
@@ -212,7 +212,8 @@
   }
 
   .container-custo-energia{
-    width: 300px;
+    max-width: 400px;
+    margin: 0 auto;
   }
 }
 
@@ -223,9 +224,9 @@
     padding: 10px;
   }
 
-  .container-custo-energia{
+  /* .container-custo-energia{
     width: 280px;
-  }
+  } */
 
   .mobile{
     font-size: 0.8rem!important;
@@ -245,11 +246,14 @@
 
 .container-custo-energia{
   display: flex;
-  align-items: flex-end;
   gap: 8px;
-  margin: 0px auto;
+  flex-wrap: wrap;
   padding: 0 5px;
   width: 100%;
+}
+
+.readonly-val{
+  text-align: center;
 }
 
 .mobile{
