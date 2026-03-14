@@ -101,10 +101,6 @@ export default function PlanoDeCorte() {
     ]);
   };
 
-  const removerPeca = (id) => {
-    setPecas(pecas.filter((p) => p.id !== id));
-  };
-
   const removerChapa = async (id) => {
     if (chapas.length === 1) {
       Swal.fire({
@@ -232,6 +228,41 @@ export default function PlanoDeCorte() {
     }
   };
 
+
+  const removerPeca = async (id) => {
+      const result = await Swal.fire({
+        customClass: { popup: "modal-confirma-exclusao" },
+        title: "Excluir peça do plano de corte?",
+        text: "Esta ação não pode ser desfeita!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sim, excluir!",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "var(--btn-confirmar-exclusao)",
+        cancelButtonColor: "var(--btn-cancelar-exclusao)",
+      });
+  
+      if (result.isConfirmed) {
+        setIsLoading(true);
+        try {
+          setPecas(pecas.filter((e) => e.id !== id));
+          Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "success",
+            title: "Peça excluída com sucesso",
+            showConfirmButton: false,
+            timer: 3000,
+            customClass: { popup: "mensagem-confirmacao" },
+          });
+        } catch (err) {
+          console.error("Erro ao carregar orçamento", err);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
   const handleEditar = async () => {
     if (!idPlanoSalvo) return;
     setIsLoading(true);
@@ -276,6 +307,8 @@ export default function PlanoDeCorte() {
       text: "Esta ação não pode ser desfeita!",
       icon: "warning",
       showCancelButton: true,
+      confirmButtonText: "Sim, excluir!",
+      cancelButtonText: "Cancelar",
       confirmButtonColor: "var(--btn-confirmar-exclusao)",
       cancelButtonColor: "var(--btn-cancelar-exclusao)",
     });
@@ -427,8 +460,8 @@ export default function PlanoDeCorte() {
           body { 
             font-family: 'Montserrat', Tahoma, Geneva, Verdana, sans-serif; 
             padding: 10mm; 
-            background: var(--branco); 
-            color: var(--fonte-corpo-plano);
+            background: #fff; 
+            color: #444;
           }
           .wrapper-print {
             width: 100%;
@@ -449,36 +482,36 @@ export default function PlanoDeCorte() {
             width: 100%;
           }
           .card-estatistica { 
-            border: 1px solid var(--input-bg); 
+            border: 1px solid #f3f2f2; 
             padding: 10px; 
             flex: 1; 
             text-align: center;
-            background-color: var(--input-bg) !important;
+            background-color: #f3f2f2 !important;
             border-radius: 4px;
           }
-          .valor-cor-primaria { font-size: 16px; font-weight: bold; color: var(--preto); }
+          .valor-cor-primaria { font-size: 16px; font-weight: bold; color: #000; }
           .chapa-madeira { 
-            border: 3px solid var(--borda-chapa-madeira); 
-            background-color: var(--chapa-madeira) !important; 
+            // border: 1px solid #8b4513; 
+            background-color: #deb887 !important; 
             position: relative; 
             margin: 0 auto;
             box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
           }
           .peca-no-plano { 
             position: absolute; 
-            background-color: var(--cor-primaria) !important; 
-            border: 1px solid var(--cor-primaria); 
+            background-color: #8b4513 !important; 
+            border: 1px solid #000 !important; 
             display: flex; 
             flex-direction: column;
             justify-content: center; 
             align-items: center;
-            color: var(--branco); 
+            color: #fff; 
             font-size: 10px;
             font-weight: bold;
           }
           .secao-lista-corte { 
             width: 100%; 
-            margin-top: 60px;
+            margin-top: 100px!important;
             clear: both;
           }
           table { 
@@ -487,20 +520,20 @@ export default function PlanoDeCorte() {
             margin-top: 10px;
           }
           th { 
-            background-color: var(--input-bg) !important; 
-            color: var(--preto)!important; 
+            background-color: #f3f2f2 !important; 
+            color: #000!important; 
             font-size: 12px;
             padding: 10px;
-            border: 1px solid var(--preto);
+            border: 1px solid #000;
           }
           td { 
-            border: 1px solid var(--preto); 
+            border: 1px solid #000; 
             padding: 8px; 
             text-align: center; 
             font-size: 11px;
           }
-          tr:nth-child(even) { background-color: var(--fonte-corpo-plano) !important; }
-          h1 { color: var(--preto); margin-bottom: 5px; }
+          tr:nth-child(even) { background-color: #444 !important; }
+          h1 { color: #000; margin-bottom: 5px; }
           @media print {
             @page { size: portrait; margin: 10mm; }
             body { padding: 0; }
@@ -510,7 +543,7 @@ export default function PlanoDeCorte() {
       <body>
         <div class="wrapper-print">
           <h1 style="text-align:center;">${nomeServico || "Plano de Corte"}</h1>
-          <p style="text-align:center; color: var(--fonte-cabecalho-plano); margin-bottom: 25px;">
+          <p style="text-align:center; color: #666; margin-bottom: 25px;">
             Relatório de Produção - Chapa ${chapas.findIndex((c) => c.id === chapaAtivaId) + 1}
           </p>
           <div class="container-visualizador">
