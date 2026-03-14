@@ -145,8 +145,8 @@ export default function PontoDeEquilibrio() {
         <div
           className="resumo-linha linha-lucro"
           style={{
-            color: lucro < 0 ? "#e74c3c" : "#27ae60",
-            backgroundColor: lucro < 0 ? "#fdedec" : "#eafaf1",
+            color: lucro < 0 ? "var(--vermelho-destaque)" : "var(--verde-destaque)",
+            backgroundColor: lucro < 0 ? "var(--preto)" : "var(--verde-destaque-bg)",
           }}
         >
           <span>Lucro</span>
@@ -158,7 +158,7 @@ export default function PontoDeEquilibrio() {
         <div
           className="resumo-linha linha-ponto-equilibrio"
           style={{
-            backgroundColor: isPEInviavel ? "#e74c3c" : "var(--cor-primaria)",
+            backgroundColor: isPEInviavel ? "var(--vermelho-destaque)" : "var(--cor-primaria)",
           }}
         >
           <div className="pe-info">

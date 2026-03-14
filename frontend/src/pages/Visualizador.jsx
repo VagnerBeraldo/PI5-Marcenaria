@@ -141,7 +141,7 @@ export default function Visualizador({ chapa, pecas, largCorte, escala }) {
                   left: `${p.left * escala}px`,
                   position: "absolute",
                   backgroundColor: "rgba(139, 69, 19, 0.7)",
-                  border: "1px solid #000",
+                  border: "1px solid var(--preto)",
                 }}
               >
                 <span className="info-medida">

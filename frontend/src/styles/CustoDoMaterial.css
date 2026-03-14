@@ -143,6 +143,11 @@
   color: var(--texto);
 }
 
+.btn-icone-lupa span{
+  margin-left: 6px;
+  font-weight: 600;
+}
+
 .input-pesquisa {
   width: 100% !important;
   margin: 10px 0 20px 0 !important;
@@ -172,7 +177,7 @@
 }
 
 .lista-resultados::-webkit-scrollbar-thumb {
-  background-color: #ccc;
+  background-color: var(--input-borda);
   border-radius: 8px;
 }
 
@@ -182,7 +187,7 @@
   align-items: center;
   padding: 14px 16px;
   cursor: pointer;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--input-borda);
   transition: all 0.2s ease;
   border-left: 4px solid transparent; 
 }
@@ -228,7 +233,7 @@
 .item-vazio {
   padding: 25px;
   text-align: center;
-  color: #999;
+  color: var(--texto);
   font-size: 14px;
   font-style: italic;
 }

@@ -119,10 +119,11 @@ export default function Cliente() {
         Swal.fire({
           toast: true,
           position: "top-end",
-          icon: "info",
+          icon: "success",
           title: "Cliente carregado (Sem projetos vinculados)",
           showConfirmButton: false,
           timer: 3000,
+          customClass: { popup: "mensagem-confirmacao" },
         });
         return;
       }
@@ -178,7 +179,7 @@ export default function Cliente() {
                   );
                   custo = resCusto.data;
                 } catch (e) {
-                  console.error("Sem ficha técnica.", e);
+                  console.error("Não há ficha técnica", e);
                 }
               }
 
@@ -192,6 +193,7 @@ export default function Cliente() {
                 title: "Ambiente Global carregado!",
                 showConfirmButton: false,
                 timer: 3000,
+                customClass: { popup: "mensagem-confirmacao" },
               });
               setIsLoading(false);
             };
@@ -209,9 +211,13 @@ export default function Cliente() {
   const handleSalvar = async () => {
     if (!nome.trim() || !logradouro.trim()) {
       Swal.fire({
-        icon: "warning",
-        title: "Atenção",
-        text: "Nome e Logradouro são obrigatórios.",
+        toast: true,
+          position: "top-end",
+          icon: "error",
+          text: "O nome é obrigatório",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-erro" },
       });
       return;
     }
@@ -238,12 +244,12 @@ export default function Cliente() {
       }); // Atualiza memória se for novo
       Swal.fire({
         toast: true,
-         customClass: { popup: "mensagem-confirmacao" },
         position: "top-end",
         icon: "success",
         title: "Cliente salvo com sucesso.",
         showConfirmButton: false,
         timer: 3000,
+        customClass: { popup: "mensagem-confirmacao" },
       });
     } catch (err) {
       console.error("Erro ao carregar orçamento", err);
@@ -252,7 +258,15 @@ export default function Cliente() {
         detalhesErro && detalhesErro.length > 0
           ? `Campo inválido: ${detalhesErro[0].path[0]} - ${detalhesErro[0].message}`
           : "Não foi possível salvar o cliente. Verifique os dados.";
-      Swal.fire({ icon: "error",  customClass: { popup: "mensagem-erro" }, title: "Erro", text: mensagemAlerta });
+      Swal.fire({ 
+        toast: true,
+          position: "top-end",
+          icon: "error",
+          text: mensagemAlerta, 
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-erro" }, 
+        });
     } finally {
       setIsSaving(false);
     }
@@ -262,18 +276,26 @@ export default function Cliente() {
   const handleEditar = async () => {
     if (!idClienteSalvo) {
       Swal.fire({
-        icon: "warning",
-        title: "Atenção",
-        text: "Nenhum cliente selecionado para edição.",
+        toast: true,
+          position: "top-end",
+          icon: "error",
+          text: "Nenhum cliente selecionado para edição.",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-erro" },
       });
       return;
     }
 
     if (!nome.trim() || !logradouro.trim()) {
       Swal.fire({
-        icon: "warning",
-        title: "Atenção",
-        text: "Nome e Logradouro são obrigatórios.",
+        toast: true,
+          position: "top-end",
+          icon: "error",
+          text: "Nome e Logradouro são obrigatórios.",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-erro" },
       });
       return;
     }
@@ -310,7 +332,15 @@ export default function Cliente() {
         detalhesErro && detalhesErro.length > 0
           ? `Campo inválido: ${detalhesErro[0].path[0]} - ${detalhesErro[0].message}`
           : "Não foi possível editar o cliente. Verifique os dados.";
-      Swal.fire({ icon: "error",  customClass: { popup: "mensagem-erro" }, title: "Erro", text: mensagemAlerta });
+      Swal.fire({ 
+        toast: true,
+          position: "top-end",
+          icon: "error",
+          text: mensagemAlerta, 
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-erro" }, 
+      });
     } finally {
       setIsLoading(false);
     }
@@ -323,9 +353,13 @@ export default function Cliente() {
       const { data } = await api.get("/clientes");
       if (!data || data.length === 0) {
         Swal.fire({
-          title: "Aviso",
+        toast: true,
+          position: "top-end",
+          icon: "error",
           text: "Nenhum cliente cadastrado.",
-          icon: "info",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-erro" },
         });
         return;
       }
@@ -377,9 +411,13 @@ export default function Cliente() {
     } catch (error) {
       console.error("Erro ao buscar clientes:", error);
       Swal.fire({
-        icon: "error",
-        title: "Erro",
-        text: "Não foi possível carregar a lista de clientes.",
+        toast: true,
+          position: "top-end",
+          icon: "error",
+          text: "Não foi possível carregar a lista de clientes.",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-erro" },
       });
     } finally {
       setIsLoading(false);
@@ -391,7 +429,7 @@ export default function Cliente() {
     if (!idClienteSalvo) return;
 
     const result = await Swal.fire({
-      customClass: { popup: "modal-confirma-exclusaocao" },
+      customClass: { popup: "modal-confirma-exclusao" },
       title: "Excluir Cliente?",
       text: "Todos os orçamentos vinculados podem perder a referência!",
       icon: "warning",
@@ -412,14 +450,19 @@ export default function Cliente() {
           title: "Cliente excluído com sucesso!",
           showConfirmButton: false,
           timer: 3000,
+          customClass: { popup: "mensagem-confirmacao" },
         });
         limparFormulario();
       } catch (error) {
         console.error("Erro ao excluir:", error);
         Swal.fire({
+          toast: true,
+          position: "top-end",
           icon: "error",
-          title: "Erro",
           text: "Não foi possível excluir o cliente.",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-erro" },
         });
       }
     }

@@ -15,8 +15,8 @@
 .chapa-madeira {
   display: block;
   position: relative;
-  border: 3px solid var(--borda-chapa-visualizador);
-  background-color: var(--chapa-visualizador);
+  border: 3px solid var(--borda-chapa-madeira);
+  background-color: var(--chapa-madeira);
   margin: 0 auto 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
@@ -71,12 +71,13 @@
   font-weight: 900;
   margin-top: 5px;
 }
-.cor-azul {
+
+/* .cor-azul {
   color: black;
 }
 .cor-laranja {
   color: black;
-}
+} */
 
 .peca-no-plano {
   position: absolute;

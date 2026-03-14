@@ -195,9 +195,13 @@ export default function Orcamento() {
       const { data } = await api.get("/clientes");
       if (!data || data.length === 0) {
         Swal.fire({
-          title: "Aviso",
+          toast: true,
+          position: "top-end",
+          icon: "error",
           text: "Nenhum cliente cadastrado.",
-          icon: "info",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-erro" },
         });
         return;
       }
@@ -282,9 +286,13 @@ export default function Orcamento() {
   const handleSalvar = async () => {
     if (!nomeProjeto.trim()) {
       Swal.fire({
-        icon: "warning",
-        title: "Atenção",
-        text: "O Nome do Serviço é obrigatório.",
+        toast: true,
+          position: "top-end",
+          icon: "error",
+          text: "O Nome do Serviço é obrigatório.",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-erro" },
       });
       return;
     }
@@ -381,10 +389,13 @@ export default function Orcamento() {
     } catch (err) {
       console.error("Erro ao carregar orçamento", err);
       Swal.fire({
-        icon: "error",
-        title: "Erro",
-         customClass: { popup: "mensagem-erro" },
-        text: "Não foi possível salvar os dados.",
+        toast: true,
+          position: "top-end",
+          icon: "error",
+          text: "Não foi possível salvar os dados.",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-erro" },
       });
     } finally {
       setIsLoading(false);
@@ -498,9 +509,13 @@ export default function Orcamento() {
       const { data } = await api.get("/orcamentos");
       if (!data || data.length === 0) {
         Swal.fire({
-          title: "Aviso",
+          toast: true,
+          position: "top-end",
+          icon: "error",
           text: "Nenhum orçamento salvo encontrado.",
-          icon: "info",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-erro" },
         });
         return;
       }
@@ -511,10 +526,13 @@ export default function Orcamento() {
 
       if (dadosFiltradosPorSituacao.length === 0) {
         Swal.fire({
-          title: "Aviso",
+          toast: true,
+          position: "top-end",
+          icon: "error",
           text: `Nenhum orçamento "${situacaoDesejada}" encontrado.`,
-           customClass: { popup: "mensagem-erro" },
-          icon: "info",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-erro" },
         });
         return;
       }
@@ -571,7 +589,7 @@ export default function Orcamento() {
   const handleExcluir = async () => {
     if (!idOrcamentoSalvo) return;
     const result = await Swal.fire({
-      customClass: { popup: "modal-confirma-exclusaocao" },
+      customClass: { popup: "modal-confirma-exclusao" },
       title: "Excluir Orçamento?",
       text: "Esta ação não pode ser desfeita!",
       icon: "warning",
@@ -590,6 +608,7 @@ export default function Orcamento() {
           title: "Orçamento excluído!",
           showConfirmButton: false,
           timer: 3000,
+          customClass: { popup: "mensagem-confirmacao" },
         });
       } catch (err) {
         console.error("Erro ao carregar orçamento", err);

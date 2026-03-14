@@ -108,14 +108,18 @@ export default function PlanoDeCorte() {
   const removerChapa = async (id) => {
     if (chapas.length === 1) {
       Swal.fire({
-        icon: "warning",
-        title: "Atenção",
-        text: "Você deve ter pelo menos uma chapa no projeto.",
+        toast: true,
+          position: "top-end",
+          icon: "error",
+          text: "Você deve ter pelo menos uma chapa no projeto.",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-erro" },
       });
       return;
     }
     const result = await Swal.fire({
-      customClass: { popup: "modal-confirma-exclusaocao" },
+      customClass: { popup: "modal-confirma-exclusao" },
       title: "Excluir chapa",
       text: "Excluir esta chapa e todas as peças?",
       icon: "warning",
@@ -132,6 +136,18 @@ export default function PlanoDeCorte() {
         setChapas(novasChapas);
         setPecas(pecas.filter((p) => p.chapaId !== id));
         if (chapaAtivaId === id) setChapaAtivaId(novasChapas[0].id);
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          text: "Chapa removida com sucesso!",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-confirmacao" },
+        });
+      } catch (err) {
+        console.error("Erro ao carregar orçamento", err); 
+
       } finally {
         setIsLoading(false);
       }
@@ -155,10 +171,11 @@ export default function PlanoDeCorte() {
       Swal.fire({
         toast: true,
         position: "top-end",
-        icon: "warning",
+        icon: "error",
         title: "O nome do serviço é obrigatório.",
         showConfirmButton: false,
         timer: 3000,
+        customClass: { popup: "mensagem-erro" },
       });
       return;
     }
@@ -198,7 +215,7 @@ export default function PlanoDeCorte() {
         title: "Plano e Orçamento vinculados com sucesso!",
         customClass: { popup: "mensagem-confirmacao" },
         showConfirmButton: false,
-        timer: 2500,
+        timer: 3000,
       });
     } catch (err) {
       console.error("Erro ao carregar orçamento", err);
@@ -227,9 +244,11 @@ export default function PlanoDeCorte() {
       };
       await api.put(`/planos-corte/${idPlanoSalvo}`, payload);
       Swal.fire({
+        toast: true,
+        position: "top-end",
         icon: "success",
         title: "Plano atualizado com sucesso",
-         customClass: { popup: "mensagem-confirmacao" },
+        customClass: { popup: "mensagem-confirmacao" },
         timer: 3000,
         showConfirmButton: false,
       });
@@ -264,6 +283,16 @@ export default function PlanoDeCorte() {
       try {
         await api.delete(`/planos-corte/${idPlanoSalvo}`);
         handleNovo();
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          text: "Exclusão realizada com sucesso",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-confirmacao" },
+        });
+      
       } catch (err) {
         console.error("Erro ao carregar orçamento", err);
       } finally {
@@ -278,9 +307,13 @@ export default function PlanoDeCorte() {
       const resOrc = await api.get("/orcamentos");
       if (!resOrc.data || resOrc.data.length === 0) {
         Swal.fire({
+          toast: true,
+          position: "top-end",
           icon: "error",
-          title: "Sem Orçamentos",
-          text: "Não existem orçamentos cadastrados no sistema. Inicie um orçamento primeiro.",
+          title: "Não há orçamento cadastrado",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-erro" },
         });
         return;
       }
@@ -290,9 +323,13 @@ export default function PlanoDeCorte() {
 
       if (!dadosNormalizados.length) {
         Swal.fire({
-          title: "Aviso",
+          toast: true,
+          position: "top-end",
+          icon: "error",
           text: "Nenhum plano de corte encontrado.",
-          icon: "info",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-erro" },
         });
         return;
       }
@@ -389,8 +426,8 @@ export default function PlanoDeCorte() {
           body { 
             font-family: 'Montserrat', Tahoma, Geneva, Verdana, sans-serif; 
             padding: 10mm; 
-            background: white; 
-            color: #444;
+            background: var(--branco); 
+            color: var(--fonte-corpo-plano);
           }
           .wrapper-print {
             width: 100%;
@@ -411,30 +448,30 @@ export default function PlanoDeCorte() {
             width: 100%;
           }
           .card-estatistica { 
-            border: 1px solid #f3f2f2; 
+            border: 1px solid var(--input-bg); 
             padding: 10px; 
             flex: 1; 
             text-align: center;
-            background-color: #f3f2f2 !important;
+            background-color: var(--input-bg) !important;
             border-radius: 4px;
           }
-          .valor-cor-primaria { font-size: 16px; font-weight: bold; color: #000000; }
+          .valor-cor-primaria { font-size: 16px; font-weight: bold; color: var(--preto); }
           .chapa-madeira { 
-            border: 3px solid #451a03; 
-            background-color: #deb887 !important; 
+            border: 3px solid var(--borda-chapa-madeira); 
+            background-color: var(--chapa-madeira) !important; 
             position: relative; 
             margin: 0 auto;
             box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
           }
           .peca-no-plano { 
             position: absolute; 
-            background-color: #8B4513 !important; 
-            border: 1px solid #8B4513; 
+            background-color: var(--cor-primaria) !important; 
+            border: 1px solid var(--cor-primaria); 
             display: flex; 
             flex-direction: column;
             justify-content: center; 
             align-items: center;
-            color: white; 
+            color: var(--branco); 
             font-size: 10px;
             font-weight: bold;
           }
@@ -449,20 +486,20 @@ export default function PlanoDeCorte() {
             margin-top: 10px;
           }
           th { 
-            background-color: #f3f2f2 !important; 
-            color: black !important; 
+            background-color: var(--input-bg) !important; 
+            color: var(--preto)!important; 
             font-size: 12px;
             padding: 10px;
-            border: 1px solid #000;
+            border: 1px solid var(--preto);
           }
           td { 
-            border: 1px solid #000; 
+            border: 1px solid var(--preto); 
             padding: 8px; 
             text-align: center; 
             font-size: 11px;
           }
-          tr:nth-child(even) { background-color: #4444 !important; }
-          h1 { color: #000000; margin-bottom: 5px; }
+          tr:nth-child(even) { background-color: var(--fonte-corpo-plano) !important; }
+          h1 { color: var(--preto); margin-bottom: 5px; }
           @media print {
             @page { size: portrait; margin: 10mm; }
             body { padding: 0; }
@@ -472,7 +509,7 @@ export default function PlanoDeCorte() {
       <body>
         <div class="wrapper-print">
           <h1 style="text-align:center;">${nomeServico || "Plano de Corte"}</h1>
-          <p style="text-align:center; color: #666; margin-bottom: 25px;">
+          <p style="text-align:center; color: var(--fonte-cabecalho-plano); margin-bottom: 25px;">
             Relatório de Produção - Chapa ${chapas.findIndex((c) => c.id === chapaAtivaId) + 1}
           </p>
           <div class="container-visualizador">

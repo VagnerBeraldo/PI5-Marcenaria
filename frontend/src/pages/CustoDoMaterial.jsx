@@ -179,10 +179,56 @@ export default function CustoDoMaterial() {
     ]);
   };
 
-  const removerLinha = (id) => {
-    if (materiais.length === 1) return;
-    setMateriais(materiais.filter((m) => m.id !== id));
+
+  const removerLinha = async (id) => {
+    // Mantém sua regra original: se houver só 1, não remove
+    if (materiais.length === 1) {
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        text: "O projeto deve ter pelo menos um material.",
+        showConfirmButton: false,
+        timer: 3000,
+        customClass: { popup: "mensagem-erro" },
+      });
+      return;
+    }
+
+    const result = await Swal.fire({
+      customClass: { popup: "modal-confirma-exclusao" },
+      title: "Excluir item?",
+      text: "Deseja remover este material da lista?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sim, excluir!",
+      confirmButtonColor: "var(--btn-confirmar-exclusao)",
+      cancelButtonColor: "var(--btn-cancelar-exclusao)",
+    });
+
+    if (result.isConfirmed) {
+      setIsLoading(true);
+      try {
+        // Lógica original de filtro
+        setMateriais(materiais.filter((m) => m.id !== id));
+
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: "Excluído com sucesso!",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-confirmacao" },
+        });
+      } catch (err) {
+        console.error("Erro ao carregar orçamento", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
   };
+
 
   const atualizarItem = (id, campo, valor) => {
     setMateriais(
@@ -243,9 +289,13 @@ export default function CustoDoMaterial() {
 
       if (!dadosNormalizados.length) {
         Swal.fire({
-          title: "Aviso",
-          text: "Nenhum projeto encontrado.",
-          icon: "info",
+          toast: true,
+        position: "top-end",
+        icon: "error",
+        text: "Nenhum projeto encontrado.",
+        customClass: { popup: "mensagem-erro" },
+        showConfirmButton: false,
+        timer: 3000,
         });
         return;
       }
@@ -313,9 +363,13 @@ export default function CustoDoMaterial() {
       const planos = response.data;
       if (!planos.length) {
         Swal.fire({
-          title: "Aviso",
-          text: "Nenhum plano encontrado.",
-          icon: "info",
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        text: "Nenhum plano encontrado.",
+        customClass: { popup: "mensagem-erro" },
+        showConfirmButton: false,
+        timer: 3000,
         });
         return;
       }
@@ -410,7 +464,15 @@ export default function CustoDoMaterial() {
 
   const handleSalvar = async () => {
     if (!nomeProjeto.trim()) {
-      Swal.fire({ icon: "warning", title: "O nome do projeto é obrigatório." });
+      Swal.fire({ 
+        toast: true,
+        position: "top-end",
+        title: "O nome do projeto é obrigatório.", 
+        icon: "error", 
+        timer: 3000,
+        customClass: { popup: "mensagem-erro" },
+        showConfirmButton: false,
+      });
       return;
     }
     setIsLoading(true);
@@ -430,15 +492,25 @@ export default function CustoDoMaterial() {
       });
 
       Swal.fire({
+        toast: true,
+        position: "top-end",
         icon: "success",
         title: "Projeto salvo com sucesso",
-         customClass: { popup: "mensagem-confirmacao" },
-        timer: 3000,
+        customClass: { popup: "mensagem-confirmacao" },
         showConfirmButton: false,
+        timer: 3000,
       });
     } catch (err) {
       console.error("Erro ao carregar orçamento", err);
-      Swal.fire({ icon: "error",  customClass: { popup: "mensagem-erro" }, title: "Erro ao salvar." });
+      Swal.fire({ 
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Erro ao salvar.",
+        customClass: { popup: "mensagem-erro" },
+        showConfirmButton: false,
+        timer: 3000, 
+      });
     } finally {
       setIsLoading(false);
     }
@@ -451,11 +523,13 @@ export default function CustoDoMaterial() {
       const payload = montarPayload();
       await api.put(`/custos/${idProjetoSalvo}`, payload);
       Swal.fire({
+        toast: true,
+        position: "top-end",
         icon: "success",
-        title: "Atualizado com sucesso",
+        title: "Projeto editado com sucesso",
         customClass: { popup: "mensagem-confirmacao" },
-        timer: 3000,
         showConfirmButton: false,
+        timer: 3000,
       });
     } catch (err) {
       console.error("Erro ao carregar orçamento", err);
@@ -476,11 +550,12 @@ export default function CustoDoMaterial() {
   const handleExcluir = async () => {
     if (!idProjetoSalvo) return;
     const result = await Swal.fire({
-      customClass: { popup: "modal-confirma-exclusaocao" },
-      title: "Excluir?",
-      text: "Deseja remover este projeto?",
+      customClass: { popup: "modal-confirma-exclusao" },
+      title: "Excluir item?",
+      text: "Deseja remover este material da lista?",
       icon: "warning",
       showCancelButton: true,
+      confirmButtonText: "Sim, excluir!",
       confirmButtonColor: "var(--btn-confirmar-exclusao)",
       cancelButtonColor: "var(--btn-cancelar-exclusao)",
     });
@@ -490,10 +565,13 @@ export default function CustoDoMaterial() {
         await api.delete(`/custos/${idProjetoSalvo}`);
         limparFormulario();
         Swal.fire({
+          toast: true,
+          position: "top-end",
           icon: "success",
-          title: "Excluído!",
-          timer: 3000,
+          title: "Excluído com sucesso!",
           showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-confirmacao" },
         });
       } catch (err) {
         console.error("Erro ao carregar orçamento", err);
@@ -534,8 +612,9 @@ export default function CustoDoMaterial() {
             type="button"
             onClick={handleBuscarPlanoDeCorte}
             className="btn-icone-lupa"
-          >
+            >
             <Search size={18} />
+            <span>Orçamento</span>
           </button>
         </div>
       </div>
@@ -602,7 +681,7 @@ export default function CustoDoMaterial() {
             </button>
           </div>
         ))}
-      </div>
+      </div>      
       <button className="btn-add-row" onClick={adicionarLinha}>
         <CirclePlus size={16} /> Adicionar Material
       </button>

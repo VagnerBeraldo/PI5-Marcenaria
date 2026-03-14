@@ -7,7 +7,7 @@
   body {
     margin: 0;
     padding: 0;
-    background: white !important;
+    background: var(--branco) !important;
     -webkit-print-color-adjust: exact; /* Garante que as cores apareçam */
   }
 

@@ -112,7 +112,7 @@
   box-sizing: border-box; 
   padding: 10px 12px;
   border: none;
-  background-color: var(--input-bg, #f3f2f2); 
+  background-color: var(--input-bg, var(--input-bg)); 
   border-radius: 8px;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); 
   font-family: inherit;
@@ -149,7 +149,7 @@
 
 .btn-del-extra:hover {
   background: var(--cor-primaria);
-  color: white;
+  color: var(--branco);
   border-color: var(--cor-primaria);
 }
 
@@ -184,8 +184,8 @@
 .input-preco-fechado {
   background: transparent;
   border: none;
-  border-bottom: 2px solid white;
-  color: white;
+  border-bottom: 2px solid var(--branco);
+  color: var(--branco);
   font-size: 1.5rem;
   font-weight: bold;
   text-align: right;
@@ -307,13 +307,13 @@
     display: block !important;
     padding: 20px;
     font-family: Arial, sans-serif;
-    color: black;
+    color: var(--preto);
   }
 
   .cabecalho-impressao {
     text-align: center;
     margin-bottom: 40px;
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid var(--preto);
     padding-bottom: 20px;
   }
 
@@ -325,7 +325,7 @@
   .cabecalho-impressao h2 {
     margin: 0;
     font-size: 24px;
-    color: black;
+    color: var(--preto);
   }
 
   .dados-impressao {
@@ -338,7 +338,7 @@
   }
 
   .valores-impressao {
-    border: 1px solid black;
+    border: 1px solid var(--preto);
     border-radius: 8px;
     padding: 25px;
   }
@@ -351,7 +351,7 @@
   }
 
   .linha-valor.destaque-saldo {
-    border-top: 1px solid black;
+    border-top: 1px solid var(--preto);
     padding-top: 15px;
     font-weight: bold;
     font-size: 20px;
@@ -371,7 +371,7 @@
 
   .linha-assinatura hr {
     border: none;
-    border-top: 1px solid black;
+    border-top: 1px solid var(--preto);
     margin-bottom: 8px;
   }
 
