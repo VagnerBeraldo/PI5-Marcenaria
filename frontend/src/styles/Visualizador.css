@@ -178,7 +178,7 @@
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1000px) {
   .container-visualizador {
     padding-right: 5px !important;
   }

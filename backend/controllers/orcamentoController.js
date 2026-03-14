@@ -14,13 +14,13 @@ const postOrcamento = async (req, res) => {
         id_cliente: resultado.id_cliente,
         message: "Orçamento salvo com sucesso!",
       });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
+  } catch (err) {
+    if (err instanceof z.ZodError) {
       return res
         .status(400)
-        .json({ error: "Erro de validação", detalhes: error.errors });
+        .json({ error: "Erro de validação", detalhes: err.errors });
     }
-    console.error("Erro ao salvar orçamento:", error);
+    console.error("Erro ao carregar orçamento", err);
     res.status(500).json({ error: "Erro interno ao salvar orçamento." });
   }
 };
@@ -29,8 +29,8 @@ const getOrcamentos = async (req, res) => {
   try {
     const orcamentos = await orcamentoService.listarOrcamentos();
     res.status(200).json(orcamentos);
-  } catch (error) {
-    console.error("Erro ao listar orçamentos:", error);
+  } catch (err) {
+    console.error("Erro ao carregar orçamento", err);
     res.status(500).json({ error: "Erro interno ao buscar orçamentos." });
   }
 };
@@ -41,13 +41,13 @@ const putOrcamento = async (req, res) => {
     const dadosValidados = orcamentoSchema.parse(req.body);
     await orcamentoService.editarOrcamento(id, dadosValidados);
     res.status(200).json({ message: "Orçamento atualizado com sucesso!" });
-  } catch (error) {
-    if (error instanceof z.ZodError) {
+  } catch (err) {
+    if (err instanceof z.ZodError) {
       return res
         .status(400)
-        .json({ error: "Erro de validação", detalhes: error.errors });
+        .json({ error: "Erro de validação", detalhes: err.errors });
     }
-    console.error("Erro ao atualizar orçamento:", error);
+    console.error("Erro ao carregar orçamento", err);
     res.status(500).json({ error: "Erro interno ao atualizar orçamento." });
   }
 };
@@ -62,8 +62,8 @@ const deleteOrcamento = async (req, res) => {
     }
 
     res.status(204).end();
-  } catch (error) {
-    console.error("Erro ao excluir orçamento:", error);
+  } catch (err) {
+    console.error("Erro ao carregar orçamento", err);
     res.status(500).json({ error: "Erro interno ao excluir orçamento." });
   }
 };
@@ -74,8 +74,8 @@ const getOrcamentosPorCliente = async (req, res) => {
     const orcamentos =
       await orcamentoService.buscarOrcamentosPorCliente(id_cliente);
     res.status(200).json(orcamentos);
-  } catch (error) {
-    console.error("Erro ao buscar orçamentos do cliente:", error);
+  } catch (err) {
+    console.error("Erro ao carregar orçamento", err);
     res
       .status(500)
       .json({ error: "Erro interno ao buscar orçamentos do cliente." });

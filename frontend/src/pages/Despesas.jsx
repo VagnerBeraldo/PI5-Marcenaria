@@ -59,13 +59,13 @@ export default function Despesas() {
 
   const removeOutraFixa = async (id) => {
     const result = await Swal.fire({
-      title: "Remover despesa?",
-      text: "Deseja remover este item da lista?",
+      title: "Excluir despesa?",
+      text: "Deseja excluir este item da lista?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "var(--vermelho-destaque)",
       cancelButtonColor: "var(--btn-cancelar-exclusao)",
-      confirmButtonText: "Sim, remover",
+      confirmButtonText: "Sim, excluir!",
       cancelButtonText: "Cancelar",
     });
 
@@ -127,13 +127,13 @@ export default function Despesas() {
 
   const removeOutraVariavel = async (id) => {
     const result = await Swal.fire({
-      title: "Remover despesa?",
-      text: "Deseja remover este item da lista?",
+      title: "Excluir despesa?",
+      text: "Deseja excluir este item da lista?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "var(--vermelho-destaque)",
       cancelButtonColor: "var(--btn-cancelar-exclusao)",
-      confirmButtonText: "Sim, remover",
+      confirmButtonText: "Sim, excluir!",
       cancelButtonText: "Cancelar",
     });
 

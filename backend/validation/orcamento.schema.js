@@ -19,6 +19,7 @@ const orcamentoSchema = z.object({
     frete: z.coerce.number().min(0),
     custo_fixo: z.coerce.number().min(0),
     energia_eletrica: z.coerce.number().min(0),
+    outras_var: z.coerce.number().min(0),
     imposto: z.coerce.number().min(0),
     taxa_cartao: z.coerce.number().min(0),
     margem_lucro: z.coerce.number().min(0),

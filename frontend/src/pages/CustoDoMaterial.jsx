@@ -202,6 +202,7 @@ export default function CustoDoMaterial() {
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Sim, excluir!",
+      cancelButtonText: "Cancelar",
       confirmButtonColor: "var(--btn-confirmar-exclusao)",
       cancelButtonColor: "var(--btn-cancelar-exclusao)",
     });
@@ -556,6 +557,7 @@ export default function CustoDoMaterial() {
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Sim, excluir!",
+      cancelButtonText: "Cancelar",
       confirmButtonColor: "var(--btn-confirmar-exclusao)",
       cancelButtonColor: "var(--btn-cancelar-exclusao)",
     });
@@ -677,7 +679,7 @@ export default function CustoDoMaterial() {
               className="btn-del-row"
               onClick={() => removerLinha(item.id)}
             >
-              <Trash2 size={16} />
+              <Trash2 size={18} />
             </button>
           </div>
         ))}
