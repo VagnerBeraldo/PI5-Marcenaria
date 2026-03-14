@@ -133,6 +133,10 @@ body {
   color: var(--branco);
 }
 
+.btn-editar {
+  padding: 15px 33px;
+}
+
 .btn-salvar:hover:not(:disabled),
 .btn-editar:hover:not(:disabled),
 .btn-buscar:hover:not(:disabled),

@@ -8,6 +8,8 @@ import {
   FilePlus,
   CirclePlus,
   Printer,
+  FileEdit,
+  RefreshCw
 } from "lucide-react";
 import Swal from "sweetalert2";
 import api from "../../services/api";
@@ -37,7 +39,6 @@ export default function Orcamento() {
   const [margemLucroPerc, setMargemLucroPerc] = useState(20);
 
   const [entrada, setEntrada] = useState(0);
-
   const [extras, setExtras] = useState([]);
 
   const [baseDespesas, setBaseDespesas] = useState({
@@ -47,81 +48,83 @@ export default function Orcamento() {
   });
 
   const [precoManual, setPrecoManual] = useState(null);
+  
+  const [custoFixoSalvo, setCustoFixoSalvo] = useState(null);
+  const [energiaSalva, setEnergiaSalva] = useState(null);
   const [outrasVariaveisSalvas, setOutrasVariaveisSalvas] = useState(null);
 
-  useEffect(() => {
-    const buscarDespesasBase = async () => {
-      try {
-        const response = await api.get("/despesas");
-        const dados = response.data;
+  const buscarDespesasBase = async () => {
+    try {
+      const response = await api.get("/despesas");
+      const dados = response.data;
 
-        if (!dados) return;
+      if (!dados) return;
 
-        const fixas = dados.despesasFixas || dados;
-        const variaveis = dados.despesasVariaveis || dados;
+      const fixas = dados.despesasFixas || dados;
+      const variaveis = dados.despesasVariaveis || dados;
 
-        let somaFixas =
-          Number(fixas.manutencao || 0) +
-          Number(fixas.internet || 0) +
-          Number(fixas.contador || 0);
+      let somaFixas =
+        Number(fixas.manutencao || 0) +
+        Number(fixas.internet || 0) +
+        Number(fixas.contador || 0);
 
-        const adicionais = fixas.outrasFixas || [];
-        if (adicionais.length > 0 || typeof adicionais === "string") {
-          const listaAdicionais =
-            typeof adicionais === "string"
-              ? JSON.parse(adicionais)
-              : adicionais;
+      const adicionais = fixas.outrasFixas || [];
+      if (adicionais.length > 0 || typeof adicionais === "string") {
+        const listaAdicionais =
+          typeof adicionais === "string"
+            ? JSON.parse(adicionais)
+            : adicionais;
 
-          const extrasFixas = listaAdicionais.reduce(
-            (acc, curr) => acc + Number(curr.valor || 0),
-            0,
-          );
-
-          somaFixas += extrasFixas;
-        }
-
-        const energia = Number(variaveis.energia || 0);
-        const imposto = Number(variaveis.impostoPerc || 0);
-        const taxaCartao = Number(variaveis.taxaCartaoPerc || 0);
-
-        const outrasVar = variaveis.outrasVariaveis || [];
-        const listaOutrasVar =
-          typeof outrasVar === "string" ? JSON.parse(outrasVar) : outrasVar;
-        const somaOutrasVar = listaOutrasVar.reduce(
+        const extrasFixas = listaAdicionais.reduce(
           (acc, curr) => acc + Number(curr.valor || 0),
           0,
         );
-
-        setBaseDespesas({
-          custoFixoTotal: somaFixas,
-          energiaTotal: energia,
-          outrasVariaveisTotal: somaOutrasVar,
-          impostoPadrao: imposto,
-          taxaCartaoPadrao: taxaCartao,
-        });
-
-        setImpostoPerc(imposto);
-        setTaxaCartaoPerc(taxaCartao);
-      } catch (err) {
-        console.error("Erro ao carregar orçamento", err);
+        somaFixas += extrasFixas;
       }
-    };
 
+      const energia = Number(variaveis.energia || 0);
+      const imposto = Number(variaveis.impostoPerc || 0);
+      const taxaCartao = Number(variaveis.taxaCartaoPerc || 0);
+
+      const outrasVar = variaveis.outrasVariaveis || [];
+      const listaOutrasVar =
+        typeof outrasVar === "string" ? JSON.parse(outrasVar) : outrasVar;
+      const somaOutrasVar = listaOutrasVar.reduce(
+        (acc, curr) => acc + Number(curr.valor || 0),
+        0,
+      );
+
+      setBaseDespesas({
+        custoFixoTotal: somaFixas,
+        energiaTotal: energia,
+        outrasVariaveisTotal: somaOutrasVar,
+        impostoPadrao: imposto,
+        taxaCartaoPadrao: taxaCartao,
+      });
+
+      setImpostoPerc(imposto);
+      setTaxaCartaoPerc(taxaCartao);
+    } catch (err) {
+      console.error("Erro ao carregar orçamento", err);
+    }
+  };
+
+  useEffect(() => {
     buscarDespesasBase();
   }, []);
 
-  const custoFixoRateado = useMemo(
-    () => (baseDespesas.custoFixoTotal / 22) * diasTrabalho,
-    [baseDespesas.custoFixoTotal, diasTrabalho],
-  );
+  const custoFixoAtual = useMemo(() => {
+    if (custoFixoSalvo !== null && custoFixoSalvo !== undefined) return custoFixoSalvo;
+    return (baseDespesas.custoFixoTotal / 22) * diasTrabalho;
+  }, [custoFixoSalvo, baseDespesas.custoFixoTotal, diasTrabalho]);
 
-  const energiaRateada = useMemo(
-    () => (baseDespesas.energiaTotal / 22) * diasTrabalho,
-    [baseDespesas.energiaTotal, diasTrabalho],
-  );
+  const energiaAtual = useMemo(() => {
+    if (energiaSalva !== null && energiaSalva !== undefined) return energiaSalva;
+    return (baseDespesas.energiaTotal / 22) * diasTrabalho;
+  }, [energiaSalva, baseDespesas.energiaTotal, diasTrabalho]);
 
-  const outrasVariaveisRateadas = useMemo(() => {
-    if (outrasVariaveisSalvas !== null) return outrasVariaveisSalvas;
+  const outrasVariaveisAtual = useMemo(() => {
+    if (outrasVariaveisSalvas !== null && outrasVariaveisSalvas !== undefined) return outrasVariaveisSalvas;
     return (baseDespesas.outrasVariaveisTotal / 22) * diasTrabalho;
   }, [outrasVariaveisSalvas, baseDespesas.outrasVariaveisTotal, diasTrabalho]);
 
@@ -141,18 +144,18 @@ export default function Orcamento() {
       custoMaterialTotal +
       impostoImportacao +
       frete +
-      custoFixoRateado +
-      energiaRateada +
-      outrasVariaveisRateadas +
+      custoFixoAtual +
+      energiaAtual +
+      outrasVariaveisAtual +
       totalExtras
     );
   }, [
     custoMaterialTotal,
     impostoImportacao,
     frete,
-    custoFixoRateado,
-    energiaRateada,
-    outrasVariaveisRateadas,
+    custoFixoAtual,
+    energiaAtual,
+    outrasVariaveisAtual,
     totalExtras,
   ]);
 
@@ -185,9 +188,139 @@ export default function Orcamento() {
 
   const adicionarExtra = () =>
     setExtras([...extras, { id: Date.now(), descricao: "", valor: 0 }]);
-  const removerExtra = (id) => setExtras(extras.filter((e) => e.id !== id));
+  
+  const removerExtra = async (id) => {
+    const result = await Swal.fire({
+      customClass: { popup: "modal-confirma-exclusao" },
+      title: "Excluir item?",
+      text: "Deseja remover este item do orçamento?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sim, excluir!",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "var(--btn-confirmar-exclusao)",
+      cancelButtonColor: "var(--btn-cancelar-exclusao)",
+    });
+
+    if (result.isConfirmed) {
+      setIsLoading(true);
+      try {
+        setExtras(extras.filter((e) => e.id !== id));
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: "Item excluído com sucesso",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-confirmacao" },
+        });
+      } catch (err) {
+        console.error("Erro ao carregar orçamento", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
   const atualizarExtra = (id, campo, valor) =>
     setExtras(extras.map((e) => (e.id === id ? { ...e, [campo]: valor } : e)));
+
+  // --- CARREGAR AMBIENTE GLOBAL (Projetos do Cliente) ---
+  const carregarAmbienteGlobal = async (cliente) => {
+    setIsLoading(true);
+    try {
+      const { data: orcamentos } = await api.get(
+        `/orcamentos/cliente/${cliente.id_cliente}`,
+      );
+
+      if (!orcamentos || orcamentos.length === 0) {
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: "Cliente carregado (Sem projetos vinculados)",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-confirmacao" },
+        });
+        return;
+      }
+
+      Swal.fire({
+        title: "Selecionar Projeto",
+        text: "Escolha qual projeto deste cliente deseja carregar:",
+        customClass: { popup: "modal-pesquisa" },
+        html: `<div id="swal-results-proj" class="lista-resultados"></div>`,
+        showConfirmButton: false,
+        showCancelButton: true,
+        cancelButtonText: "Cancelar",
+        didOpen: () => {
+          const list = document.getElementById("swal-results-proj");
+          list.innerHTML = orcamentos
+            .map(
+              (o) => `
+            <div class="swal-res-item item-resultado" data-id="${o.id_orcamento}">
+              <span class="item-titulo">${o.nome_projeto}</span>
+              <span class="item-badge">${new Date(o.data_orcamento).toLocaleDateString("pt-BR")}</span>
+            </div>
+          `,
+            )
+            .join("");
+
+          document.querySelectorAll(".swal-res-item").forEach((el) => {
+            el.onclick = async () => {
+              Swal.close();
+              setIsLoading(true);
+              const selectedOrc = orcamentos.find(
+                (item) => item.id_orcamento === Number(el.dataset.id),
+              );
+
+              let planoCorte = null;
+              let custo = null;
+
+              try {
+                const resPlano = await api.get(
+                  `/plano-corte/orcamento/${selectedOrc.id_orcamento}`,
+                );
+                planoCorte = resPlano.data;
+              } catch (err) {
+                console.error("Erro ao carregar orçamento", err);
+              }
+
+              if (selectedOrc.id_projeto) {
+                try {
+                  const resCusto = await api.get(
+                    `/custos/${selectedOrc.id_projeto}`,
+                  );
+                  custo = resCusto.data;
+                } catch (err) {
+                  console.error("Erro ao carregar orçamento", err);
+                }
+              }
+
+              atualizarContexto({ orcamento: selectedOrc, planoCorte, custo });
+
+              Swal.fire({
+                toast: true,
+                position: "top-end",
+                icon: "success",
+                title: "Projeto carregado com sucesso!",
+                showConfirmButton: false,
+                timer: 3000,
+                customClass: { popup: "mensagem-confirmacao" },
+              });
+              setIsLoading(false);
+            };
+          });
+        },
+      });
+    } catch (err) {
+      console.error("Erro ao carregar orçamento", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleBuscarCliente = async () => {
     setIsLoading(true);
@@ -224,7 +357,7 @@ export default function Orcamento() {
             list.innerHTML = filtered
               .map(
                 (c) => `
-              <div class="swal-res-item item-resultado" data-id="${c.id_cliente}" data-nome="${c.nome}">
+              <div class="swal-res-item item-resultado" data-id="${c.id_cliente}">
                 <span class="item-titulo">${c.nome}</span>
               </div>`,
               )
@@ -232,13 +365,20 @@ export default function Orcamento() {
 
             document.querySelectorAll(".swal-res-item").forEach((el) => {
               el.onclick = () => {
-                const idCli = el.dataset.id;
-                const nomeCli = el.dataset.nome;
-                setClienteId(idCli);
-                setNomeCliente(nomeCli);
-                atualizarContexto({
-                  cliente: { id_cliente: idCli, nome: nomeCli },
-                });
+                const selectedCli = data.find(
+                  (item) => item.id_cliente === Number(el.dataset.id)
+                );
+                
+                if (selectedCli) {
+                  limparFormulario();
+
+                  setClienteId(selectedCli.id_cliente);
+                  setNomeCliente(selectedCli.nome);
+                  atualizarContexto({
+                    cliente: { id_cliente: selectedCli.id_cliente, nome: selectedCli.nome },
+                  });
+                  carregarAmbienteGlobal(selectedCli);
+                }
                 Swal.close();
               };
             });
@@ -267,12 +407,15 @@ export default function Orcamento() {
     setValorCustoBase(0);
     setImpostoImportacao(0);
     setFrete(0);
-    setImpostoPerc(baseDespesas.impostoPadrao || 6);
-    setTaxaCartaoPerc(baseDespesas.taxaCartaoPadrao || 3);
     setMargemLucroPerc(20);
     setExtras([]);
     setPrecoManual(null);
+    
+    setCustoFixoSalvo(null);
+    setEnergiaSalva(null);
     setOutrasVariaveisSalvas(null);
+
+    buscarDespesasBase();
 
     atualizarContexto({
       nomeProjetoGlobal: "",
@@ -287,49 +430,44 @@ export default function Orcamento() {
     if (!nomeProjeto.trim()) {
       Swal.fire({
         toast: true,
-          position: "top-end",
-          icon: "error",
-          text: "O Nome do Serviço é obrigatório.",
-          showConfirmButton: false,
-          timer: 3000,
-          customClass: { popup: "mensagem-erro" },
+        position: "top-end",
+        icon: "error",
+        text: "O Nome do Serviço é obrigatório.",
+        showConfirmButton: false,
+        timer: 3000,
+        customClass: { popup: "mensagem-erro" },
       });
       return;
     }
 
     setIsLoading(true);
 
-    let idAtual =
-      idOrcamentoSalvo ||
-      contextoGlobal?.orcamento?.id_orcamento ||
-      contextoGlobal?.orcamento?.id;
-
     try {
-      if (!idAtual) {
-        const { data: orcamentosExistentes } = await api.get("/orcamentos");
-        const orcExistente = orcamentosExistentes.find(
-          (o) =>
-            o.nome_projeto &&
-            o.nome_projeto.trim().toLowerCase() ===
-              nomeProjeto.trim().toLowerCase(),
-        );
-        if (orcExistente) {
-          idAtual = orcExistente.id_orcamento || orcExistente.id;
-          setIdOrcamentoSalvo(idAtual);
-        }
+      const { data: orcamentosExistentes } = await api.get("/orcamentos");
+      const orcExistente = orcamentosExistentes.find(
+        (o) =>
+          o.nome_projeto &&
+          o.nome_projeto.trim().toLowerCase() ===
+            nomeProjeto.trim().toLowerCase(),
+      );
+
+      if (orcExistente) {
+        setIdOrcamentoSalvo(orcExistente.id_orcamento || orcExistente.id);
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "info",
+          text: "Orçamento já existe. Utilize o botão Editar.",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+        return;
       }
 
       const payloadExtras = extras.map((e) => ({
         descricao: e.descricao,
         valor: Number(e.valor),
       }));
-
-      if (outrasVariaveisRateadas > 0) {
-        payloadExtras.push({
-          descricao: "Rateio Outras Variáveis",
-          valor: outrasVariaveisRateadas,
-        });
-      }
 
       const payload = {
         id_cliente: clienteId ? Number(clienteId) : null,
@@ -341,8 +479,9 @@ export default function Orcamento() {
         valor_custo: valorCustoBase,
         imposto_importacao: impostoImportacao,
         frete,
-        custo_fixo: custoFixoRateado,
-        energia_eletrica: energiaRateada,
+        custo_fixo: custoFixoAtual,
+        energia_eletrica: energiaAtual,
+        outras_var: outrasVariaveisAtual ? Number(outrasVariaveisAtual) : 0,
         imposto: impostoPerc,
         taxa_cartao: taxaCartaoPerc,
         margem_lucro: margemLucroPerc,
@@ -352,50 +491,135 @@ export default function Orcamento() {
         extras: payloadExtras,
       };
 
-      if (idAtual) {
-        await api.put(`/orcamentos/${idAtual}`, payload);
-        setIdOrcamentoSalvo(idAtual);
-        Swal.fire({
-          toast: true,
-          position: "top-end",
-          icon: "success",
-          title: "Orçamento atualizado com sucesso",
-           customClass: { popup: "mensagem-confirmacao" },
-          showConfirmButton: false,
-          timer: 3000,
-        });
-      } else {
-        const response = await api.post("/orcamentos", payload);
-        const novoId = response.data.id || response.data.id_orcamento;
-        const novoIdCliente = response.data.id_cliente;
-        setIdOrcamentoSalvo(novoId);
-        if (novoIdCliente) {
-          setClienteId(novoIdCliente);
-          atualizarContexto({
-            cliente: { id_cliente: novoIdCliente, nome: nomeCliente },
-          });
-        }
-
-        Swal.fire({
-          toast: true,
-          position: "top-end",
-          icon: "success",
-          title: "Orçamento salvo com sucesso",
-           customClass: { popup: "mensagem-confirmacao" },
-          showConfirmButton: false,
-          timer: 3000,
+      const response = await api.post("/orcamentos", payload);
+      const novoId = response.data.id || response.data.id_orcamento;
+      const novoIdCliente = response.data.id_cliente;
+      
+      setIdOrcamentoSalvo(novoId);
+      
+      setCustoFixoSalvo(custoFixoAtual);
+      setEnergiaSalva(energiaAtual);
+      setOutrasVariaveisSalvas(outrasVariaveisAtual);
+      
+      if (novoIdCliente) {
+        setClienteId(novoIdCliente);
+        atualizarContexto({
+          cliente: { id_cliente: novoIdCliente, nome: nomeCliente },
         });
       }
+
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "Orçamento salvo com sucesso",
+        customClass: { popup: "mensagem-confirmacao" },
+        showConfirmButton: false,
+        timer: 3000,
+      });
     } catch (err) {
       console.error("Erro ao carregar orçamento", err);
       Swal.fire({
         toast: true,
-          position: "top-end",
-          icon: "error",
-          text: "Não foi possível salvar os dados.",
-          showConfirmButton: false,
-          timer: 3000,
-          customClass: { popup: "mensagem-erro" },
+        position: "top-end",
+        icon: "error",
+        text: "Não foi possível salvar os dados.",
+        showConfirmButton: false,
+        timer: 3000,
+        customClass: { popup: "mensagem-erro" },
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleEditar = async () => {
+    let idAtual =
+      idOrcamentoSalvo ||
+      contextoGlobal?.orcamento?.id_orcamento ||
+      contextoGlobal?.orcamento?.id;
+
+    if (!idAtual) {
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "warning",
+        text: "Nenhum orçamento selecionado para edição",
+        showConfirmButton: false,
+        timer: 3000,
+      });
+      return;
+    }
+
+    if (!nomeProjeto.trim()) {
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        text: "O Nome do Serviço é obrigatório",
+        showConfirmButton: false,
+        timer: 3000,
+        customClass: { popup: "mensagem-erro" },
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const payloadExtras = extras.map((e) => ({
+        descricao: e.descricao,
+        valor: Number(e.valor),
+      }));
+
+      const payload = {
+        id_cliente: clienteId ? Number(clienteId) : null,
+        nome_cliente: nomeCliente,
+        id_projeto: projetoId ? Number(projetoId) : null,
+        nome_projeto: nomeProjeto,
+        quantidade: Number(quantidade),
+        dias_trabalho: Number(diasTrabalho),
+        valor_custo: valorCustoBase,
+        imposto_importacao: impostoImportacao,
+        frete,
+        custo_fixo: custoFixoAtual,
+        energia_eletrica: energiaAtual,
+        outras_var: outrasVariaveisAtual ? Number(outrasVariaveisAtual) : 0,
+        imposto: impostoPerc,
+        taxa_cartao: taxaCartaoPerc,
+        margem_lucro: margemLucroPerc,
+        preco_sugerido: precoSugerido,
+        preco_final_impresso: precoFinalImpresso,
+        entrada: entrada,
+        extras: payloadExtras,
+      };
+
+      await api.put(`/orcamentos/${idAtual}`, payload);
+      setIdOrcamentoSalvo(idAtual);
+      
+      setCustoFixoSalvo(custoFixoAtual);
+      setEnergiaSalva(energiaAtual);
+      setOutrasVariaveisSalvas(outrasVariaveisAtual);
+      
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "Orçamento atualizado com sucesso",
+        customClass: { popup: "mensagem-confirmacao" },
+        showConfirmButton: false,
+        timer: 3000,
+      });
+    } catch (err) {
+      console.error("Erro ao carregar orçamento", err);
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        text: "Não foi possível atualizar os dados.",
+        showConfirmButton: false,
+        timer: 3000,
+        customClass: { popup: "mensagem-erro" },
       });
     } finally {
       setIsLoading(false);
@@ -431,14 +655,12 @@ export default function Orcamento() {
           ? JSON.parse(orc.extras)
           : orc.extras || [];
 
-      const rateioSalvo = extrasParsed.find(
-        (e) => e.descricao === "Rateio Outras Variáveis",
-      );
-      const extrasManuais = extrasParsed.filter(
-        (e) => e.descricao !== "Rateio Outras Variáveis",
-      );
+      const rateioSalvo = extrasParsed.find((e) => e.descricao === "Rateio Outras Variáveis");
+      const extrasManuais = extrasParsed.filter((e) => e.descricao !== "Rateio Outras Variáveis");
 
-      setOutrasVariaveisSalvas(rateioSalvo ? Number(rateioSalvo.valor) : null);
+      setCustoFixoSalvo(orc.custo_fixo !== undefined && orc.custo_fixo !== null ? Number(orc.custo_fixo) : null);
+      setEnergiaSalva(orc.energia_eletrica !== undefined && orc.energia_eletrica !== null ? Number(orc.energia_eletrica) : null);
+      setOutrasVariaveisSalvas(orc.outras_var !== undefined && orc.outras_var !== null ? Number(orc.outras_var) : rateioSalvo ? Number(rateioSalvo.valor) : null);
 
       setExtras(
         extrasManuais.map((e, idx) => ({
@@ -450,6 +672,8 @@ export default function Orcamento() {
     } catch (err) {
       console.error("Erro ao carregar orçamento", err);
       setExtras([]);
+      setCustoFixoSalvo(null);
+      setEnergiaSalva(null);
       setOutrasVariaveisSalvas(null);
     }
   };
@@ -503,7 +727,7 @@ export default function Orcamento() {
     [contextoGlobal, idOrcamentoSalvo, nomeCliente, nomeProjeto, projetoId],
   );
 
-  const handleBuscarOrcamento = async (situacaoDesejada) => {
+const handleBuscarOrcamento = async (situacaoDesejada) => {
     setIsLoading(true);
     try {
       const { data } = await api.get("/orcamentos");
@@ -569,7 +793,25 @@ export default function Orcamento() {
                   (item) =>
                     (item.id_orcamento || item.id) === Number(el.dataset.id),
                 );
-                if (selectedOrc) carregarOrcamento(selectedOrc);
+                
+                if (selectedOrc) {
+                  // 1. Limpa o formulário e o contexto anterior
+                  limparFormulario();
+                  
+                  // 2. Carrega os dados do orçamento escolhido
+                  carregarOrcamento(selectedOrc);
+                  
+                  // 3. Força o contexto global a assumir o cliente deste orçamento
+                  if (selectedOrc.id_cliente || selectedOrc.nome_cliente) {
+                    atualizarContexto({
+                      cliente: {
+                        id_cliente: selectedOrc.id_cliente,
+                        nome: selectedOrc.nome_cliente,
+                      },
+                    });
+                  }
+                }
+                
                 Swal.close();
               };
             });
@@ -596,6 +838,8 @@ export default function Orcamento() {
       showCancelButton: true,
       confirmButtonColor: "var(--btn-confirmar-exclusao)",
       cancelButtonColor: "var(--btn-cancelar-exclusao)",
+      confirmButtonText: "Sim, excluir!",
+      cancelButtonText: "Cancelar",
     });
     if (result.isConfirmed) {
       try {
@@ -605,7 +849,7 @@ export default function Orcamento() {
           toast: true,
           position: "top-end",
           icon: "success",
-          title: "Orçamento excluído!",
+          title: "Orçamento excluído com sucesso",
           showConfirmButton: false,
           timer: 3000,
           customClass: { popup: "mensagem-confirmacao" },
@@ -716,7 +960,6 @@ export default function Orcamento() {
           <h2 className="subtitulo">Custos de Base</h2>
           <div className="form-row">
             <div className="form-group flex-1">
-              
                 <label className="titulo-input">Entrada (R$)</label>
                 <input
                   type="text"
@@ -733,24 +976,55 @@ export default function Orcamento() {
               />
             </div>
             <div className="container-custo-energia">
-              <div className="form-group flex-1 readonly-box">
+              
+              <div className="form-group flex-1 estilo">
                 <label className="mobile">Custo Fixo</label>
-                <div className="readonly-val">
-                  {formatMoney(custoFixoRateado)}
-                </div>
+                <input
+                  type="text"
+                  value={formatMoney(custoFixoAtual)}
+                  onChange={(e) => handleMoneyInput(e.target.value, setCustoFixoSalvo)}
+                />
+                <button 
+                  type="button" 
+                  className="btn-refresh-rateio" 
+                  onClick={() => setCustoFixoSalvo(null)}
+                >
+                  <RefreshCw size={12} /> Atualizar
+                </button>
               </div>
-              <div className="form-group flex-1 readonly-box">
+
+              <div className="form-group flex-1 estilo">
                 <label className="mobile">Energia</label>
-                <div className="readonly-val">
-                  {formatMoney(energiaRateada)}
-                </div>
+                <input
+                  type="text"
+                  value={formatMoney(energiaAtual)}
+                  onChange={(e) => handleMoneyInput(e.target.value, setEnergiaSalva)}
+                />
+                <button 
+                  type="button" 
+                  className="btn-refresh-rateio" 
+                  onClick={() => setEnergiaSalva(null)}
+                >
+                  <RefreshCw size={12} /> Atualizar
+                </button>
               </div>
-              <div className="form-group flex-1 readonly-box">
+
+              <div className="form-group flex-1 estilo">
                 <label className="mobile">Outras Var.</label>
-                <div className="readonly-val">
-                  {formatMoney(outrasVariaveisRateadas)}
-                </div>
+                <input
+                  type="text"
+                  value={formatMoney(outrasVariaveisAtual)}
+                  onChange={(e) => handleMoneyInput(e.target.value, setOutrasVariaveisSalvas)}
+                />
+                <button 
+                  type="button" 
+                  className="btn-refresh-rateio" 
+                  onClick={() => setOutrasVariaveisSalvas(null)}
+                >
+                  <RefreshCw size={12} /> Atualizar
+                </button>
               </div>
+
             </div>
           </div>
           <div className="form-row mt-15">
@@ -796,7 +1070,7 @@ export default function Orcamento() {
                   const val = Number(e.target.value.replace(/\D/g, "")) / 100;
                   atualizarExtra(extra.id, "valor", val);
                 }}
-              />
+              />     
               <button
                 className="btn-del-extra"
                 onClick={() => removerExtra(extra.id)}
@@ -844,6 +1118,12 @@ export default function Orcamento() {
         </div>
 
         <div className="resumo-box">
+           <button
+                className="imprimir"
+                onClick={() => window.print()}
+              >
+                <Printer size={18} />
+              </button>
           <div className="resumo-item">
             <span>Custo Total:</span> <strong>{formatMoney(custoTotal)}</strong>
           </div>
@@ -879,6 +1159,12 @@ export default function Orcamento() {
                 <Save size={18} />
                 <span>Salvar</span>
               </button>
+              <button className="btn-editar" onClick={handleEditar}>
+                <FileEdit size={18} />
+                <span>Editar</span>
+              </button>
+            </div>
+            <div className="btn-wrapper-flex-acoes">
               <button
                 className="btn-buscar"
                 onClick={() => handleBuscarOrcamento("gerado")}
@@ -887,15 +1173,7 @@ export default function Orcamento() {
                 <Search size={18} />
                 <span>Buscar</span>
               </button>
-            </div>
-            <div className="btn-wrapper-flex-acoes">
-              <button
-                className="btn-imprimir-orcamento"
-                onClick={() => window.print()}
-              >
-                <Printer size={18} />
-                <span>Imprimir</span>
-              </button>
+                            
               <button className="btn-excluir" onClick={handleExcluir}>
                 <Trash2 size={18} />
                 <span>Excluir</span>

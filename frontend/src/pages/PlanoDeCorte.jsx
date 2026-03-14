@@ -125,6 +125,7 @@ export default function PlanoDeCorte() {
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Sim, excluir!",
+      cancelButtonText: "Cancelar",
       confirmButtonColor: "var(--btn-confirmar-exclusao)",
       cancelButtonColor: "var(--btn-cancelar-exclusao)",
     });
