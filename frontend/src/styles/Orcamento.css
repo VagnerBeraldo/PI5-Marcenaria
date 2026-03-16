@@ -56,23 +56,23 @@
   border: 1px solid var(--cor-primaria);
 }
 
-.estilo{
+.wrapper-custo-ee-outrasvariaveis{
   border: 1px dashed var(--preto);
   padding: 5px;
   border-radius: 8px;
   background-color: #d3cec6;
 }
 
-.estilo input{
+.wrapper-custo-ee-outrasvariaveis input{
   background-color: transparent; 
   border: none;
   border-bottom: 1px solid var(--branco)!important;
   box-shadow: none;
   border-radius: 0px!important; 
-  outline: none;
+  outline: none!important;
 }
 
-.estilo input:focus{
+.wrapper-custo-ee-outrasvariaveis input:focus{
   border: none!important;
   border-bottom: 2px solid var(--cor-primaria)!important;
 }
@@ -223,19 +223,27 @@
   margin-bottom: 10px;
 }
 
+.resumo-item.destaque, .resumo-item.destaque-saldo{
+  font-size: 1.3rem;
+}
+
 .resumo-item.destaque {
   border-top: 1px solid rgba(255, 255, 255, 0.3);
   padding-top: 15px;
   margin-top: 15px;
-  font-size: 1.4rem;
+}
+
+.resumo-item.destaque-saldo{
+  margin-top: 15px;
 }
 
 .input-preco-fechado {
   background: transparent;
+  font-family: inherit;
+  font-size: inherit;
   border: none;
   border-bottom: 2px solid var(--branco);
   color: var(--branco);
-  font-size: 1.5rem;
   font-weight: bold;
   text-align: right;
   width: 200px;
@@ -398,7 +406,8 @@
   }
 
   .dados-impressao {
-    margin-bottom: 40px;
+    text-align: start;
+    margin-bottom: 80px;
   }
 
   .linha-dado {
