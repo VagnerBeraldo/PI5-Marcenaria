@@ -12,7 +12,7 @@ async function inicializarBanco() {
       multipleStatements: true 
     });
 
-    const dbName = process.env.DB_NAME || 'marcenaria_teste';
+    const dbName = process.env.DB_NAME || 'pi5_marcenaria';
 
     // Cria o banco se não existir e o seleciona
     await connection.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\`;`);

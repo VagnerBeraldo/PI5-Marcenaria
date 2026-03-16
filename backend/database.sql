@@ -1,6 +1,6 @@
 -- Criação do banco de dados
-CREATE DATABASE IF NOT EXISTS marcenaria_teste;
-USE marcenaria_teste;
+CREATE DATABASE IF NOT EXISTS pi5_marcenaria;
+USE pi5_marcenaria;
 
 -- 1. Clientes
 CREATE TABLE IF NOT EXISTS clientes (
