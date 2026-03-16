@@ -4,9 +4,9 @@ const pool = mysql.createPool({
   host: 'localhost',
   user: 'root', 
   password: 'root', 
-  database: 'pi5_marcenaria',
+  database: 'marcenaria_teste',
   waitForConnections: true,
-  connectionLimit: 10,
+  connectionLimit: 5,
   queueLimit: 0
 });
 
@@ -14,7 +14,7 @@ pool.getConnection((err, connection) => {
   if (err) {
     console.error('Erro ao conectar ao banco de dados:', err.message);
   } else {
-    console.log('Conectado ao banco de dados pi5_marcenaria com sucesso!');
+    console.log('Conectado ao banco de dados marcenaria_teste com sucesso!');
     connection.release();
   }
 });
