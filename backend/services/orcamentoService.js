@@ -18,8 +18,8 @@ const salvarOrcamento = async (dados) => {
     // 1. Insere o Orçamento Mestre (INCLUÍDO outras_var)
     const [result] = await connection.execute(
       `INSERT INTO orcamento 
-                (id_cliente, id_projeto, nome_projeto, quantidade, dias_trabalho, valor_custo, imposto_importacao, frete, custo_fixo, energia_eletrica, outras_var, imposto, taxa_cartao, margem_lucro, preco_sugerido, preco_final_impresso, entrada, situacao) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'gerado')`,
+                (id_cliente, id_projeto, nome_projeto, quantidade, dias_trabalho, valor_custo, imposto_importacao, frete, custo_fixo, energia_eletrica, outras_var, imposto, taxa_cartao, margem_lucro, desconto, preco_sugerido, preco_final_impresso, entrada, situacao) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'gerado')`,
       [
         mestre.id_cliente || null,
         mestre.id_projeto || null,
@@ -35,6 +35,7 @@ const salvarOrcamento = async (dados) => {
         mestre.imposto,
         mestre.taxa_cartao,
         mestre.margem_lucro,
+        mestre.desconto,
         mestre.preco_sugerido,
         mestre.preco_final_impresso,
         mestre.entrada,
@@ -128,7 +129,7 @@ const editarOrcamento = async (id_orcamento, dados) => {
       `UPDATE orcamento SET 
                 id_cliente = ?, id_projeto = ?, nome_projeto = ?, quantidade = ?, dias_trabalho = ?, valor_custo = ?, 
                 imposto_importacao = ?, frete = ?, custo_fixo = ?, energia_eletrica = ?, outras_var = ?, imposto = ?, 
-                taxa_cartao = ?, margem_lucro = ?, preco_sugerido = ?, preco_final_impresso = ?, entrada = ?, situacao = 'gerado'            
+                taxa_cartao = ?, margem_lucro = ?, desconto = ?, preco_sugerido = ?, preco_final_impresso = ?, entrada = ?, situacao = 'gerado'            
             WHERE id_orcamento = ?`,
       [
         mestre.id_cliente || null,
@@ -141,10 +142,11 @@ const editarOrcamento = async (id_orcamento, dados) => {
         mestre.frete,
         mestre.custo_fixo,
         mestre.energia_eletrica,
-        mestre.outras_var !== undefined ? mestre.outras_var : 0, // Fallback vital aqui
+        mestre.outras_var !== undefined ? mestre.outras_var : 0, // Fallback 
         mestre.imposto,
         mestre.taxa_cartao,
         mestre.margem_lucro,
+        mestre.desconto,
         mestre.preco_sugerido,
         mestre.preco_final_impresso,
         mestre.entrada,
