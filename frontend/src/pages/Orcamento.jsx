@@ -37,6 +37,7 @@ export default function Orcamento() {
   const [impostoPerc, setImpostoPerc] = useState(0);
   const [taxaCartaoPerc, setTaxaCartaoPerc] = useState(0);
   const [margemLucroPerc, setMargemLucroPerc] = useState(20);
+  const [desconto, setDesconto] = useState(0);
 
   const [entrada, setEntrada] = useState(0);
   const [extras, setExtras] = useState([]);
@@ -165,13 +166,15 @@ export default function Orcamento() {
     return custoTotal / (1 - totalTaxas / 100);
   }, [custoTotal, impostoPerc, taxaCartaoPerc, margemLucroPerc]);
 
-  const precoArredondado = useMemo(
-    () => Math.ceil(precoSugerido / 10) * 10,
-    [precoSugerido],
-  );
+  const precoArredondado = useMemo(() => {
+    const precoComDesconto = precoSugerido - (precoSugerido * (desconto / 100));
+    return Math.ceil(precoComDesconto / 5) * 5;
+  }, [precoSugerido, desconto]);
 
   const precoFinalImpresso =
     precoManual !== null ? precoManual : precoArredondado;
+
+
 
   useEffect(() => {
     setPrecoManual(null);
@@ -408,6 +411,7 @@ export default function Orcamento() {
     setImpostoImportacao(0);
     setFrete(0);
     setMargemLucroPerc(20);
+    setDesconto(0);
     setExtras([]);
     setPrecoManual(null);
     
@@ -424,7 +428,18 @@ export default function Orcamento() {
       planoCorte: null,
       custo: null,
     });
-  };
+    
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        text: "Limpeza realizada com sucesso",
+        showConfirmButton: false,
+        timer: 3000,
+        customClass: { popup: "mensagem-confirmacao" },
+      });
+    
+    };
 
   const handleSalvar = async () => {
     if (!nomeProjeto.trim()) {
@@ -485,6 +500,7 @@ export default function Orcamento() {
         imposto: impostoPerc,
         taxa_cartao: taxaCartaoPerc,
         margem_lucro: margemLucroPerc,
+        desconto: desconto,
         preco_sugerido: precoSugerido,
         preco_final_impresso: precoFinalImpresso,
         entrada: entrada,
@@ -588,6 +604,7 @@ export default function Orcamento() {
         imposto: impostoPerc,
         taxa_cartao: taxaCartaoPerc,
         margem_lucro: margemLucroPerc,
+        desconto: desconto,
         preco_sugerido: precoSugerido,
         preco_final_impresso: precoFinalImpresso,
         entrada: entrada,
@@ -641,6 +658,7 @@ export default function Orcamento() {
     setImpostoPerc(Number(orc.imposto) || 0);
     setTaxaCartaoPerc(Number(orc.taxa_cartao) || 0);
     setMargemLucroPerc(Number(orc.margem_lucro) || 20);
+    setDesconto(Number(orc.desconto) || 0);
     setEntrada(Number(orc.entrada) || 0);
     setPrecoManual(Number(orc.preco_final_impresso) || null);
 
@@ -901,10 +919,12 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
                     }
                   }}
                   placeholder="Nome do cliente..."
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
                   onClick={handleBuscarCliente}
+                  disabled={isLoading}
                   className="btn-icone-lupa"
                 >
                   <Search size={18} />
@@ -925,11 +945,13 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
                     atualizarContexto({ nomeProjetoGlobal: e.target.value });
                   }}
                   placeholder="Ex: Cozinha Planejada"
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
                   onClick={() => handleBuscarOrcamento("aberto")}
                   className="btn-icone-lupa"
+                  disabled={isLoading}
                 >
                   <Search size={18} />
                 </button>
@@ -977,7 +999,7 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
             </div>
             <div className="container-custo-energia">
               
-              <div className="form-group flex-1 estilo">
+              <div className="form-group flex-1 wrapper-custo-ee-outrasvariaveis">
                 <label className="mobile">Custo Fixo</label>
                 <input
                   type="text"
@@ -993,7 +1015,7 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
                 </button>
               </div>
 
-              <div className="form-group flex-1 estilo">
+              <div className="form-group flex-1 wrapper-custo-ee-outrasvariaveis">
                 <label className="mobile">Energia</label>
                 <input
                   type="text"
@@ -1009,7 +1031,7 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
                 </button>
               </div>
 
-              <div className="form-group flex-1 estilo">
+              <div className="form-group flex-1 wrapper-custo-ee-outrasvariaveis">
                 <label className="mobile">Outras Var.</label>
                 <input
                   type="text"
@@ -1085,7 +1107,7 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
         </div>
 
         <div className="secao-form">
-          <h2 className="subtitulo">Imposto / Taxa / Margem</h2>
+          <h2 className="subtitulo">Parâmetros de Precificação</h2>
           <div className="form-row">
             <div className="form-group flex-1">
               <label className="titulo-input">Imposto (%)</label>
@@ -1106,12 +1128,22 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
               />
             </div>
             <div className="form-group flex-1">
-              <label className="titulo-input">Margem (%)</label>
+              <label className="titulo-input">Margem de Lucro(%)</label>
               <input
                 type="number"
                 value={margemLucroPerc}
                 onChange={(e) => setMargemLucroPerc(Number(e.target.value))}
                 min="1"
+              />
+            </div>
+            <div className="form-group flex-1">
+              <label className="titulo-input">Desconto (%)</label>
+              <input
+                type="number"
+                value={desconto}
+                onChange={(e) => setDesconto(Number(e.target.value))}
+                min="0"
+                step="0.5"
               />
             </div>
           </div>
@@ -1131,6 +1163,13 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
             <span>Preço Sugerido:</span>{" "}
             <strong>{formatMoney(precoSugerido)}</strong>
           </div>
+          {desconto > 0 && (
+          <div className="resumo-item">
+            <span>Valo com Desconto:</span>{" "}
+            <strong>{formatMoney(precoSugerido - (precoSugerido * (desconto / 100)))}</strong>
+          </div>
+          )}
+            
           <div className="resumo-item destaque">
             <span>Preço Fechado:</span>
             <input
@@ -1140,8 +1179,9 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
               onChange={(e) => handleMoneyInput(e.target.value, setPrecoManual)}
             />
           </div>
+          
           {entrada > 0 && (
-            <div className="resumo-item">
+            <div className="resumo-item destaque-saldo">
               <span>Saldo a Pagar:</span>
               <strong>{formatMoney(precoFinalImpresso - entrada)}</strong>
             </div>
@@ -1154,12 +1194,14 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
               <button
                 className="btn-salvar"
                 onClick={handleSalvar}
-                disabled={isLoading}
+                disabled={isLoading || idOrcamentoSalvo !== null}
               >
                 <Save size={18} />
                 <span>Salvar</span>
               </button>
-              <button className="btn-editar" onClick={handleEditar}>
+              <button className="btn-editar" onClick={handleEditar}
+              disabled={isLoading || idOrcamentoSalvo === null}
+              >
                 <FileEdit size={18} />
                 <span>Editar</span>
               </button>
@@ -1174,7 +1216,9 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
                 <span>Buscar</span>
               </button>
                             
-              <button className="btn-excluir" onClick={handleExcluir}>
+              <button className="btn-excluir" onClick={handleExcluir}
+              disabled={isLoading || idOrcamentoSalvo === null}
+              >
                 <Trash2 size={18} />
                 <span>Excluir</span>
               </button>
@@ -1210,25 +1254,36 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
             <strong>Data:</strong>{" "}
             <span>{new Date().toLocaleDateString("pt-BR")}</span>
           </div>
+          <div className="linha-dado">
+            <strong>Validade:</strong>{" "}
+           <span>{new Date(new Date().setDate(new Date().getDate() + 15)).toLocaleDateString("pt-BR")} (15 dias)</span>
+          </div>
         </div>
 
         <div className="valores-impressao">
           <div className="linha-valor">
             <span>Valor do Orçamento:</span>
+            <strong>{formatMoney(Math.ceil(precoSugerido / 5) * 5)}</strong>
+          </div>
+          {desconto > 0 && (
+          <div className="linha-valor">
+            <span>Valor com Desconto:</span>
             <strong>{formatMoney(precoFinalImpresso)}</strong>
           </div>
-          <div className="linha-valor">
-            <span>Entrada:</span>
-            <strong>{formatMoney(entrada)}</strong>
-          </div>
+          )}
 
           {entrada > 0 && (
-            <div className="linha-valor destaque-saldo">
-              <span>Saldo a Pagar:</span>
-              <strong>{formatMoney(precoFinalImpresso - entrada)}</strong>
+            <div className="linha-valor">
+              <span>Entrada:</span>
+              <strong>{formatMoney(entrada)}</strong>
             </div>
           )}
+          <div className="linha-valor destaque-saldo">
+            <span>Saldo a pagar:</span>
+            <strong>{formatMoney(precoFinalImpresso - entrada)}</strong>
+          </div>
         </div>
+
         <div className="assinaturas-impressao">
           <div className="linha-assinatura">
             <hr />
