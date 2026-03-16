@@ -38,7 +38,7 @@ export default function CustoDoMaterial() {
   useEffect(() => {
     if (contextoGlobal?.custo) {
       const proj = contextoGlobal.custo;
-      setIdProjetoSalvo(proj.id_projeto);
+      setIdProjetoSalvo(proj.id_projeto || proj.id);
       setNomeProjeto(proj.nome_projeto);
       setMaoDeObra(Number(proj.mao_de_obra));
       setInstalacao(Number(proj.instalacao));
@@ -73,6 +73,12 @@ export default function CustoDoMaterial() {
         contextoGlobal.nomeProjetoGlobal &&
         contextoGlobal.nomeProjetoGlobal !== nomeProjeto
       ) {
+        // Bloqueio para evitar que a sincronização automática sobrescreva os dados já carregados do banco
+        if (contextoGlobal?.custo && contextoGlobal.custo.nome_projeto === contextoGlobal.nomeProjetoGlobal) {
+            setNomeProjeto(contextoGlobal.nomeProjetoGlobal);
+            return; 
+        }
+
         const novoNome = contextoGlobal.nomeProjetoGlobal;
         setNomeProjeto(novoNome);
 
@@ -180,7 +186,6 @@ export default function CustoDoMaterial() {
   };
 
   const removerLinha = async (id) => {
-    // Mantém sua regra original: se houver só 1, não remove
     if (materiais.length === 1) {
       Swal.fire({
         toast: true,
@@ -209,8 +214,31 @@ export default function CustoDoMaterial() {
     if (result.isConfirmed) {
       setIsLoading(true);
       try {
-        // Lógica original de filtro
-        setMateriais(materiais.filter((m) => m.id !== id));
+        // 1. Remove o item visualmente criando uma nova lista
+        const novaListaMateriais = materiais.filter((m) => m.id !== id);
+        setMateriais(novaListaMateriais);
+
+        // 2. Se o projeto já existe no banco, força o salvamento automático da nova lista
+        if (idProjetoSalvo) {
+          // Monta o payload com a lista nova, ignorando o estado antigo do React
+          const payload = {
+            id_orcamento:
+              contextoGlobal?.orcamento?.id_orcamento ||
+              contextoGlobal?.orcamento?.id ||
+              null,
+            nome_projeto: nomeProjeto,
+            mao_de_obra: maoDeObra,
+            instalacao: instalacao,
+            materiais: novaListaMateriais.map((m) => ({
+              material: m.material,
+              quantidade: Number(m.quantidade) || 0,
+              unidade_medida: m.unidade_medida,
+              valor_unitario: Number(m.valor_unitario) || 0,
+            })),
+          };
+          
+          await api.put(`/custos/${idProjetoSalvo}`, payload);
+        }
 
         Swal.fire({
           toast: true,
@@ -222,7 +250,18 @@ export default function CustoDoMaterial() {
           customClass: { popup: "mensagem-confirmacao" },
         });
       } catch (err) {
-        console.error("Erro ao carregar orçamento", err);
+        {console.error("Erro ao carregar orçamento", err);}
+        // Caso dê erro na API, desfaz a remoção visual
+        handleBuscar(); 
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "error",
+          title: "Erro ao excluir material do banco.",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-erro" },
+        });
       } finally {
         setIsLoading(false);
       }
@@ -343,7 +382,7 @@ export default function CustoDoMaterial() {
                   setMaoDeObra(Number(proj.mao_de_obra));
                   setInstalacao(Number(proj.instalacao));
                   setMateriais(
-                    proj.materiais.map((m) => ({ ...m, id: m.id_item })),
+                    proj.materiais.map((m) => ({ ...m, id: m.id_item || Date.now() + Math.random() })),
                   );
                   atualizarContexto({
                     nomeProjetoGlobal: proj.nome_projeto,
@@ -407,19 +446,49 @@ export default function CustoDoMaterial() {
 
             document.querySelectorAll(".swal-res-item").forEach(
               (el) =>
-                (el.onclick = () => {
+                (el.onclick = async () => {
                   const plano = planos.find((x) => x.id_plano == el.dataset.id);
+                  const nomeDoPlano = plano.nome_servico;
+
+                  // Tenta carregar os custos já salvos para este projeto primeiro
+                  try {
+                    const resCustos = await api.get("/custos");
+                    const custoExistente = resCustos.data.find(c => c.nome_projeto === nomeDoPlano);
+                    
+                    if (custoExistente) {
+                      const materiaisParsed = typeof custoExistente.materiais === "string" ? JSON.parse(custoExistente.materiais) : custoExistente.materiais;
+                      
+                      setIdProjetoSalvo(custoExistente.id_projeto || custoExistente.id);
+                      setNomeProjeto(custoExistente.nome_projeto);
+                      setMaoDeObra(Number(custoExistente.mao_de_obra));
+                      setInstalacao(Number(custoExistente.instalacao));
+                      setMateriais(materiaisParsed.map((m) => ({ ...m, id: m.id_item || Date.now() + Math.random() })));
+                      
+                      atualizarContexto({
+                        nomeProjetoGlobal: custoExistente.nome_projeto,
+                        custo: custoExistente,
+                        orcamento: { id_orcamento: plano.id_orcamento, nome_projeto: nomeDoPlano }
+                      });
+                      
+                      Swal.close();
+                      return; // Interrompe para não zerar os dados
+                    }
+                  } catch (err) {
+                    console.error("Erro ao verificar custo existente", err);
+                  }
+
+                  // Se não encontrou projeto salvo, importa a base zerada das chapas
                   const chapas =
                     typeof plano.chapas === "string"
                       ? JSON.parse(plano.chapas)
                       : plano.chapas || [];
-                  setNomeProjeto(plano.nome_servico);
+                  setNomeProjeto(nomeDoPlano);
 
                   atualizarContexto({
-                    nomeProjetoGlobal: plano.nome_servico,
+                    nomeProjetoGlobal: nomeDoPlano,
                     orcamento: {
                       id_orcamento: plano.id_orcamento,
-                      nome_projeto: plano.nome_servico,
+                      nome_projeto: nomeDoPlano,
                     },
                   });
 
