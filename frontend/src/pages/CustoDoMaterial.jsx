@@ -179,7 +179,6 @@ export default function CustoDoMaterial() {
     ]);
   };
 
-
   const removerLinha = async (id) => {
     // Mantém sua regra original: se houver só 1, não remove
     if (materiais.length === 1) {
@@ -230,7 +229,6 @@ export default function CustoDoMaterial() {
     }
   };
 
-
   const atualizarItem = (id, campo, valor) => {
     setMateriais(
       materiais.map((m) => (m.id === id ? { ...m, [campo]: valor } : m)),
@@ -274,6 +272,16 @@ export default function CustoDoMaterial() {
       },
     ]);
     atualizarContexto({ nomeProjetoGlobal: "", custo: null });
+
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "success",
+      text: "Limpeza realizada com sucesso",
+      showConfirmButton: false,
+      timer: 3000,
+      customClass: { popup: "mensagem-confirmacao" },
+    });
   };
 
   const handleBuscar = async () => {
@@ -291,12 +299,12 @@ export default function CustoDoMaterial() {
       if (!dadosNormalizados.length) {
         Swal.fire({
           toast: true,
-        position: "top-end",
-        icon: "error",
-        text: "Nenhum projeto encontrado.",
-        customClass: { popup: "mensagem-erro" },
-        showConfirmButton: false,
-        timer: 3000,
+          position: "top-end",
+          icon: "error",
+          text: "Nenhum projeto encontrado.",
+          customClass: { popup: "mensagem-erro" },
+          showConfirmButton: false,
+          timer: 3000,
         });
         return;
       }
@@ -364,13 +372,13 @@ export default function CustoDoMaterial() {
       const planos = response.data;
       if (!planos.length) {
         Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "error",
-        text: "Nenhum plano encontrado.",
-        customClass: { popup: "mensagem-erro" },
-        showConfirmButton: false,
-        timer: 3000,
+          toast: true,
+          position: "top-end",
+          icon: "error",
+          text: "Nenhum serviço encontrado.",
+          customClass: { popup: "mensagem-erro" },
+          showConfirmButton: false,
+          timer: 3000,
         });
         return;
       }
@@ -465,11 +473,11 @@ export default function CustoDoMaterial() {
 
   const handleSalvar = async () => {
     if (!nomeProjeto.trim()) {
-      Swal.fire({ 
+      Swal.fire({
         toast: true,
         position: "top-end",
-        title: "O nome do projeto é obrigatório.", 
-        icon: "error", 
+        title: "O nome do projeto é obrigatório.",
+        icon: "error",
         timer: 3000,
         customClass: { popup: "mensagem-erro" },
         showConfirmButton: false,
@@ -503,14 +511,14 @@ export default function CustoDoMaterial() {
       });
     } catch (err) {
       console.error("Erro ao carregar orçamento", err);
-      Swal.fire({ 
+      Swal.fire({
         toast: true,
         position: "top-end",
         icon: "error",
         title: "Erro ao salvar.",
         customClass: { popup: "mensagem-erro" },
         showConfirmButton: false,
-        timer: 3000, 
+        timer: 3000,
       });
     } finally {
       setIsLoading(false);
@@ -535,14 +543,14 @@ export default function CustoDoMaterial() {
     } catch (err) {
       console.error("Erro ao carregar orçamento", err);
       Swal.fire({
-              toast: true,
-              position: "top-end",
-              icon: "error",
-              title: "Erro ao carregar orçamento",
-              showConfirmButton: false,
-              timer: 3000,
-              customClass: { popup: "mensagem-erro" },
-            });
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Erro ao carregar orçamento",
+        showConfirmButton: false,
+        timer: 3000,
+        customClass: { popup: "mensagem-erro" },
+      });
     } finally {
       setIsLoading(false);
     }
@@ -613,8 +621,9 @@ export default function CustoDoMaterial() {
           <button
             type="button"
             onClick={handleBuscarPlanoDeCorte}
+            disabled={isLoading}
             className="btn-icone-lupa"
-            >
+          >
             <Search size={18} />
             <span>Orçamento</span>
           </button>
@@ -683,7 +692,7 @@ export default function CustoDoMaterial() {
             </button>
           </div>
         ))}
-      </div>      
+      </div>
       <button className="btn-add-row" onClick={adicionarLinha}>
         <CirclePlus size={16} /> Adicionar Material
       </button>
@@ -724,17 +733,29 @@ export default function CustoDoMaterial() {
               <Save size={18} />
               <span>Salvar</span>
             </button>
-            <button className="btn-editar" onClick={handleEditar}>
+            <button
+              className="btn-editar"
+              onClick={handleEditar}
+              disabled={isLoading || idProjetoSalvo === null}
+            >
               <FileEditIcon size={18} />
               <span>Editar</span>
             </button>
           </div>
           <div className="btn-wrapper-flex-acoes">
-            <button className="btn-buscar" onClick={handleBuscar}>
+            <button
+              className="btn-buscar"
+              onClick={handleBuscar}
+              disabled={isLoading}
+            >
               <Search size={18} />
               <span>Buscar</span>
             </button>
-            <button className="btn-excluir" onClick={handleExcluir}>
+            <button
+              className="btn-excluir"
+              onClick={handleExcluir}
+              disabled={isLoading || idProjetoSalvo === null}
+            >
               <Trash2 size={18} />
               <span>Excluir</span>
             </button>

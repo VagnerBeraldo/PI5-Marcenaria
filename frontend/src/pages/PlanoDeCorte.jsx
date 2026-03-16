@@ -105,12 +105,12 @@ export default function PlanoDeCorte() {
     if (chapas.length === 1) {
       Swal.fire({
         toast: true,
-          position: "top-end",
-          icon: "error",
-          text: "Você deve ter pelo menos uma chapa no projeto.",
-          showConfirmButton: false,
-          timer: 3000,
-          customClass: { popup: "mensagem-erro" },
+        position: "top-end",
+        icon: "error",
+        text: "Você deve ter pelo menos uma chapa no projeto.",
+        showConfirmButton: false,
+        timer: 3000,
+        customClass: { popup: "mensagem-erro" },
       });
       return;
     }
@@ -143,8 +143,7 @@ export default function PlanoDeCorte() {
           customClass: { popup: "mensagem-confirmacao" },
         });
       } catch (err) {
-        console.error("Erro ao carregar orçamento", err); 
-
+        console.error("Erro ao carregar orçamento", err);
       } finally {
         setIsLoading(false);
       }
@@ -228,40 +227,39 @@ export default function PlanoDeCorte() {
     }
   };
 
-
   const removerPeca = async (id) => {
-      const result = await Swal.fire({
-        customClass: { popup: "modal-confirma-exclusao" },
-        title: "Excluir peça do plano de corte?",
-        text: "Esta ação não pode ser desfeita!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Sim, excluir!",
-        cancelButtonText: "Cancelar",
-        confirmButtonColor: "var(--btn-confirmar-exclusao)",
-        cancelButtonColor: "var(--btn-cancelar-exclusao)",
-      });
-  
-      if (result.isConfirmed) {
-        setIsLoading(true);
-        try {
-          setPecas(pecas.filter((e) => e.id !== id));
-          Swal.fire({
-            toast: true,
-            position: "top-end",
-            icon: "success",
-            title: "Peça excluída com sucesso",
-            showConfirmButton: false,
-            timer: 3000,
-            customClass: { popup: "mensagem-confirmacao" },
-          });
-        } catch (err) {
-          console.error("Erro ao carregar orçamento", err);
-        } finally {
-          setIsLoading(false);
-        }
+    const result = await Swal.fire({
+      customClass: { popup: "modal-confirma-exclusao" },
+      title: "Excluir peça do plano de corte?",
+      text: "Esta ação não pode ser desfeita!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sim, excluir!",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "var(--btn-confirmar-exclusao)",
+      cancelButtonColor: "var(--btn-cancelar-exclusao)",
+    });
+
+    if (result.isConfirmed) {
+      setIsLoading(true);
+      try {
+        setPecas(pecas.filter((e) => e.id !== id));
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: "Peça excluída com sucesso",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-confirmacao" },
+        });
+      } catch (err) {
+        console.error("Erro ao carregar orçamento", err);
+      } finally {
+        setIsLoading(false);
       }
-    };
+    }
+  };
 
   const handleEditar = async () => {
     if (!idPlanoSalvo) return;
@@ -287,14 +285,14 @@ export default function PlanoDeCorte() {
     } catch (err) {
       console.error("Erro ao carregar orçamento", err);
       Swal.fire({
-              toast: true,
-              position: "top-end",
-              icon: "error",
-              title: "Erro ao editar.",
-              showConfirmButton: false,
-              timer: 3000,
-              customClass: { popup: "mensagem-erro" },
-            });
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Erro ao editar.",
+        showConfirmButton: false,
+        timer: 3000,
+        customClass: { popup: "mensagem-erro" },
+      });
     } finally {
       setIsLoading(false);
     }
@@ -316,7 +314,7 @@ export default function PlanoDeCorte() {
       setIsLoading(true);
       try {
         await api.delete(`/planos-corte/${idPlanoSalvo}`);
-        handleNovo();
+        limparFormulario();
         Swal.fire({
           toast: true,
           position: "top-end",
@@ -326,7 +324,6 @@ export default function PlanoDeCorte() {
           timer: 3000,
           customClass: { popup: "mensagem-confirmacao" },
         });
-      
       } catch (err) {
         console.error("Erro ao carregar orçamento", err);
       } finally {
@@ -595,7 +592,7 @@ export default function PlanoDeCorte() {
     );
   };
 
-  const handleNovo = () => {
+  const limparFormulario = () => {
     setIdPlanoSalvo(null);
     setNomeServico("");
     setLargCorte(3);
@@ -608,6 +605,16 @@ export default function PlanoDeCorte() {
       orcamento: null,
       custo: null,
     });
+
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "success",
+      text: "Limpeza realizada com sucesso",
+      showConfirmButton: false,
+      timer: 3000,
+      customClass: { popup: "mensagem-confirmacao" },
+    });
   };
 
   return (
@@ -616,7 +623,7 @@ export default function PlanoDeCorte() {
         <div className="wrapper-header-actions">
           <div className="header-actions ocultar-na-impressao">
             <BotaoVoltar />
-            <button className="btn-novo-topo" onClick={handleNovo} title="Novo">
+            <button className="btn-novo-topo" onClick={limparFormulario} title="Novo">
               <FilePlus size={18} />
               <span>Novo</span>
             </button>
@@ -643,6 +650,7 @@ export default function PlanoDeCorte() {
               type="button"
               className="btn-icone-lupa"
               onClick={handleBuscar}
+              disabled={isLoading}
             >
               <Search size={18} />
             </button>
@@ -808,15 +816,27 @@ export default function PlanoDeCorte() {
               >
                 <Save size={18} /> <span>Salvar</span>
               </button>
-              <button className="btn-editar" onClick={handleEditar}>
+              <button
+                className="btn-editar"
+                onClick={handleEditar}
+                disabled={isLoading || idPlanoSalvo === null}
+              >
                 <FileEditIcon size={18} /> <span>Editar</span>
               </button>
             </div>
             <div className="btn-wrapper-flex-acoes">
-              <button className="btn-buscar" onClick={handleBuscar}>
+              <button
+                className="btn-buscar"
+                onClick={handleBuscar}
+                disabled={isLoading}
+              >
                 <Search size={18} /> <span>Buscar</span>
               </button>
-              <button className="btn-excluir" onClick={handleExcluir}>
+              <button
+                className="btn-excluir"
+                onClick={handleExcluir}
+                disabled={isLoading || idPlanoSalvo === null}
+              >
                 <Trash2 size={18} /> <span>Excluir</span>
               </button>
             </div>

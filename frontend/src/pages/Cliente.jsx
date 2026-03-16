@@ -32,16 +32,23 @@ export default function Cliente() {
 
   // --- BUSCA DE CEP (ViaCEP) ---
   const buscarCep = async () => {
+
     const cepLimpo = cep.replace(/\D/g, "");
+
     if (cepLimpo.length !== 8) {
       Swal.fire({
-        icon: "warning",
-        title: "CEP Inválido",
+        toast: true,
+        position: "top-end",
+        icon: "error",
         text: "Digite um CEP com 8 dígitos.",
+        showConfirmButton: false,
+        timer: 3000,
+        customClass: { popup: "mensagem-erro" },
       });
       return;
     }
 
+    
     setIsLoading(true);
     try {
       const response = await fetch(
@@ -51,9 +58,13 @@ export default function Cliente() {
 
       if (data.erro) {
         Swal.fire({
+          toast: true,
+          position: "top-end",
           icon: "error",
-          title: "Erro",
           text: "CEP não encontrado.",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-erro" },
         });
         return;
       }
@@ -66,9 +77,13 @@ export default function Cliente() {
     } catch (error) {
       console.error("Erro ao buscar CEP:", error);
       Swal.fire({
+        toast: true,
+        position: "top-end",
         icon: "error",
-        title: "Erro",
         text: "Falha ao buscar o CEP.",
+        showConfirmButton: false,
+        timer: 3000,
+        customClass: { popup: "mensagem-erro" },
       });
     } finally {
       setIsLoading(false);
@@ -88,6 +103,16 @@ export default function Cliente() {
     setBairro("");
     setCidade("");
     setEstado("");
+
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "success",
+      text: "Limpeza realizada com sucesso",
+      showConfirmButton: false,
+      timer: 3000,
+      customClass: { popup: "mensagem-confirmacao" },
+    });
   };
 
   const carregarCliente = (cliente) => {
@@ -209,15 +234,15 @@ export default function Cliente() {
 
   // --- SALVAR CLIENTE ---
   const handleSalvar = async () => {
-    if (!nome.trim() || !logradouro.trim()) {
+    if (!nome.trim()) {
       Swal.fire({
         toast: true,
-          position: "top-end",
-          icon: "error",
-          text: "O nome é obrigatório",
-          showConfirmButton: false,
-          timer: 3000,
-          customClass: { popup: "mensagem-erro" },
+        position: "top-end",
+        icon: "error",
+        text: "O nome é obrigatório",
+        showConfirmButton: false,
+        timer: 3000,
+        customClass: { popup: "mensagem-erro" },
       });
       return;
     }
@@ -258,15 +283,15 @@ export default function Cliente() {
         detalhesErro && detalhesErro.length > 0
           ? `Campo inválido: ${detalhesErro[0].path[0]} - ${detalhesErro[0].message}`
           : "Não foi possível salvar o cliente. Verifique os dados.";
-      Swal.fire({ 
+      Swal.fire({
         toast: true,
-          position: "top-end",
-          icon: "error",
-          text: mensagemAlerta, 
-          showConfirmButton: false,
-          timer: 3000,
-          customClass: { popup: "mensagem-erro" }, 
-        });
+        position: "top-end",
+        icon: "error",
+        text: mensagemAlerta,
+        showConfirmButton: false,
+        timer: 3000,
+        customClass: { popup: "mensagem-erro" },
+      });
     } finally {
       setIsSaving(false);
     }
@@ -277,25 +302,25 @@ export default function Cliente() {
     if (!idClienteSalvo) {
       Swal.fire({
         toast: true,
-          position: "top-end",
-          icon: "error",
-          text: "Nenhum cliente selecionado para edição.",
-          showConfirmButton: false,
-          timer: 3000,
-          customClass: { popup: "mensagem-erro" },
+        position: "top-end",
+        icon: "error",
+        text: "Nenhum cliente selecionado para edição.",
+        showConfirmButton: false,
+        timer: 3000,
+        customClass: { popup: "mensagem-erro" },
       });
       return;
     }
 
-    if (!nome.trim() || !logradouro.trim()) {
+    if (!nome.trim()) {
       Swal.fire({
         toast: true,
-          position: "top-end",
-          icon: "error",
-          text: "Nome e Logradouro são obrigatórios.",
-          showConfirmButton: false,
-          timer: 3000,
-          customClass: { popup: "mensagem-erro" },
+        position: "top-end",
+        icon: "error",
+        text: "Nome e Logradouro são obrigatórios.",
+        showConfirmButton: false,
+        timer: 3000,
+        customClass: { popup: "mensagem-erro" },
       });
       return;
     }
@@ -332,14 +357,14 @@ export default function Cliente() {
         detalhesErro && detalhesErro.length > 0
           ? `Campo inválido: ${detalhesErro[0].path[0]} - ${detalhesErro[0].message}`
           : "Não foi possível editar o cliente. Verifique os dados.";
-      Swal.fire({ 
+      Swal.fire({
         toast: true,
-          position: "top-end",
-          icon: "error",
-          text: mensagemAlerta, 
-          showConfirmButton: false,
-          timer: 3000,
-          customClass: { popup: "mensagem-erro" }, 
+        position: "top-end",
+        icon: "error",
+        text: mensagemAlerta,
+        showConfirmButton: false,
+        timer: 3000,
+        customClass: { popup: "mensagem-erro" },
       });
     } finally {
       setIsLoading(false);
@@ -353,7 +378,7 @@ export default function Cliente() {
       const { data } = await api.get("/clientes");
       if (!data || data.length === 0) {
         Swal.fire({
-        toast: true,
+          toast: true,
           position: "top-end",
           icon: "error",
           text: "Nenhum cliente cadastrado.",
@@ -412,12 +437,12 @@ export default function Cliente() {
       console.error("Erro ao buscar clientes:", error);
       Swal.fire({
         toast: true,
-          position: "top-end",
-          icon: "error",
-          text: "Não foi possível carregar a lista de clientes.",
-          showConfirmButton: false,
-          timer: 3000,
-          customClass: { popup: "mensagem-erro" },
+        position: "top-end",
+        icon: "error",
+        text: "Não foi possível carregar a lista de clientes.",
+        showConfirmButton: false,
+        timer: 3000,
+        customClass: { popup: "mensagem-erro" },
       });
     } finally {
       setIsLoading(false);
@@ -504,6 +529,7 @@ export default function Cliente() {
                   type="button"
                   onClick={handleBuscar}
                   className="btn-icone-lupa"
+                  disabled={isLoading}
                 >
                   <Search size={18} />
                 </button>
@@ -622,7 +648,7 @@ export default function Cliente() {
               <button
                 className="btn-salvar"
                 onClick={handleSalvar}
-                disabled={isLoading}
+                disabled={isLoading || idClienteSalvo !== null}
               >
                 {" "}
                 <Save size={18} />
@@ -631,7 +657,8 @@ export default function Cliente() {
               <button
                 className="btn-editar"
                 onClick={handleEditar}
-                disabled={isLoading}
+                // disabled={isLoading}
+                disabled={isLoading || idClienteSalvo === null}
               >
                 {" "}
                 <FileEdit size={18} />
@@ -648,7 +675,11 @@ export default function Cliente() {
                 <Search size={18} />
                 <span>Buscar</span>
               </button>
-              <button className="btn-excluir" onClick={handleExcluir}>
+              <button
+                className="btn-excluir"
+                onClick={handleExcluir}
+                disabled={isLoading || idClienteSalvo === null}
+              >
                 {" "}
                 <Trash2 size={18} />
                 <span>Excluir</span>
