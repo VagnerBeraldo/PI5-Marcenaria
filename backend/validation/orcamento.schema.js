@@ -13,7 +13,7 @@ const orcamentoSchema = z.object({
         .pipe(z.string().min(1, "O nome do projeto é obrigatório.")),
         
     quantidade: z.coerce.number().int().min(1, "Quantidade mínima é 1."),
-    dias_trabalho: z.coerce.number().int().min(0),
+    dias_trabalho: z.coerce.number().int().min(1, "Quantidade mínima é 1."),
     valor_custo: z.coerce.number().min(0),
     imposto_importacao: z.coerce.number().min(0),
     frete: z.coerce.number().min(0),
@@ -23,6 +23,7 @@ const orcamentoSchema = z.object({
     imposto: z.coerce.number().min(0),
     taxa_cartao: z.coerce.number().min(0),
     margem_lucro: z.coerce.number().min(0),
+    desconto: z.coerce.number().min(0),
     preco_sugerido: z.coerce.number().min(0),
     preco_final_impresso: z.coerce.number().min(0),
     entrada: z.coerce.number().min(0).optional().default(0),
