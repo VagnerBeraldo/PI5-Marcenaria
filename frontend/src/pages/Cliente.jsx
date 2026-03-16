@@ -652,7 +652,7 @@ export default function Cliente() {
               >
                 {" "}
                 <Save size={18} />
-                <span>{isSaving ? "Salvando..." : "Salvar"}</span>
+                <span>{isSaving ? "Salvar" : "Salvar"}</span>
               </button>
               <button
                 className="btn-editar"
