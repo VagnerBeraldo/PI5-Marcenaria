@@ -17,7 +17,7 @@ const salvarOrcamento = async (dados) => {
 
     // 1. Insere o Orçamento Mestre (INCLUÍDO outras_var)
     const [result] = await connection.execute(
-      `INSERT INTO orcamento 
+      `INSERT INTO orcamentos 
                 (id_cliente, id_projeto, nome_projeto, quantidade, dias_trabalho, valor_custo, imposto_importacao, frete, custo_fixo, energia_eletrica, outras_var, imposto, taxa_cartao, margem_lucro, desconto, preco_sugerido, preco_final_impresso, entrada, situacao) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'gerado')`,
       [
@@ -46,12 +46,12 @@ const salvarOrcamento = async (dados) => {
 
     // Se houver um nome de projeto, procura-se um plano de corte avulso com esse nome e vincula-o ao orçamento
     await connection.execute(
-      `UPDATE plano_corte SET id_orcamento = ? 
+      `UPDATE planos_corte SET id_orcamento = ? 
              WHERE id_orcamento IS NULL AND id_plano IN (
                 /* Subquery para segurança: vincula o plano mais recente que tenha o nome vindo do fluxo anterior */
                 SELECT id_plano FROM (
-                    SELECT p.id_plano FROM plano_corte p 
-                    LEFT JOIN orcamento o ON p.id_orcamento = o.id_orcamento
+                    SELECT p.id_plano FROM planos_corte p 
+                    LEFT JOIN orcamentos o ON p.id_orcamento = o.id_orcamento
                     WHERE o.id_orcamento IS NULL
                 ) AS tmp
              ) LIMIT 1`,
@@ -62,7 +62,7 @@ const salvarOrcamento = async (dados) => {
     if (extras && extras.length > 0) {
       for (const extra of extras) {
         await connection.execute(
-          "INSERT INTO orcamento_extra (id_orcamento, descricao, valor) VALUES (?, ?, ?)",
+          "INSERT INTO orcamentos_extras (id_orcamento, descricao, valor) VALUES (?, ?, ?)",
           [id_orcamento, extra.descricao, extra.valor],
         );
       }
@@ -89,10 +89,10 @@ const listarOrcamentos = async () => {
                 COALESCE(
                     (SELECT JSON_ARRAYAGG(
                         JSON_OBJECT('id_extra', oe.id_extra, 'descricao', oe.descricao, 'valor', oe.valor)
-                    ) FROM orcamento_extra oe WHERE oe.id_orcamento = o.id_orcamento), 
+                    ) FROM orcamentos_extras oe WHERE oe.id_orcamento = o.id_orcamento), 
                     '[]'
                 ) AS extras
-            FROM orcamento o
+            FROM orcamentos o
             LEFT JOIN clientes c ON o.id_cliente = c.id_cliente
             ORDER BY o.data_orcamento DESC
         `);
@@ -126,7 +126,7 @@ const editarOrcamento = async (id_orcamento, dados) => {
     }
 
     await connection.execute(
-      `UPDATE orcamento SET 
+      `UPDATE orcamentos SET 
                 id_cliente = ?, id_projeto = ?, nome_projeto = ?, quantidade = ?, dias_trabalho = ?, valor_custo = ?, 
                 imposto_importacao = ?, frete = ?, custo_fixo = ?, energia_eletrica = ?, outras_var = ?, imposto = ?, 
                 taxa_cartao = ?, margem_lucro = ?, desconto = ?, preco_sugerido = ?, preco_final_impresso = ?, entrada = ?, situacao = 'gerado'            
@@ -142,7 +142,7 @@ const editarOrcamento = async (id_orcamento, dados) => {
         mestre.frete,
         mestre.custo_fixo,
         mestre.energia_eletrica,
-        mestre.outras_var !== undefined ? mestre.outras_var : 0, // Fallback 
+        mestre.outras_var !== undefined ? mestre.outras_var : 0, // Fallback
         mestre.imposto,
         mestre.taxa_cartao,
         mestre.margem_lucro,
@@ -155,14 +155,14 @@ const editarOrcamento = async (id_orcamento, dados) => {
     );
 
     await connection.execute(
-      "DELETE FROM orcamento_extra WHERE id_orcamento = ?",
+      "DELETE FROM orcamentos_extras WHERE id_orcamento = ?",
       [id_orcamento],
     );
 
     if (extras && extras.length > 0) {
       for (const extra of extras) {
         await connection.execute(
-          "INSERT INTO orcamento_extra (id_orcamento, descricao, valor) VALUES (?, ?, ?)",
+          "INSERT INTO orcamentos_extras (id_orcamento, descricao, valor) VALUES (?, ?, ?)",
           [id_orcamento, extra.descricao, extra.valor],
         );
       }
@@ -183,7 +183,7 @@ const excluirOrcamento = async (id_orcamento) => {
   const connection = await db.getConnection();
   try {
     const [result] = await connection.execute(
-      "DELETE FROM orcamento WHERE id_orcamento = ?",
+      "DELETE FROM orcamentos WHERE id_orcamento = ?",
       [id_orcamento],
     );
     return result.affectedRows > 0;
@@ -206,10 +206,10 @@ const buscarOrcamentosPorCliente = async (id_cliente) => {
                 COALESCE(
                     (SELECT JSON_ARRAYAGG(
                         JSON_OBJECT('id_extra', oe.id_extra, 'descricao', oe.descricao, 'valor', oe.valor)
-                    ) FROM orcamento_extra oe WHERE oe.id_orcamento = o.id_orcamento), 
+                    ) FROM orcamentos_extras oe WHERE oe.id_orcamento = o.id_orcamento), 
                     '[]'
                 ) AS extras
-            FROM orcamento o
+            FROM orcamentos o
             LEFT JOIN clientes c ON o.id_cliente = c.id_cliente
             WHERE o.id_cliente = ?
             ORDER BY o.data_orcamento DESC

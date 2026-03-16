@@ -10,7 +10,7 @@ const {
 
 router.post('/', postPlanoDeCorte);
 router.get('/', getPlanos);
-router.get('/orcamento/:id_orcamento', getPlanoPorOrcamento);
+router.get('/orcamentos/:id_orcamento', getPlanoPorOrcamento);
 router.put('/:id', putPlanoDeCorte);
 router.delete('/:id', deletePlanoDeCorte);
 
