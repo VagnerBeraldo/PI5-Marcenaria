@@ -220,7 +220,7 @@ export default function CustoDoMaterial() {
 
         // 2. Se o projeto já existe no banco, força o salvamento automático da nova lista
         if (idProjetoSalvo) {
-          // Monta o payload com a lista nova, ignorando o estado antigo do React
+          
           const payload = {
             id_orcamento:
               contextoGlobal?.orcamento?.id_orcamento ||
@@ -251,7 +251,7 @@ export default function CustoDoMaterial() {
         });
       } catch (err) {
         {console.error("Erro ao carregar orçamento", err);}
-        // Caso dê erro na API, desfaz a remoção visual
+        
         handleBuscar(); 
         Swal.fire({
           toast: true,
