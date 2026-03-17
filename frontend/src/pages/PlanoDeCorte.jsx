@@ -129,10 +129,28 @@ export default function PlanoDeCorte() {
     if (result.isConfirmed) {
       setIsLoading(true);
       try {
+        // 1. Filtra as chapas e as peças removidas
         const novasChapas = chapas.filter((c) => c.id !== id);
+        const novasPecas = pecas.filter((p) => p.chapaId !== id);
+
+        // 2. Atualiza o estado visual
         setChapas(novasChapas);
-        setPecas(pecas.filter((p) => p.chapaId !== id));
+        setPecas(novasPecas);
         if (chapaAtivaId === id) setChapaAtivaId(novasChapas[0].id);
+
+        // 3. Se o plano já existe no banco, realiza o auto-save
+        if (idPlanoSalvo) {
+          const payload = {
+            id_orcamento: contextoGlobal?.orcamento?.id_orcamento || null,
+            nome_servico: nomeServico,
+            espessura_serra: largCorte,
+            chapas: novasChapas,
+            pecas: novasPecas.map((p) => ({ ...p, nome: p.nome })),
+          };
+
+          await api.put(`/planos-corte/${idPlanoSalvo}`, payload);
+        }
+
         Swal.fire({
           toast: true,
           position: "top-end",
@@ -144,6 +162,15 @@ export default function PlanoDeCorte() {
         });
       } catch (err) {
         console.error("Erro ao carregar orçamento", err);
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "error",
+          title: "Erro ao excluir chapa no banco.",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-erro" },
+        });
       } finally {
         setIsLoading(false);
       }
@@ -243,7 +270,23 @@ export default function PlanoDeCorte() {
     if (result.isConfirmed) {
       setIsLoading(true);
       try {
-        setPecas(pecas.filter((e) => e.id !== id));
+        // 1. Cria a nova lista filtrada e atualiza o estado visual
+        const novasPecas = pecas.filter((e) => e.id !== id);
+        setPecas(novasPecas);
+
+        // 2. Se o plano já existe no banco, monta o payload e faz o auto-save
+        if (idPlanoSalvo) {
+          const payload = {
+            id_orcamento: contextoGlobal?.orcamento?.id_orcamento || null,
+            nome_servico: nomeServico,
+            espessura_serra: largCorte,
+            chapas: chapas,
+            pecas: novasPecas.map((p) => ({ ...p, nome: p.nome })), // nova lista
+          };
+          // atualiza a lista para editar os dados que foram excluídos
+          await api.put(`/planos-corte/${idPlanoSalvo}`, payload);
+        }
+
         Swal.fire({
           toast: true,
           position: "top-end",
@@ -255,6 +298,15 @@ export default function PlanoDeCorte() {
         });
       } catch (err) {
         console.error("Erro ao carregar orçamento", err);
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "error",
+          title: "Erro ao excluir no banco de dados.",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-erro" },
+        });
       } finally {
         setIsLoading(false);
       }
@@ -623,7 +675,11 @@ export default function PlanoDeCorte() {
         <div className="wrapper-header-actions">
           <div className="header-actions ocultar-na-impressao">
             <BotaoVoltar />
-            <button className="btn-novo-topo" onClick={limparFormulario} title="Novo">
+            <button
+              className="btn-novo-topo"
+              onClick={limparFormulario}
+              title="Novo"
+            >
               <FilePlus size={18} />
               <span>Novo</span>
             </button>
