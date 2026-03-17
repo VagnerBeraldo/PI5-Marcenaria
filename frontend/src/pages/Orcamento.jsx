@@ -9,7 +9,7 @@ import {
   CirclePlus,
   Printer,
   FileEdit,
-  RefreshCw
+  RefreshCw,
 } from "lucide-react";
 import Swal from "sweetalert2";
 import api from "../../services/api";
@@ -49,7 +49,7 @@ export default function Orcamento() {
   });
 
   const [precoManual, setPrecoManual] = useState(null);
-  
+
   const [custoFixoSalvo, setCustoFixoSalvo] = useState(null);
   const [energiaSalva, setEnergiaSalva] = useState(null);
   const [outrasVariaveisSalvas, setOutrasVariaveisSalvas] = useState(null);
@@ -72,9 +72,7 @@ export default function Orcamento() {
       const adicionais = fixas.outrasFixas || [];
       if (adicionais.length > 0 || typeof adicionais === "string") {
         const listaAdicionais =
-          typeof adicionais === "string"
-            ? JSON.parse(adicionais)
-            : adicionais;
+          typeof adicionais === "string" ? JSON.parse(adicionais) : adicionais;
 
         const extrasFixas = listaAdicionais.reduce(
           (acc, curr) => acc + Number(curr.valor || 0),
@@ -115,17 +113,20 @@ export default function Orcamento() {
   }, []);
 
   const custoFixoAtual = useMemo(() => {
-    if (custoFixoSalvo !== null && custoFixoSalvo !== undefined) return custoFixoSalvo;
+    if (custoFixoSalvo !== null && custoFixoSalvo !== undefined)
+      return custoFixoSalvo;
     return (baseDespesas.custoFixoTotal / 22) * diasTrabalho;
   }, [custoFixoSalvo, baseDespesas.custoFixoTotal, diasTrabalho]);
 
   const energiaAtual = useMemo(() => {
-    if (energiaSalva !== null && energiaSalva !== undefined) return energiaSalva;
+    if (energiaSalva !== null && energiaSalva !== undefined)
+      return energiaSalva;
     return (baseDespesas.energiaTotal / 22) * diasTrabalho;
   }, [energiaSalva, baseDespesas.energiaTotal, diasTrabalho]);
 
   const outrasVariaveisAtual = useMemo(() => {
-    if (outrasVariaveisSalvas !== null && outrasVariaveisSalvas !== undefined) return outrasVariaveisSalvas;
+    if (outrasVariaveisSalvas !== null && outrasVariaveisSalvas !== undefined)
+      return outrasVariaveisSalvas;
     return (baseDespesas.outrasVariaveisTotal / 22) * diasTrabalho;
   }, [outrasVariaveisSalvas, baseDespesas.outrasVariaveisTotal, diasTrabalho]);
 
@@ -167,14 +168,12 @@ export default function Orcamento() {
   }, [custoTotal, impostoPerc, taxaCartaoPerc, margemLucroPerc]);
 
   const precoArredondado = useMemo(() => {
-    const precoComDesconto = precoSugerido - (precoSugerido * (desconto / 100));
+    const precoComDesconto = precoSugerido - precoSugerido * (desconto / 100);
     return Math.ceil(precoComDesconto / 5) * 5;
   }, [precoSugerido, desconto]);
 
   const precoFinalImpresso =
     precoManual !== null ? precoManual : precoArredondado;
-
-
 
   useEffect(() => {
     setPrecoManual(null);
@@ -191,7 +190,7 @@ export default function Orcamento() {
 
   const adicionarExtra = () =>
     setExtras([...extras, { id: Date.now(), descricao: "", valor: 0 }]);
-  
+
   const removerExtra = async (id) => {
     const result = await Swal.fire({
       customClass: { popup: "modal-confirma-exclusao" },
@@ -208,7 +207,74 @@ export default function Orcamento() {
     if (result.isConfirmed) {
       setIsLoading(true);
       try {
-        setExtras(extras.filter((e) => e.id !== id));
+        // 1. Remove o item visualmente
+        const novosExtras = extras.filter((e) => e.id !== id);
+        setExtras(novosExtras);
+
+        let idAtual =
+          idOrcamentoSalvo ||
+          contextoGlobal?.orcamento?.id_orcamento ||
+          contextoGlobal?.orcamento?.id;
+
+        // 2. Se o orçamento existe no banco, fazemos o auto-save com recálculo manual
+        if (idAtual) {
+          // --- RECÁLCULO DOS TOTAIS BASEADOS NA NOVA LISTA ---
+          const novoTotalExtras = novosExtras.reduce(
+            (acc, item) => acc + (Number(item.valor) || 0),
+            0,
+          );
+
+          const novoCustoTotal =
+            custoMaterialTotal +
+            impostoImportacao +
+            frete +
+            custoFixoAtual +
+            energiaAtual +
+            (outrasVariaveisAtual || 0) +
+            novoTotalExtras;
+
+          const totalTaxas = impostoPerc + taxaCartaoPerc + margemLucroPerc;
+          const novoPrecoSugerido =
+            totalTaxas >= 100 ? 0 : novoCustoTotal / (1 - totalTaxas / 100);
+
+          const precoComDesconto =
+            novoPrecoSugerido - novoPrecoSugerido * (desconto / 100);
+          const novoPrecoArredondado = Math.ceil(precoComDesconto / 5) * 5;
+          const novoPrecoFinalImpresso =
+            precoManual !== null ? precoManual : novoPrecoArredondado;
+          // ---------------------------------------------------
+
+          const payloadExtras = novosExtras.map((e) => ({
+            descricao: e.descricao,
+            valor: Number(e.valor),
+          }));
+
+          const payload = {
+            id_cliente: clienteId ? Number(clienteId) : null,
+            nome_cliente: nomeCliente,
+            id_projeto: projetoId ? Number(projetoId) : null,
+            nome_projeto: nomeProjeto,
+            quantidade: Number(quantidade),
+            dias_trabalho: Number(diasTrabalho),
+            valor_custo: valorCustoBase,
+            imposto_importacao: impostoImportacao,
+            frete: frete,
+            custo_fixo: custoFixoAtual,
+            energia_eletrica: energiaAtual,
+            outras_var: outrasVariaveisAtual ? Number(outrasVariaveisAtual) : 0,
+            imposto: impostoPerc,
+            taxa_cartao: taxaCartaoPerc,
+            margem_lucro: margemLucroPerc,
+            desconto: desconto,
+            preco_sugerido: novoPrecoSugerido,
+            preco_final_impresso: novoPrecoFinalImpresso,
+            entrada: entrada,
+            extras: payloadExtras,
+          };
+
+          await api.put(`/orcamentos/${idAtual}`, payload);
+        }
+
         Swal.fire({
           toast: true,
           position: "top-end",
@@ -219,7 +285,18 @@ export default function Orcamento() {
           customClass: { popup: "mensagem-confirmacao" },
         });
       } catch (err) {
-        console.error("Erro ao carregar orçamento", err);
+        {
+          console.error("Erro ao carregar orçamento", err);
+        }
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "error",
+          title: "Erro ao excluir extra no banco.",
+          showConfirmButton: false,
+          timer: 3000,
+          customClass: { popup: "mensagem-erro" },
+        });
       } finally {
         setIsLoading(false);
       }
@@ -369,16 +446,19 @@ export default function Orcamento() {
             document.querySelectorAll(".swal-res-item").forEach((el) => {
               el.onclick = () => {
                 const selectedCli = data.find(
-                  (item) => item.id_cliente === Number(el.dataset.id)
+                  (item) => item.id_cliente === Number(el.dataset.id),
                 );
-                
+
                 if (selectedCli) {
                   limparFormulario();
 
                   setClienteId(selectedCli.id_cliente);
                   setNomeCliente(selectedCli.nome);
                   atualizarContexto({
-                    cliente: { id_cliente: selectedCli.id_cliente, nome: selectedCli.nome },
+                    cliente: {
+                      id_cliente: selectedCli.id_cliente,
+                      nome: selectedCli.nome,
+                    },
                   });
                   carregarAmbienteGlobal(selectedCli);
                 }
@@ -414,7 +494,7 @@ export default function Orcamento() {
     setDesconto(0);
     setExtras([]);
     setPrecoManual(null);
-    
+
     setCustoFixoSalvo(null);
     setEnergiaSalva(null);
     setOutrasVariaveisSalvas(null);
@@ -428,18 +508,17 @@ export default function Orcamento() {
       planoCorte: null,
       custo: null,
     });
-    
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "success",
-        text: "Limpeza realizada com sucesso",
-        showConfirmButton: false,
-        timer: 3000,
-        customClass: { popup: "mensagem-confirmacao" },
-      });
-    
-    };
+
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "success",
+      text: "Limpeza realizada com sucesso",
+      showConfirmButton: false,
+      timer: 3000,
+      customClass: { popup: "mensagem-confirmacao" },
+    });
+  };
 
   const handleSalvar = async () => {
     if (!nomeProjeto.trim()) {
@@ -510,13 +589,13 @@ export default function Orcamento() {
       const response = await api.post("/orcamentos", payload);
       const novoId = response.data.id || response.data.id_orcamento;
       const novoIdCliente = response.data.id_cliente;
-      
+
       setIdOrcamentoSalvo(novoId);
-      
+
       setCustoFixoSalvo(custoFixoAtual);
       setEnergiaSalva(energiaAtual);
       setOutrasVariaveisSalvas(outrasVariaveisAtual);
-      
+
       if (novoIdCliente) {
         setClienteId(novoIdCliente);
         atualizarContexto({
@@ -613,11 +692,11 @@ export default function Orcamento() {
 
       await api.put(`/orcamentos/${idAtual}`, payload);
       setIdOrcamentoSalvo(idAtual);
-      
+
       setCustoFixoSalvo(custoFixoAtual);
       setEnergiaSalva(energiaAtual);
       setOutrasVariaveisSalvas(outrasVariaveisAtual);
-      
+
       Swal.fire({
         toast: true,
         position: "top-end",
@@ -673,12 +752,30 @@ export default function Orcamento() {
           ? JSON.parse(orc.extras)
           : orc.extras || [];
 
-      const rateioSalvo = extrasParsed.find((e) => e.descricao === "Rateio Outras Variáveis");
-      const extrasManuais = extrasParsed.filter((e) => e.descricao !== "Rateio Outras Variáveis");
+      const rateioSalvo = extrasParsed.find(
+        (e) => e.descricao === "Rateio Outras Variáveis",
+      );
+      const extrasManuais = extrasParsed.filter(
+        (e) => e.descricao !== "Rateio Outras Variáveis",
+      );
 
-      setCustoFixoSalvo(orc.custo_fixo !== undefined && orc.custo_fixo !== null ? Number(orc.custo_fixo) : null);
-      setEnergiaSalva(orc.energia_eletrica !== undefined && orc.energia_eletrica !== null ? Number(orc.energia_eletrica) : null);
-      setOutrasVariaveisSalvas(orc.outras_var !== undefined && orc.outras_var !== null ? Number(orc.outras_var) : rateioSalvo ? Number(rateioSalvo.valor) : null);
+      setCustoFixoSalvo(
+        orc.custo_fixo !== undefined && orc.custo_fixo !== null
+          ? Number(orc.custo_fixo)
+          : null,
+      );
+      setEnergiaSalva(
+        orc.energia_eletrica !== undefined && orc.energia_eletrica !== null
+          ? Number(orc.energia_eletrica)
+          : null,
+      );
+      setOutrasVariaveisSalvas(
+        orc.outras_var !== undefined && orc.outras_var !== null
+          ? Number(orc.outras_var)
+          : rateioSalvo
+            ? Number(rateioSalvo.valor)
+            : null,
+      );
 
       setExtras(
         extrasManuais.map((e, idx) => ({
@@ -745,7 +842,7 @@ export default function Orcamento() {
     [contextoGlobal, idOrcamentoSalvo, nomeCliente, nomeProjeto, projetoId],
   );
 
-const handleBuscarOrcamento = async (situacaoDesejada) => {
+  const handleBuscarOrcamento = async (situacaoDesejada) => {
     setIsLoading(true);
     try {
       const { data } = await api.get("/orcamentos");
@@ -811,14 +908,14 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
                   (item) =>
                     (item.id_orcamento || item.id) === Number(el.dataset.id),
                 );
-                
+
                 if (selectedOrc) {
                   // 1. Limpa o formulário e o contexto anterior
                   limparFormulario();
-                  
+
                   // 2. Carrega os dados do orçamento escolhido
                   carregarOrcamento(selectedOrc);
-                  
+
                   // 3. Força o contexto global a assumir o cliente deste orçamento
                   if (selectedOrc.id_cliente || selectedOrc.nome_cliente) {
                     atualizarContexto({
@@ -829,7 +926,7 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
                     });
                   }
                 }
-                
+
                 Swal.close();
               };
             });
@@ -982,12 +1079,12 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
           <h2 className="subtitulo">Custos de Base</h2>
           <div className="form-row">
             <div className="form-group flex-1">
-                <label className="titulo-input">Entrada (R$)</label>
-                <input
-                  type="text"
-                  value={formatMoney(entrada)}
-                  onChange={(e) => handleMoneyInput(e.target.value, setEntrada)}
-                />
+              <label className="titulo-input">Entrada (R$)</label>
+              <input
+                type="text"
+                value={formatMoney(entrada)}
+                onChange={(e) => handleMoneyInput(e.target.value, setEntrada)}
+              />
               <label className="titulo-input">Custo do Material (Base)</label>
               <input
                 type="text"
@@ -998,17 +1095,18 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
               />
             </div>
             <div className="container-custo-energia">
-              
               <div className="form-group flex-1 wrapper-custo-ee-outrasvariaveis">
                 <label className="mobile">Custo Fixo</label>
                 <input
                   type="text"
                   value={formatMoney(custoFixoAtual)}
-                  onChange={(e) => handleMoneyInput(e.target.value, setCustoFixoSalvo)}
+                  onChange={(e) =>
+                    handleMoneyInput(e.target.value, setCustoFixoSalvo)
+                  }
                 />
-                <button 
-                  type="button" 
-                  className="btn-refresh-rateio" 
+                <button
+                  type="button"
+                  className="btn-refresh-rateio"
                   onClick={() => setCustoFixoSalvo(null)}
                 >
                   <RefreshCw size={12} /> Atualizar
@@ -1020,11 +1118,13 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
                 <input
                   type="text"
                   value={formatMoney(energiaAtual)}
-                  onChange={(e) => handleMoneyInput(e.target.value, setEnergiaSalva)}
+                  onChange={(e) =>
+                    handleMoneyInput(e.target.value, setEnergiaSalva)
+                  }
                 />
-                <button 
-                  type="button" 
-                  className="btn-refresh-rateio" 
+                <button
+                  type="button"
+                  className="btn-refresh-rateio"
                   onClick={() => setEnergiaSalva(null)}
                 >
                   <RefreshCw size={12} /> Atualizar
@@ -1036,17 +1136,18 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
                 <input
                   type="text"
                   value={formatMoney(outrasVariaveisAtual)}
-                  onChange={(e) => handleMoneyInput(e.target.value, setOutrasVariaveisSalvas)}
+                  onChange={(e) =>
+                    handleMoneyInput(e.target.value, setOutrasVariaveisSalvas)
+                  }
                 />
-                <button 
-                  type="button" 
-                  className="btn-refresh-rateio" 
+                <button
+                  type="button"
+                  className="btn-refresh-rateio"
                   onClick={() => setOutrasVariaveisSalvas(null)}
                 >
                   <RefreshCw size={12} /> Atualizar
                 </button>
               </div>
-
             </div>
           </div>
           <div className="form-row mt-15">
@@ -1092,7 +1193,7 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
                   const val = Number(e.target.value.replace(/\D/g, "")) / 100;
                   atualizarExtra(extra.id, "valor", val);
                 }}
-              />     
+              />
               <button
                 className="btn-del-extra"
                 onClick={() => removerExtra(extra.id)}
@@ -1150,12 +1251,9 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
         </div>
 
         <div className="resumo-box">
-           <button
-                className="imprimir"
-                onClick={() => window.print()}
-              >
-                <Printer size={18} />
-              </button>
+          <button className="imprimir" onClick={() => window.print()}>
+            <Printer size={18} />
+          </button>
           <div className="resumo-item">
             <span>Custo Total:</span> <strong>{formatMoney(custoTotal)}</strong>
           </div>
@@ -1164,12 +1262,14 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
             <strong>{formatMoney(precoSugerido)}</strong>
           </div>
           {desconto > 0 && (
-          <div className="resumo-item">
-            <span>Valo com Desconto:</span>{" "}
-            <strong>{formatMoney(precoSugerido - (precoSugerido * (desconto / 100)))}</strong>
-          </div>
+            <div className="resumo-item">
+              <span>Valo com Desconto:</span>{" "}
+              <strong>
+                {formatMoney(precoSugerido - precoSugerido * (desconto / 100))}
+              </strong>
+            </div>
           )}
-            
+
           <div className="resumo-item destaque">
             <span>Preço Fechado:</span>
             <input
@@ -1179,7 +1279,7 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
               onChange={(e) => handleMoneyInput(e.target.value, setPrecoManual)}
             />
           </div>
-          
+
           {entrada > 0 && (
             <div className="resumo-item destaque-saldo">
               <span>Saldo a Pagar:</span>
@@ -1199,8 +1299,10 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
                 <Save size={18} />
                 <span>Salvar</span>
               </button>
-              <button className="btn-editar" onClick={handleEditar}
-              disabled={isLoading || idOrcamentoSalvo === null}
+              <button
+                className="btn-editar"
+                onClick={handleEditar}
+                disabled={isLoading || idOrcamentoSalvo === null}
               >
                 <FileEdit size={18} />
                 <span>Editar</span>
@@ -1215,9 +1317,11 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
                 <Search size={18} />
                 <span>Buscar</span>
               </button>
-                            
-              <button className="btn-excluir" onClick={handleExcluir}
-              disabled={isLoading || idOrcamentoSalvo === null}
+
+              <button
+                className="btn-excluir"
+                onClick={handleExcluir}
+                disabled={isLoading || idOrcamentoSalvo === null}
               >
                 <Trash2 size={18} />
                 <span>Excluir</span>
@@ -1256,7 +1360,12 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
           </div>
           <div className="linha-dado">
             <strong>Validade:</strong>{" "}
-           <span>{new Date(new Date().setDate(new Date().getDate() + 15)).toLocaleDateString("pt-BR")} (15 dias)</span>
+            <span>
+              {new Date(
+                new Date().setDate(new Date().getDate() + 15),
+              ).toLocaleDateString("pt-BR")}{" "}
+              (15 dias)
+            </span>
           </div>
         </div>
 
@@ -1266,10 +1375,10 @@ const handleBuscarOrcamento = async (situacaoDesejada) => {
             <strong>{formatMoney(Math.ceil(precoSugerido / 5) * 5)}</strong>
           </div>
           {desconto > 0 && (
-          <div className="linha-valor">
-            <span>Valor com Desconto:</span>
-            <strong>{formatMoney(precoFinalImpresso)}</strong>
-          </div>
+            <div className="linha-valor">
+              <span>Valor com Desconto:</span>
+              <strong>{formatMoney(precoFinalImpresso)}</strong>
+            </div>
           )}
 
           {entrada > 0 && (
