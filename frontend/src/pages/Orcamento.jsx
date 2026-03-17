@@ -537,6 +537,36 @@ export default function Orcamento() {
     setIsLoading(true);
 
     try {
+      // 1. Verificação de Nome de Cliente Duplicado antes de salvar
+      if (nomeCliente && nomeCliente.trim() !== "") {
+        const { data: clientesExistentes } = await api.get("/clientes");
+
+        if (clientesExistentes && clientesExistentes.length > 0) {
+          const clienteConflitante = clientesExistentes.find(
+            (c) => c.nome.toLowerCase() === nomeCliente.trim().toLowerCase(),
+          );
+
+          // Barra se o nome existir em OUTRO cliente (ID diferente) ou se o nome existir e não houver ID
+          if (
+            clienteConflitante &&
+            (!clienteId || clienteConflitante.id_cliente !== Number(clienteId))
+          ) {
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              icon: "error",
+              text: "Já existe um cliente com esse nome",
+              showConfirmButton: false,
+              timer: 4000,
+              customClass: { popup: "mensagem-erro" },
+            });
+            setIsLoading(false);
+            return;
+          }
+        }
+      }
+
+      // 2. Verificação de Orçamento Existente
       const { data: orcamentosExistentes } = await api.get("/orcamentos");
       const orcExistente = orcamentosExistentes.find(
         (o) =>
@@ -555,6 +585,7 @@ export default function Orcamento() {
           showConfirmButton: false,
           timer: 3000,
         });
+        setIsLoading(false);
         return;
       }
 
@@ -662,6 +693,35 @@ export default function Orcamento() {
     setIsLoading(true);
 
     try {
+      // 1. Verificação de Nome de Cliente Duplicado antes de editar
+      if (nomeCliente && nomeCliente.trim() !== "") {
+        const { data: clientesExistentes } = await api.get("/clientes");
+
+        if (clientesExistentes && clientesExistentes.length > 0) {
+          const clienteConflitante = clientesExistentes.find(
+            (c) => c.nome.toLowerCase() === nomeCliente.trim().toLowerCase(),
+          );
+
+          // Barra se o nome existir em OUTRO cliente (ID diferente) ou se o nome existir e não houver ID
+          if (
+            clienteConflitante &&
+            (!clienteId || clienteConflitante.id_cliente !== Number(clienteId))
+          ) {
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              icon: "error",
+              text: "Já existe um cliente com esse nome",
+              showConfirmButton: false,
+              timer: 4000,
+              customClass: { popup: "mensagem-erro" },
+            });
+            setIsLoading(false);
+            return;
+          }
+        }
+      }
+
       const payloadExtras = extras.map((e) => ({
         descricao: e.descricao,
         valor: Number(e.valor),

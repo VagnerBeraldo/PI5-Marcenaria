@@ -249,6 +249,29 @@ export default function Cliente() {
 
     setIsSaving(true);
     try {
+      // 1. Verificação de Nome Duplicado antes de salvar
+      const { data: clientesExistentes } = await api.get("/clientes");
+      if (clientesExistentes && clientesExistentes.length > 0) {
+        const nomeJaExiste = clientesExistentes.some(
+          (c) => c.nome.toLowerCase() === nome.trim().toLowerCase()
+        );
+
+        if (nomeJaExiste) {
+          Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "error",
+            text: "Já existe um cliente com esse nome",
+            showConfirmButton: false,
+            timer: 4000,
+            customClass: { popup: "mensagem-erro" },
+          });
+          setIsSaving(false);
+          return; 
+        }
+      }
+
+      // 2. Prossegue com o cadastro se o nome for único
       const payload = {
         nome,
         email,
@@ -296,6 +319,7 @@ export default function Cliente() {
       setIsSaving(false);
     }
   };
+  
 
   // --- EDITAR CLIENTE ---
   const handleEditar = async () => {
@@ -317,7 +341,7 @@ export default function Cliente() {
         toast: true,
         position: "top-end",
         icon: "error",
-        text: "Nome e Logradouro são obrigatórios.",
+        text: "O nome é obrigatório",
         showConfirmButton: false,
         timer: 3000,
         customClass: { popup: "mensagem-erro" },
@@ -327,6 +351,31 @@ export default function Cliente() {
 
     setIsLoading(true);
     try {
+      // 1. Verificação de Nome Duplicado
+      const { data: clientesExistentes } = await api.get("/clientes");
+      if (clientesExistentes && clientesExistentes.length > 0) {
+        const nomeJaExiste = clientesExistentes.some(
+          (c) => 
+            c.nome.toLowerCase() === nome.trim().toLowerCase() &&
+            c.id_cliente !== idClienteSalvo
+        );
+
+        if (nomeJaExiste) {
+          Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "error",
+            text: "Já existe um cliente com esse nome",
+            showConfirmButton: false,
+            timer: 4000,
+            customClass: { popup: "mensagem-erro" },
+          });
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      // 2. Prossegue com a edição
       const payload = {
         nome,
         email,
@@ -370,6 +419,7 @@ export default function Cliente() {
       setIsLoading(false);
     }
   };
+
 
   // --- BUSCAR CLIENTE ---
   const handleBuscar = async () => {

@@ -5,7 +5,7 @@ USE pi5_marcenaria;
 -- 1. Clientes
 CREATE TABLE IF NOT EXISTS clientes (
   id_cliente INT AUTO_INCREMENT PRIMARY KEY,
-  nome VARCHAR(255) NOT NULL,
+  nome VARCHAR(255) NOT NULL UNIQUE,
   logradouro VARCHAR(255),
   numero VARCHAR(20),
   complemento VARCHAR(100),
