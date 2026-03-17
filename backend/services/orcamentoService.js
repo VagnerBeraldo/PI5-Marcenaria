@@ -15,7 +15,7 @@ const salvarOrcamento = async (dados) => {
       mestre.id_cliente = resultCliente.insertId;
     }
 
-    // 1. Insere o Orçamento Mestre (INCLUÍDO outras_var)
+    // 1. Insere o Orçamento Mestre
     const [result] = await connection.execute(
       `INSERT INTO orcamentos 
                 (id_cliente, id_projeto, nome_projeto, quantidade, dias_trabalho, valor_custo, imposto_importacao, frete, custo_fixo, energia_eletrica, outras_var, imposto, taxa_cartao, margem_lucro, desconto, preco_sugerido, preco_final_impresso, entrada, situacao) 
