@@ -142,7 +142,7 @@ export default function CustoDoMaterial() {
             );
           }
         } catch (err) {
-          console.error("Erro ao carregar orçamento", err);
+          console.error("Erro ao sincronizar e buscar plano", err);
         }
       }
     };
@@ -250,7 +250,7 @@ export default function CustoDoMaterial() {
           customClass: { popup: "mensagem-confirmacao" },
         });
       } catch (err) {
-        {console.error("Erro ao carregar orçamento", err);}
+        {console.error("Erro ao remover linha", err);}
         
         handleBuscar(); 
         Swal.fire({
@@ -398,7 +398,7 @@ export default function CustoDoMaterial() {
         },
       });
     } catch (err) {
-      console.error("Erro ao carregar orçamento", err);
+      console.error("Erro ao buscar custo", err);
     } finally {
       setIsLoading(false);
     }
@@ -534,7 +534,7 @@ export default function CustoDoMaterial() {
         },
       });
     } catch (err) {
-      console.error("Erro ao carregar orçamento", err);
+      console.error("Erro ao buscar plano de corte", err);
     } finally {
       setIsLoading(false);
     }
@@ -579,7 +579,7 @@ export default function CustoDoMaterial() {
         timer: 3000,
       });
     } catch (err) {
-      console.error("Erro ao carregar orçamento", err);
+      console.error("Erro ao salvar custo", err);
       Swal.fire({
         toast: true,
         position: "top-end",
@@ -610,12 +610,12 @@ export default function CustoDoMaterial() {
         timer: 3000,
       });
     } catch (err) {
-      console.error("Erro ao carregar orçamento", err);
+      console.error("Erro ao editar custo", err);
       Swal.fire({
         toast: true,
         position: "top-end",
         icon: "error",
-        title: "Erro ao carregar orçamento",
+        title: "Erro ao editar custo",
         showConfirmButton: false,
         timer: 3000,
         customClass: { popup: "mensagem-erro" },
@@ -653,7 +653,7 @@ export default function CustoDoMaterial() {
           customClass: { popup: "mensagem-confirmacao" },
         });
       } catch (err) {
-        console.error("Erro ao carregar orçamento", err);
+        console.error("Erro ao excluir custo", err);
       } finally {
         setIsLoading(false);
       }

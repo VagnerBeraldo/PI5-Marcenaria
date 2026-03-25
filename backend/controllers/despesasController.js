@@ -7,7 +7,7 @@ const getDespesas = async (req, res) => {
     if (!payload) return res.status(404).json({ message: 'Nenhuma despesa encontrada' });
     res.json(payload);
   } catch (err) {
-    console.error("Erro ao carregar orçamento", err);
+    console.error("Erro ao buscar despesas", err);
     res.status(500).json({ error: 'Erro interno no servidor ao buscar despesas' });
   }
 };
@@ -26,7 +26,7 @@ const postDespesas = async (req, res) => {
     const resultado = await despesasService.salvarDespesas(validacao.data);
     res.status(201).json({ message: 'Despesas criadas com sucesso', id: resultado.id_despesa });
   } catch (err) {
-    console.error("Erro ao carregar orçamento", err);
+    console.error("Erro ao salvar despesas", err);
     res.status(500).json({ error: 'Erro interno no servidor ao salvar despesas' });
   }
 };
@@ -47,7 +47,7 @@ const putDespesas = async (req, res) => {
     await despesasService.atualizarDespesas(id, validacao.data);
     res.status(200).json({ message: 'Despesas atualizadas com sucesso' });
   } catch (err) {
-    console.error("Erro ao carregar orçamento", err);
+    console.error("Erro ao atualizar despesas", err);
     res.status(500).json({ error: 'Erro interno no servidor ao atualizar despesas' });
   }
 };
@@ -58,7 +58,7 @@ const deleteDespesas = async (req, res) => {
     await despesasService.excluirDespesas(id);
     res.status(204).send();
   } catch (err) {
-    console.error("Erro ao carregar orçamento", err);
+    console.error("Erro ao excluir despesas", err);
     res.status(500).json({ error: 'Erro interno no servidor ao excluir despesas' });
   }
 };

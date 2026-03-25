@@ -93,7 +93,7 @@ const excluirDespesas = async (id) => {
   try {
     await db.query(`DELETE FROM despesas WHERE id_despesa = ?`, [id]);
   } catch (err) {
-    console.error("Erro ao carregar orçamento", err);
+    console.error("Erro ao atualizar despesas", err);
     throw err;
   }
 };

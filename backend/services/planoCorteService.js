@@ -51,7 +51,7 @@ const salvarPlanoCompleto = async (dadosMestre) => {
     return { success: true, id_plano, id_orcamento: orcamentoId };
   } catch (err) {
     await connection.rollback();
-    console.error("Erro ao carregar orçamento", err);
+    console.error("Erro ao salvar plano de corte", err);
     throw err;
   } finally {
     connection.release();
@@ -138,7 +138,7 @@ const editarPlanoCompleto = async (id_plano, dadosMestre) => {
     return { success: true };
   } catch (err) {
     await connection.rollback();
-    console.error("Erro ao carregar orçamento", err);
+    console.error("Erro ao editar plano de corte", err);
     throw err;
   } finally {
     connection.release();
@@ -154,7 +154,7 @@ const excluirPlano = async (id_plano) => {
     );
     return result.affectedRows > 0;
   } catch (err) {
-    console.error("Erro ao carregar orçamento", err);
+    console.error("Erro ao excluir plano de corte", err);
     throw err;
   } finally {
     connection.release();
@@ -188,7 +188,7 @@ const buscarPlanoPorOrcamento = async (id_orcamento) => {
     );
     return linhas[0] || null;
   } catch (err) {
-    console.error("Erro ao carregar orçamento", err);
+    console.error("Erro ao buscar plano por orçamento", err);
     throw err;
   } finally {
     connection.release();

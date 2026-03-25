@@ -6,7 +6,7 @@ const getCusto = async (req, res) => {
     const payload = await custoMaterialService.obterCustos();
     res.json(payload);
   } catch (error) {
-    console.error("Erro ao carregar orçamento", error);
+    console.error("Erro ao buscar o custo", error);
     res.status(500).json({ error: 'Erro interno ao buscar projetos.' });
   }
 };
@@ -24,7 +24,7 @@ const postCusto = async (req, res) => {
       id_orcamento: resultado.id_orcamento
     });
   } catch (error) {
-    console.error("Erro ao carregar orçamento", error);
+    console.error("Erro ao salvar o projeto", error);
     res.status(500).json({ error: 'Erro interno ao salvar projeto.' });
   }
 };
@@ -39,7 +39,7 @@ const putCusto = async (req, res) => {
     await custoMaterialService.atualizarCusto(id, validacao.data);
     res.status(200).json({ message: 'Projeto atualizado com sucesso' });
   } catch (error) {
-    console.error("Erro ao carregar orçamento", error);
+    console.error("Erro ao atualizar o projeto", error);
     res.status(500).json({ error: 'Erro interno ao atualizar projeto.' });
   }
 };
@@ -50,7 +50,7 @@ const deleteCusto = async (req, res) => {
     await custoMaterialService.excluirCusto(id);
     res.status(204).send();
   } catch (error) {
-    console.error("Erro ao carregar orçamento", error);
+    console.error("Erro ao excluir o projeto", error);
     res.status(500).json({ error: 'Erro interno ao excluir projeto.' });
   }
 };
@@ -64,7 +64,7 @@ const getCustoPorId = async (req, res) => {
         }
         res.status(200).json(custo);
     } catch (error) {
-        console.error("Erro ao carregar orçamento", error);
+        console.error("Erro ao buscar ficha técnica", error);
         res.status(500).json({ error: 'Erro interno ao buscar ficha técnica.' });
     }
 };

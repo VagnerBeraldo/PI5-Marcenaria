@@ -73,7 +73,7 @@ const salvarCusto = async (dados) => {
     return { id_projeto: idProjeto, id_orcamento: orcamentoId };
   } catch (erro) {
     await connection.rollback();
-    console.error("Erro ao carregar orçamento", erro);
+    console.error("Erro ao salvar custo", erro);
     throw erro;
   } finally {
     connection.release();
@@ -119,7 +119,7 @@ const atualizarCusto = async (id, dados) => {
     await connection.commit();
   } catch (erro) {
     await connection.rollback();
-    console.error("Erro ao carregar orçamento", erro);
+    console.error("Erro ao atualizar custo", erro);
     throw erro;
   } finally {
     connection.release();
@@ -145,7 +145,7 @@ const excluirCusto = async (id) => {
     await connection.commit();
   } catch (erro) {
     await connection.rollback();
-    console.error("Erro ao carregar orçamento", erro);
+    console.error("Erro ao excluir custo", erro);
     throw erro;
   } finally {
     connection.release();

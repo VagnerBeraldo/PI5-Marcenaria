@@ -72,7 +72,7 @@ const salvarOrcamento = async (dados) => {
     return { id_orcamento, id_cliente: mestre.id_cliente, success: true };
   } catch (err) {
     await connection.rollback();
-    console.error("Erro ao carregar orçamento", err);
+    console.error("Erro ao salvar orçamento", err);
     throw err;
   } finally {
     connection.release();
@@ -98,7 +98,7 @@ const listarOrcamentos = async () => {
         `);
     return linhas;
   } catch (err) {
-    console.error("Erro ao carregar orçamento", err);
+    console.error("Erro ao listar orçamento", err);
     throw err;
   } finally {
     connection.release();
@@ -172,7 +172,7 @@ const editarOrcamento = async (id_orcamento, dados) => {
     return { success: true };
   } catch (err) {
     await connection.rollback();
-    console.error("Erro ao carregar orçamento", err);
+    console.error("Erro ao editar orçamento", err);
     throw err;
   } finally {
     connection.release();
@@ -188,7 +188,7 @@ const excluirOrcamento = async (id_orcamento) => {
     );
     return result.affectedRows > 0;
   } catch (err) {
-    console.error("Erro ao carregar orçamento", err);
+    console.error("Erro ao excluir orçamento", err);
     throw err;
   } finally {
     connection.release();
@@ -218,7 +218,7 @@ const buscarOrcamentosPorCliente = async (id_cliente) => {
     );
     return linhas;
   } catch (err) {
-    console.error("Erro ao carregar orçamento", err);
+    console.error("Erro ao buscar orçamento por cliente", err);
     throw err;
   } finally {
     connection.release();

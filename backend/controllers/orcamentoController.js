@@ -20,7 +20,7 @@ const postOrcamento = async (req, res) => {
         .status(400)
         .json({ error: "Erro de validação", detalhes: err.errors });
     }
-    console.error("Erro ao carregar orçamento", err);
+    console.error("Erro ao salvar orçamento", err);
     res.status(500).json({ error: "Erro interno ao salvar orçamento." });
   }
 };
@@ -30,7 +30,7 @@ const getOrcamentos = async (req, res) => {
     const orcamentos = await orcamentoService.listarOrcamentos();
     res.status(200).json(orcamentos);
   } catch (err) {
-    console.error("Erro ao carregar orçamento", err);
+    console.error("Erro ao buscar orçamento", err);
     res.status(500).json({ error: "Erro interno ao buscar orçamentos." });
   }
 };
@@ -47,7 +47,7 @@ const putOrcamento = async (req, res) => {
         .status(400)
         .json({ error: "Erro de validação", detalhes: err.errors });
     }
-    console.error("Erro ao carregar orçamento", err);
+    console.error("Erro ao atualizar orçamento", err);
     res.status(500).json({ error: "Erro interno ao atualizar orçamento." });
   }
 };
@@ -63,7 +63,7 @@ const deleteOrcamento = async (req, res) => {
 
     res.status(204).end();
   } catch (err) {
-    console.error("Erro ao carregar orçamento", err);
+    console.error("Erro ao excluir orçamento", err);
     res.status(500).json({ error: "Erro interno ao excluir orçamento." });
   }
 };
@@ -75,7 +75,7 @@ const getOrcamentosPorCliente = async (req, res) => {
       await orcamentoService.buscarOrcamentosPorCliente(id_cliente);
     res.status(200).json(orcamentos);
   } catch (err) {
-    console.error("Erro ao carregar orçamento", err);
+    console.error("Erro ao buscar orçamento", err);
     res
       .status(500)
       .json({ error: "Erro interno ao buscar orçamentos do cliente." });

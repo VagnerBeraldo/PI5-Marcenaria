@@ -23,7 +23,7 @@ const postPlanoDeCorte = async (req, res) => {
         }
         
         // Erro do Banco/Servidor
-        console.error("Erro ao carregar orçamento", err);
+        console.error("Erro ao salvar plano de corte", err);
         res.status(500).json({ error: 'Erro interno ao salvar o plano de corte.' });
     }
 };

@@ -300,7 +300,7 @@ export default function Cliente() {
         customClass: { popup: "mensagem-confirmacao" },
       });
     } catch (err) {
-      console.error("Erro ao carregar orçamento", err);
+      console.error("Erro ao salvar", err);
       const detalhesErro = err.response?.data?.detalhes;
       const mensagemAlerta =
         detalhesErro && detalhesErro.length > 0
@@ -400,7 +400,7 @@ export default function Cliente() {
         timer: 3000,
       });
     } catch (err) {
-      console.error("Erro ao carregar orçamento", err);
+      console.error("Erro ao editar", err);
       const detalhesErro = err.response?.data?.detalhes;
       const mensagemAlerta =
         detalhesErro && detalhesErro.length > 0

@@ -161,7 +161,7 @@ export default function PlanoDeCorte() {
           customClass: { popup: "mensagem-confirmacao" },
         });
       } catch (err) {
-        console.error("Erro ao carregar orçamento", err);
+        console.error("Erro ao remover chapa", err);
         Swal.fire({
           toast: true,
           position: "top-end",
@@ -241,7 +241,7 @@ export default function PlanoDeCorte() {
         timer: 3000,
       });
     } catch (err) {
-      console.error("Erro ao carregar orçamento", err);
+      console.error("Erro ao salvar plano de corte", err);
       Swal.fire({
         icon: "error",
         title: "Erro ao salvar",
@@ -297,7 +297,7 @@ export default function PlanoDeCorte() {
           customClass: { popup: "mensagem-confirmacao" },
         });
       } catch (err) {
-        console.error("Erro ao carregar orçamento", err);
+        console.error("Erro ao remover peça do plano de corte", err);
         Swal.fire({
           toast: true,
           position: "top-end",
@@ -335,7 +335,7 @@ export default function PlanoDeCorte() {
         showConfirmButton: false,
       });
     } catch (err) {
-      console.error("Erro ao carregar orçamento", err);
+      console.error("Erro ao editar plano de corte", err);
       Swal.fire({
         toast: true,
         position: "top-end",
@@ -377,7 +377,7 @@ export default function PlanoDeCorte() {
           customClass: { popup: "mensagem-confirmacao" },
         });
       } catch (err) {
-        console.error("Erro ao carregar orçamento", err);
+        console.error("Erro ao excluir plano de corte", err);
       } finally {
         setIsLoading(false);
       }
@@ -481,7 +481,7 @@ export default function PlanoDeCorte() {
         },
       });
     } catch (err) {
-      console.error("Erro ao carregar orçamento", err);
+      console.error("Erro ao buscar plano de corte", err);
     } finally {
       setIsLoading(false);
     }

@@ -27,7 +27,7 @@ async function inicializarBanco() {
 
     await connection.end();
   } catch (err) {
-    console.error("Erro ao carregar orçamento", err);
+    console.error("Erro ao inicializar o banco", err);
   }
 }
 

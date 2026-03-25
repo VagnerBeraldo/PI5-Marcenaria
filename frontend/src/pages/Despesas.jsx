@@ -95,7 +95,7 @@ export default function Despesas() {
             customClass: { popup: "mensagem-confirmacao" },
           });
         } catch (err) {
-          console.error("Erro ao carregar orçamento", err);
+          console.error("Erro ao remover outra desp fixa", err);
           Swal.fire({
             toast: true,
             position: "top-end",
@@ -166,7 +166,7 @@ export default function Despesas() {
             customClass: { popup: "mensagem-confirmacao" },
           });
         } catch (err) {
-          console.error("Erro ao carregar orçamento", err);
+          console.error("Erro ao remover outra desp variável", err);
           Swal.fire({
             toast: true,
             position: "top-end",
@@ -206,7 +206,7 @@ export default function Despesas() {
         }
       } catch (err) {
         if (err.response && err.response.status !== 404) {
-          console.error("Erro ao carregar orçamento", err);
+          console.error("Erro no fatchData", err);
         }
       } finally {
         setIsLoading(false);
@@ -259,7 +259,7 @@ export default function Despesas() {
         });
       }
     } catch (err) {
-      console.error("Erro ao carregar orçamento", err);
+      console.error("Erro ao salvar despesa", err);
       Swal.fire({
         toast: true,
         position: "top-end",
@@ -291,7 +291,7 @@ export default function Despesas() {
         customClass: { popup: "mensagem-confirmacao" },
       });
     } catch (err) {
-      console.error("Erro ao carregar orçamento", err);
+      console.error("Erro ao editar despesa", err);
       Swal.fire({
         toast: true,
         position: "top-end",
@@ -348,7 +348,7 @@ export default function Despesas() {
           customClass: { popup: "mensagem-confirmacao" },
         });
       } catch (err) {
-        console.error("Erro ao carregar orçamento", err);
+        console.error("Erro ao excluir despesa", err);
         Swal.fire({
           toast: true,
           position: "top-end",

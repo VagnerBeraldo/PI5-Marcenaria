@@ -104,7 +104,7 @@ export default function Orcamento() {
       setImpostoPerc(imposto);
       setTaxaCartaoPerc(taxaCartao);
     } catch (err) {
-      console.error("Erro ao carregar orçamento", err);
+      console.error("Erro ao buscar despesas", err);
     }
   };
 
@@ -286,7 +286,7 @@ export default function Orcamento() {
         });
       } catch (err) {
         {
-          console.error("Erro ao carregar orçamento", err);
+          console.error("Erro ao remover desp expra", err);
         }
         Swal.fire({
           toast: true,
@@ -365,7 +365,7 @@ export default function Orcamento() {
                 );
                 planoCorte = resPlano.data;
               } catch (err) {
-                console.error("Erro ao carregar orçamento", err);
+                console.error("Erro ao carregar ambiente global", err);
               }
 
               if (selectedOrc.id_projeto) {
@@ -375,7 +375,7 @@ export default function Orcamento() {
                   );
                   custo = resCusto.data;
                 } catch (err) {
-                  console.error("Erro ao carregar orçamento", err);
+                  console.error("Erro ao carregar ambiente global", err);
                 }
               }
 
@@ -396,7 +396,7 @@ export default function Orcamento() {
         },
       });
     } catch (err) {
-      console.error("Erro ao carregar orçamento", err);
+      console.error("Erro ao carregar ambiente global", err);
     } finally {
       setIsLoading(false);
     }
@@ -472,7 +472,7 @@ export default function Orcamento() {
         },
       });
     } catch (err) {
-      console.error("Erro ao carregar orçamento", err);
+      console.error("Erro ao buscar cliente", err);
     } finally {
       setIsLoading(false);
     }
@@ -644,7 +644,7 @@ export default function Orcamento() {
         timer: 3000,
       });
     } catch (err) {
-      console.error("Erro ao carregar orçamento", err);
+      console.error("Erro ao salvar orçamento", err);
       Swal.fire({
         toast: true,
         position: "top-end",
@@ -767,7 +767,7 @@ export default function Orcamento() {
         timer: 3000,
       });
     } catch (err) {
-      console.error("Erro ao carregar orçamento", err);
+      console.error("Erro ao editar orçamento", err);
       Swal.fire({
         toast: true,
         position: "top-end",
@@ -997,7 +997,7 @@ export default function Orcamento() {
         },
       });
     } catch (err) {
-      console.error("Erro ao carregar orçamento", err);
+      console.error("Erro ao buscar orçamento", err);
     } finally {
       setIsLoading(false);
     }
@@ -1030,7 +1030,7 @@ export default function Orcamento() {
           customClass: { popup: "mensagem-confirmacao" },
         });
       } catch (err) {
-        console.error("Erro ao carregar orçamento", err);
+        console.error("Erro ao excluir orçamento", err);
       }
     }
   };
