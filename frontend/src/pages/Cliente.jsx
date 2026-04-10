@@ -633,10 +633,11 @@ export default function Cliente() {
               </div>
             </div>
             <div className="form-group flex-2">
-              <label className="titulo-input">Logradouro (Rua, Av.) *</label>
+              <label className="titulo-input">Logradouro</label>
               <input
                 type="text"
                 value={logradouro}
+                placeholder="Seu endereço: Av, Rua ..."
                 onChange={(e) => setLogradouro(e.target.value)}
               />
             </div>
