@@ -114,6 +114,15 @@
   transition: all 0.6s ease-in-out;
 }
 
+.tab-chapa:focus{
+  outline: 1px dashed var(--branco);
+  border-radius: 8px;  
+}
+
+.tab-chapa:active{
+  outline: 1px dashed var(--branco);
+}
+
 .tab-wrapper.ativa .tab-chapa {
   color: var(--branco);
 }
@@ -130,6 +139,11 @@
   justify-content: center;
   transition: transform 0.2s;
   color: var(--texto);
+}
+
+.btn-excluir-chapa:focus {
+  outline: 1px dashed var(--branco);
+  border-radius: 8px;
 }
 
 .tab-wrapper.ativa .btn-excluir-chapa {
@@ -150,12 +164,17 @@
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 600;
-  /* outline: none; */
+  outline: none;
   color: var(--texto);
   transition: all 0.4s ease-in-out;
 }
 
 .btn-nova-chapa:hover {
+  background-color: var(--cor-primaria);
+  color: var(--branco);
+}
+
+.btn-nova-chapa:focus {
   background-color: var(--cor-primaria);
   color: var(--branco);
 }
@@ -298,6 +317,11 @@
 
 .btn-adicionar:hover:not(:disabled), .btn-imprimir:hover:not(:disabled) {
   filter: brightness(0.80) !important;
+}
+
+.btn-adicionar:focus,
+.btn-imprimir:focus {
+  outline: 1px dashed var(--cor-primaria);
 }
 
 .espaco-impressao {

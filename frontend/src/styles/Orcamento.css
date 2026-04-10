@@ -264,7 +264,7 @@
   padding: 10px;
   border-radius: 8px;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  /* outline: none; */
+  outline: none;
   cursor: pointer;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
@@ -276,6 +276,10 @@
 .imprimir:hover:not(:disabled){
   background-color: var(--cor-primaria);
   color: var(--branco);
+}
+
+.imprimir:focus{
+  outline: 1px dashed var(--cor-primaria);
 }
 
 @media(max-width: 768px){

@@ -16,6 +16,10 @@
   outline: none;
 }
 
+.btn-voltar:focus{
+  outline: 1px dashed var(--cor-primaria);
+}
+
 .btn-voltar:active {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }

@@ -76,6 +76,11 @@ body {
   color: var(--branco);
 }
 
+.btn-icone-lupa:focus {
+  outline: 1px dashed var(--cor-primaria);
+}
+
+
 .btn-containver-acoes {
   display: flex;
   align-items: center;
@@ -153,6 +158,14 @@ body {
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+.btn-salvar:focus,
+.btn-editar:focus,
+.btn-buscar:focus,
+.btn-excluir:focus {
+  outline: 1px dashed var(--cor-primaria);
+}
+
 
 @media (max-width: 710px) {
   .btn-wrapper-acoes {
