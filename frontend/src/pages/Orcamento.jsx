@@ -1243,7 +1243,7 @@ export default function Orcamento() {
                 onChange={(e) =>
                   atualizarExtra(extra.id, "descricao", e.target.value)
                 }
-                placeholder="Descrição..."
+                placeholder="Nome da sua despesa"
               />
               <input
                 type="text"
