@@ -695,7 +695,7 @@ export default function PlanoDeCorte() {
               type="text"
               value={nomeServico}
               className="input-padrao"
-              placeholder="Ex: Armário 6 portas"
+              placeholder="Nome do projeto completo"
               onChange={(e) => {
                 setNomeServico(e.target.value);
                 atualizarContexto({ nomeProjetoGlobal: e.target.value });
