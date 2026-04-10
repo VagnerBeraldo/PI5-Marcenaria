@@ -428,6 +428,7 @@ export default function CustoDoMaterial() {
         html: `<input type="text" id="swal-search-plano" class="swal2-input input-pesquisa" placeholder="Buscar projeto..."><div id="swal-results-plano" class="lista-resultados"></div>`,
         showConfirmButton: false,
         showCancelButton: true,
+        cancelButtonText: "Cancelar",
         didOpen: () => {
           const input = document.getElementById("swal-search-plano");
           const list = document.getElementById("swal-results-plano");
@@ -679,6 +680,7 @@ export default function CustoDoMaterial() {
         <div className="cotainer-nomeProjeto">
           <input
             type="text"
+            placeholder="Descreva o título do projeto"
             className="nomeProjeto"
             value={nomeProjeto}
             onChange={(e) => {
@@ -703,7 +705,7 @@ export default function CustoDoMaterial() {
         <div className="tabela-header">
           <span className="col-mat">Material</span>
           <span className="col-qtd">Qtd</span>
-          <span className="col-un">Un</span>
+          <span className="col-un">Unid</span>
           <span className="col-val">Valor Un.</span>
           <span className="col-sub">Subtotal</span>
           <span className="col-del"></span>
@@ -712,6 +714,7 @@ export default function CustoDoMaterial() {
           <div key={item.id} className="tabela-row">
             <input
               className="col-mat"
+              placeholder="Nome do material"
               type="text"
               value={item.material}
               onChange={(e) =>
@@ -721,6 +724,7 @@ export default function CustoDoMaterial() {
             <input
               className="col-qtd"
               type="number"
+              placeholder="Ex. 1"
               value={item.quantidade}
               onChange={(e) =>
                 atualizarItem(item.id, "quantidade", e.target.value)
@@ -729,6 +733,7 @@ export default function CustoDoMaterial() {
             />
             <input
               className="col-un"
+              placeholder="Ex. caixa"
               type="text"
               value={item.unidade_medida}
               onChange={(e) =>
