@@ -27,7 +27,6 @@
   background-color: var(--cor-primaria);
   color: var(--branco);
   border: none;
-  outline: none;
   padding: 12px 16px;
   border-radius: 8px;
   font-family: "Montserrat", sans-serif;
@@ -37,7 +36,7 @@
   transition: all 0.2s ease;
   transform: scale(1);
   -webkit-tap-highlight-color: transparent;
-  outline: none;
+  /* outline: none; */
 }
 
 .btn-novo-topo:active {
