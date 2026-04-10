@@ -423,6 +423,7 @@ export default function Despesas() {
             <label className="titulo-input">Descrição</label>
             <input
               type="text"
+              placeholder="Descreva o título da sua despesa"
               value={item.nome}
               onChange={(e) => updateOutraFixa(item.id, "nome", e.target.value)}
               disabled={isLoading}
@@ -538,6 +539,7 @@ export default function Despesas() {
             <label className="titulo-input">Descrição</label>
             <input
               type="text"
+              placeholder="Descreva o título da sua despesa"
               value={item.nome}
               onChange={(e) =>
                 updateOutraVariavel(item.id, "nome", e.target.value)
