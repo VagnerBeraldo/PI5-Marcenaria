@@ -8,7 +8,7 @@ export default function BotaoVoltar() {
   return (
     <button
       className="btn-voltar"
-      onClick={() => navigate(-1)}
+      onClick={() => navigate("/")}
     >
       <ChevronLeft size={20} />
     </button>
