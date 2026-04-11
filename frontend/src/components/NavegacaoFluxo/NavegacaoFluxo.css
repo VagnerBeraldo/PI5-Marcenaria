@@ -1,0 +1,43 @@
+.navegacao-fluxo-container {
+  display: flex;
+  justify-content: flex-end; 
+  align-items: center;
+  margin-top: 30px;
+  padding: 0;
+}
+
+.fluxo-content {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-fluxo {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 6px;
+    background-color: var(--cor-secundaria);
+    color: var(--texto);
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-fluxo-avancar, .btn-fluxo-voltar {
+    outline: none;
+    border: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    background-color: var(--cor-secundaria);
+    color: var(--texto);
+
+}
+
+.btn-fluxo-avancar:hover, .btn-fluxo-voltar:hover {
+    opacity: 0.6;
+}
+
+.btn-fluxo-avancar:focus, .btn-fluxo-voltar:focus {
+    outline: 1px dashed var(--cor-primaria);
+}

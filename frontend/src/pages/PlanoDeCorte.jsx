@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import PageTransition from "../components/Animation/PageTransition";
 import BotaoVoltar from "../components/BotaoVoltar/BotaoVoltar";
+import NavegacaoFluxo from "../components/NavegacaoFluxo/NavegacaoFluxo";
 import Swal from "sweetalert2";
 import logoMarcenaria from "/logo.svg";
 import api from "../../services/api";
@@ -897,6 +898,10 @@ export default function PlanoDeCorte() {
               </button>
             </div>
           </div>
+        </div>
+        <div className="container-btn-rodape-plano">
+          <BotaoVoltar />
+          <NavegacaoFluxo />
         </div>
       </div>
 

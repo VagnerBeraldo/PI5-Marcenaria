@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import PageTransition from "../components/Animation/PageTransition";
 import BotaoVoltar from "../components/BotaoVoltar/BotaoVoltar";
+import NavegacaoFluxo from "../components/NavegacaoFluxo/NavegacaoFluxo";
 import { CirclePlus, FileEditIcon, Save, Trash2 } from "lucide-react";
 import Swal from "sweetalert2";
 import "../styles/Despesas.css";
@@ -619,6 +620,10 @@ export default function Despesas() {
             </button>
           </div>
         </div>
+      </div>
+      <div className="container-btn-rodape">
+        <BotaoVoltar />
+        <NavegacaoFluxo />
       </div>
     </PageTransition>
   );

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import PageTransition from "../components/Animation/PageTransition";
 import BotaoVoltar from "../components/BotaoVoltar/BotaoVoltar";
+import NavegacaoFluxo from "../components/NavegacaoFluxo/NavegacaoFluxo";
 import {
   Save,
   Trash2,
@@ -1389,6 +1390,10 @@ export default function Orcamento() {
             </div>
           </div>
         </div>
+          <div className="container-btn-rodape">
+        <BotaoVoltar />
+        <NavegacaoFluxo />
+      </div>
       </div>
 
       {/* --- ÁREA EXCLUSIVA DE IMPRESSÃO --- */}

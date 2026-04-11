@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PageTransition from "../components/Animation/PageTransition";
 import BotaoVoltar from "../components/BotaoVoltar/BotaoVoltar";
+import NavegacaoFluxo from "../components/NavegacaoFluxo/NavegacaoFluxo";
 import { Save, Trash2, Search, FilePlus, MapPin, FileEdit } from "lucide-react";
 import Swal from "sweetalert2";
 import api from "../../services/api";
@@ -32,7 +33,6 @@ export default function Cliente() {
 
   // --- BUSCA DE CEP (ViaCEP) ---
   const buscarCep = async () => {
-
     const cepLimpo = cep.replace(/\D/g, "");
 
     if (cepLimpo.length !== 8) {
@@ -48,7 +48,6 @@ export default function Cliente() {
       return;
     }
 
-    
     setIsLoading(true);
     try {
       const response = await fetch(
@@ -253,7 +252,7 @@ export default function Cliente() {
       const { data: clientesExistentes } = await api.get("/clientes");
       if (clientesExistentes && clientesExistentes.length > 0) {
         const nomeJaExiste = clientesExistentes.some(
-          (c) => c.nome.toLowerCase() === nome.trim().toLowerCase()
+          (c) => c.nome.toLowerCase() === nome.trim().toLowerCase(),
         );
 
         if (nomeJaExiste) {
@@ -267,7 +266,7 @@ export default function Cliente() {
             customClass: { popup: "mensagem-erro" },
           });
           setIsSaving(false);
-          return; 
+          return;
         }
       }
 
@@ -319,7 +318,6 @@ export default function Cliente() {
       setIsSaving(false);
     }
   };
-  
 
   // --- EDITAR CLIENTE ---
   const handleEditar = async () => {
@@ -355,9 +353,9 @@ export default function Cliente() {
       const { data: clientesExistentes } = await api.get("/clientes");
       if (clientesExistentes && clientesExistentes.length > 0) {
         const nomeJaExiste = clientesExistentes.some(
-          (c) => 
+          (c) =>
             c.nome.toLowerCase() === nome.trim().toLowerCase() &&
-            c.id_cliente !== idClienteSalvo
+            c.id_cliente !== idClienteSalvo,
         );
 
         if (nomeJaExiste) {
@@ -419,7 +417,6 @@ export default function Cliente() {
       setIsLoading(false);
     }
   };
-
 
   // --- BUSCAR CLIENTE ---
   const handleBuscar = async () => {
@@ -737,6 +734,10 @@ export default function Cliente() {
               </button>
             </div>
           </div>
+        </div>
+        <div className="container-btn-rodape">
+          <BotaoVoltar />
+          <NavegacaoFluxo />
         </div>
       </div>
     </PageTransition>

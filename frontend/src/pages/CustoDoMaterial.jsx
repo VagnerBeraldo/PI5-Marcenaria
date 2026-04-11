@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import PageTransition from "../components/Animation/PageTransition";
 import BotaoVoltar from "../components/BotaoVoltar/BotaoVoltar";
+import NavegacaoFluxo from "../components/NavegacaoFluxo/NavegacaoFluxo";
 import {
   FileEditIcon,
   Save,
@@ -835,6 +836,10 @@ export default function CustoDoMaterial() {
             </button>
           </div>
         </div>
+      </div>
+        <div className="container-btn-rodape">
+        <BotaoVoltar />
+        <NavegacaoFluxo />
       </div>
     </PageTransition>
   );
