@@ -282,6 +282,16 @@
   outline: 1px dashed var(--cor-primaria);
 }
 
+.container-btn-rodape {
+  display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    width: 100%;
+    margin-top: 40px; 
+    padding: 10px 0;
+}
+
+
 @media(max-width: 768px){
   .form-row {
     flex-wrap: wrap; 
