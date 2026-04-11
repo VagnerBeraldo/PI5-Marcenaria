@@ -45,7 +45,7 @@
 }
 
 .btn-novo-topo:focus{
-  outline: 1px dashed var(--cor-primaria);
+  outline: 2px dashed var(--cor-primaria);
 }
 
 .btn-novo-topo:hover {

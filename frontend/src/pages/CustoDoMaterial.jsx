@@ -75,9 +75,12 @@ export default function CustoDoMaterial() {
         contextoGlobal.nomeProjetoGlobal !== nomeProjeto
       ) {
         // Bloqueio para evitar que a sincronização automática sobrescreva os dados já carregados do banco
-        if (contextoGlobal?.custo && contextoGlobal.custo.nome_projeto === contextoGlobal.nomeProjetoGlobal) {
-            setNomeProjeto(contextoGlobal.nomeProjetoGlobal);
-            return; 
+        if (
+          contextoGlobal?.custo &&
+          contextoGlobal.custo.nome_projeto === contextoGlobal.nomeProjetoGlobal
+        ) {
+          setNomeProjeto(contextoGlobal.nomeProjetoGlobal);
+          return;
         }
 
         const novoNome = contextoGlobal.nomeProjetoGlobal;
@@ -221,7 +224,6 @@ export default function CustoDoMaterial() {
 
         // 2. Se o projeto já existe no banco, força o salvamento automático da nova lista
         if (idProjetoSalvo) {
-          
           const payload = {
             id_orcamento:
               contextoGlobal?.orcamento?.id_orcamento ||
@@ -237,7 +239,7 @@ export default function CustoDoMaterial() {
               valor_unitario: Number(m.valor_unitario) || 0,
             })),
           };
-          
+
           await api.put(`/custos/${idProjetoSalvo}`, payload);
         }
 
@@ -251,9 +253,11 @@ export default function CustoDoMaterial() {
           customClass: { popup: "mensagem-confirmacao" },
         });
       } catch (err) {
-        {console.error("Erro ao remover linha", err);}
-        
-        handleBuscar(); 
+        {
+          console.error("Erro ao remover linha", err);
+        }
+
+        handleBuscar();
         Swal.fire({
           toast: true,
           position: "top-end",
@@ -383,7 +387,10 @@ export default function CustoDoMaterial() {
                   setMaoDeObra(Number(proj.mao_de_obra));
                   setInstalacao(Number(proj.instalacao));
                   setMateriais(
-                    proj.materiais.map((m) => ({ ...m, id: m.id_item || Date.now() + Math.random() })),
+                    proj.materiais.map((m) => ({
+                      ...m,
+                      id: m.id_item || Date.now() + Math.random(),
+                    })),
                   );
                   atualizarContexto({
                     nomeProjetoGlobal: proj.nome_projeto,
@@ -455,23 +462,38 @@ export default function CustoDoMaterial() {
                   // Tenta carregar os custos já salvos para este projeto primeiro
                   try {
                     const resCustos = await api.get("/custos");
-                    const custoExistente = resCustos.data.find(c => c.nome_projeto === nomeDoPlano);
-                    
+                    const custoExistente = resCustos.data.find(
+                      (c) => c.nome_projeto === nomeDoPlano,
+                    );
+
                     if (custoExistente) {
-                      const materiaisParsed = typeof custoExistente.materiais === "string" ? JSON.parse(custoExistente.materiais) : custoExistente.materiais;
-                      
-                      setIdProjetoSalvo(custoExistente.id_projeto || custoExistente.id);
+                      const materiaisParsed =
+                        typeof custoExistente.materiais === "string"
+                          ? JSON.parse(custoExistente.materiais)
+                          : custoExistente.materiais;
+
+                      setIdProjetoSalvo(
+                        custoExistente.id_projeto || custoExistente.id,
+                      );
                       setNomeProjeto(custoExistente.nome_projeto);
                       setMaoDeObra(Number(custoExistente.mao_de_obra));
                       setInstalacao(Number(custoExistente.instalacao));
-                      setMateriais(materiaisParsed.map((m) => ({ ...m, id: m.id_item || Date.now() + Math.random() })));
-                      
+                      setMateriais(
+                        materiaisParsed.map((m) => ({
+                          ...m,
+                          id: m.id_item || Date.now() + Math.random(),
+                        })),
+                      );
+
                       atualizarContexto({
                         nomeProjetoGlobal: custoExistente.nome_projeto,
                         custo: custoExistente,
-                        orcamento: { id_orcamento: plano.id_orcamento, nome_projeto: nomeDoPlano }
+                        orcamento: {
+                          id_orcamento: plano.id_orcamento,
+                          nome_projeto: nomeDoPlano,
+                        },
                       });
-                      
+
                       Swal.close();
                       return; // Interrompe para não zerar os dados
                     }
@@ -837,7 +859,7 @@ export default function CustoDoMaterial() {
           </div>
         </div>
       </div>
-        <div className="container-btn-rodape">
+      <div className="container-btn-rodape">
         <BotaoVoltar />
         <NavegacaoFluxo />
       </div>

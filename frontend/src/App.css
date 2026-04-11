@@ -163,7 +163,7 @@ body {
 .btn-editar:focus,
 .btn-buscar:focus,
 .btn-excluir:focus {
-  outline: 1px dashed var(--cor-primaria);
+  outline: 2px dashed var(--cor-primaria);
 }
 
 

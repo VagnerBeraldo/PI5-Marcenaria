@@ -71,6 +71,8 @@
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
   background-color: var(--cor-secundaria);
   cursor: pointer;
+  margin-right: 2px;
+  outline: none;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -80,6 +82,10 @@
 .btn-del-row:hover {
   background-color: var(--cor-primaria);
   color: var(--branco);
+}
+
+.btn-del-row:focus {
+  outline: 1px dashed var(--cor-primaria);
 }
 
 .btn-add-row {
@@ -94,13 +100,17 @@
   gap: 6px;
   font-size: 14px;
   font-weight: bold;
-
+  outline: none;
   margin: 30px auto 30px auto;
   transition: filter 0.2s;
 }
 
 .btn-add-row:hover {
   filter: brightness(0.9);
+}
+
+.btn-add-row:focus {
+  outline: 2px dashed var(--cor-primaria);
 }
 
 .form-group input::placeholder {
