@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { ProjetoProvider } from './context/ProjetoProvider';
+import ScrollToTop from './components/Animation/ScrollToTop';
 import PlanoDeCorte from './pages/PlanoDeCorte';
 import MenuMarcenaria from './pages/MenuMarcenaria';
 import Despesas from './pages/Despesas';
@@ -32,6 +33,7 @@ function App() {
   return (
     <ProjetoProvider> {/* <-- APLICAÇÃO ENVELOPADA AQUI */}
       <Router>
+        <ScrollToTop />
         <div className="app-container">
           <AnimatedRoutes />
         </div>

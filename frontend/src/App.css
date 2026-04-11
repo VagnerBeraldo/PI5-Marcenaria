@@ -7,6 +7,12 @@
 .app-container {
   margin: 0 8px 0 5px;
   font-family: "Montserrat", sans-serif;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
 
 html,
@@ -14,6 +20,8 @@ body {
   max-height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
   margin: 0;
   background-color: var(--body-bg);
 }
