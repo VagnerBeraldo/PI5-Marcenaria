@@ -425,7 +425,6 @@ body {
   --input-bg: #f3f2f2;
   --input-borda: #ccc;
   --branco: #ffffff;
-  --btn-confirmar-exclusao: #d33;
   --btn-cancelar-exclusao: #2f4f4f;
   --preto: #000;
 
@@ -434,11 +433,10 @@ body {
   --borda-chapa-madeira: #451a03;
   --bg-tabela-th: #f8f9fa;
   --borda-tabela-th: #dee2e6;
-  --fonte-erro: #820404;
-
+  
   /* despesas */
-  --vermelho-destaque: #e74c3c;
-  --verde-destaque: #27ae60;
+  --vermelho-destaque: #820404;
+  --verde-destaque: #08642e;
   --verde-destaque-bg: #eafaf1;
 
   --item-busca-modal-bg: #f8f9fa;
