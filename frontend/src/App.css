@@ -419,7 +419,6 @@ body {
   /* geral */
   --cor-primaria: #8b4513;
   --cor-secundaria: #dddad3;
-  --acao: #ffbf00;
   --body-bg: #f4ebd9;
   --texto: #444;
   --input-bg: #f3f2f2;
@@ -427,6 +426,10 @@ body {
   --branco: #ffffff;
   --btn-cancelar-exclusao: #2f4f4f;
   --preto: #000;
+  --vermelho-destaque: #820404;
+  --verde-destaque: #08642e;
+  --verde-destaque-bg: #eafaf1;
+  --item-busca-modal-bg: #f8f9fa;
 
   /* visualizador */
   --chapa-madeira: #deb887;
@@ -434,16 +437,7 @@ body {
   --bg-tabela-th: #f8f9fa;
   --borda-tabela-th: #dee2e6;
   
-  /* despesas */
-  --vermelho-destaque: #820404;
-  --verde-destaque: #08642e;
-  --verde-destaque-bg: #eafaf1;
 
-  --item-busca-modal-bg: #f8f9fa;
-
-  /* impressão plano de corte */
-  --fonte-corpo-plano: #444;
-  --fonte-cabecalho-plano: #666;
-
+  
   /* modal de busca */
 }
