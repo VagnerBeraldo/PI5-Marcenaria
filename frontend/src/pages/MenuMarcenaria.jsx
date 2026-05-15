@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import PageTransition from "../components/Animation/PageTransition";
 import {
   LayoutDashboard,
@@ -7,6 +7,7 @@ import {
   Users,
   ClipboardList,
   CircleDollarSignIcon,
+  Info,
   ThumbsUp,
 } from "lucide-react";
 import "../styles/MenuMarcenaria.css";
@@ -37,12 +38,18 @@ const MenuMarcenaria = () => {
           <span>1. Despesas</span>
         </div>
 
-        <div className="grid-item item-topo-centro" onClick={() => navigate("/ponto-de-equilibrio")}>
+        <div
+          className="grid-item item-topo-centro"
+          onClick={() => navigate("/ponto-de-equilibrio")}
+        >
           <ThumbsUp size={24} />
           <span>2. Ponto de Equilíbrio</span>
         </div>
 
-        <div className="grid-item item-col-direita" onClick={() => navigate("/clientes")}>
+        <div
+          className="grid-item item-col-direita"
+          onClick={() => navigate("/clientes")}
+        >
           <Users size={24} />
           <span>3. Clientes</span>
         </div>
@@ -55,17 +62,27 @@ const MenuMarcenaria = () => {
           <span>4. Plano de Corte</span>
         </div>
 
-        <div className="grid-item item-abaixo-1" onClick={() => navigate("/custo-do-material")}>
+        <div
+          className="grid-item item-abaixo-1"
+          onClick={() => navigate("/custo-do-material")}
+        >
           <CircleDollarSignIcon size={24} />
           <span>5. Custo do Material</span>
         </div>
 
-        <div className="grid-item item-centro-baixo" onClick={() => navigate("/orcamentos")}>
+        <div
+          className="grid-item item-centro-baixo"
+          onClick={() => navigate("/orcamentos")}
+        >
           <ClipboardList size={24} />
           <span>6. Orçamento</span>
         </div>
-
-
+      </div>
+      <div className="containerPolitica">
+        <Link to="/politica" className="linkPolitica">
+          <Info size={14} className="iconPolitica" />
+          <small>Termo de Uso e Política de Privacidade</small>
+        </Link>
       </div>
     </PageTransition>
   );
