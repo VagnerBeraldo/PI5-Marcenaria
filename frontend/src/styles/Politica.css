@@ -1,0 +1,43 @@
+.politica-container {
+  display: flex;
+  max-width: 1000px;
+  margin: 10px auto;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.politica-secao {
+  margin-bottom: 40px;
+  text-align: left;
+  width: 100%;
+}
+
+.politica-subtitulo {
+  font-size: 1.2rem;
+  color: var(--texto);
+  margin-top: 24px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.politica-texto {
+  font-size: 1rem;
+  color: var(--texto);
+  line-height: 1.6;
+  margin-bottom: 16px;
+  text-align: justify;
+}
+
+.politica-divisor {
+  border: 0;
+  border-top: 1px solid var(--cor-primaria);
+  margin: 40px 0;
+  width: 100%;
+}
+
+.container-btn-rodape{
+  padding-bottom: 30px;
+}
+
