@@ -125,28 +125,31 @@ body {
 }
 
 .linkPolitica {
-  display: flex;
-  gap: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px; 
+  color: var(--texto);
   text-decoration: none;
-  color: inherit;
-  transition: opacity 0.2s ease-in-out;
   cursor: pointer;
+  transition: color 0.2s ease-in-out;
 }
 
-.linkPolitica:hover, .linkPolitica small:hover {
+.linkPolitica .iconPolitica,
+.linkPolitica small {
+  color: inherit;
+  font-weight: 600;
+  transition: color 0.2s ease-in-out;
+}
+
+.linkPolitica:hover {
   color: var(--cor-primaria);
 }
+
 
 .iconPolitica {
   flex-shrink: 0; 
 }
 
-.linkPolitica small {
-  cursor: pointer;
-  line-height: 1;
-  color: var(--texto);
-  font-weight: 600;
-}
 
 @media (max-width: 620px) {
   .menu-container {
