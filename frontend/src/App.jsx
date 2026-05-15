@@ -9,6 +9,7 @@ import PontoDeEquilibrio from './pages/PontoDeEquilibrio';
 import CustoDoMaterial from './pages/CustoDoMaterial';
 import Orcamento from './pages/Orcamento';
 import Cliente from './pages/Cliente';
+import Politica from './pages/Politica';
 import './App.css'; 
 
 function AnimatedRoutes() {
@@ -24,6 +25,7 @@ function AnimatedRoutes() {
         <Route path="/custo-do-material" element={<CustoDoMaterial/>} />
         <Route path="/orcamentos" element={<Orcamento/>} />
         <Route path="/clientes" element={<Cliente/>} />
+        <Route path="/politica" element={<Politica/>} />
       </Routes>
     </AnimatePresence>
   );
@@ -31,7 +33,7 @@ function AnimatedRoutes() {
 
 function App() {
   return (
-    <ProjetoProvider> {/* <-- APLICAÇÃO ENVELOPADA AQUI */}
+    <ProjetoProvider> 
       <Router>
         <ScrollToTop />
         <div className="app-container">
