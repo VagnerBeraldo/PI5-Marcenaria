@@ -117,6 +117,37 @@ body {
   transition: transform 0.4s ease;
 }
 
+.containerPolitica {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.linkPolitica {
+  display: flex;
+  gap: 6px;
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.linkPolitica:hover, .linkPolitica small:hover {
+  color: var(--cor-primaria);
+}
+
+.iconPolitica {
+  flex-shrink: 0; 
+}
+
+.linkPolitica small {
+  cursor: pointer;
+  line-height: 1;
+  color: var(--texto);
+  font-weight: 600;
+}
+
 @media (max-width: 620px) {
   .menu-container {
     margin: 10px auto;
