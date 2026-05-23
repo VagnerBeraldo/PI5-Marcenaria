@@ -707,13 +707,13 @@ export default function PlanoDeCorte() {
         <h1 className="nome-fantasia">GR Marcenaria</h1>
         <div className="grupo-input">
           <h2 className="titulo-pagina">Plano de Corte</h2>
-          <h2 className="subtitulo">Nome do Serviço / Projeto</h2>
+          <h2 className="subtitulo">Nome do Projeto *</h2>
           <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
             <input
               type="text"
               value={nomeServico}
               className="input-padrao"
-              placeholder="Nome do projeto completo"
+              placeholder="Nome do projeto completo (obrigatório)"
               onChange={(e) => {
                 setNomeServico(e.target.value);
                 atualizarContexto({ nomeProjetoGlobal: e.target.value });
