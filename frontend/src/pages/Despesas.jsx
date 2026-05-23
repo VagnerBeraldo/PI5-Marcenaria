@@ -68,15 +68,18 @@ export default function Despesas() {
       return listaErros
         .map((e) => {
           // Extrai o nó exato que falhou (ex: outrasFixas > 0 > nome)
-          const campoDescritivo = e.path && e.path.length > 0 
-            ? `<b>Campo [${e.path.join(" > ")}]:</b> ` 
-            : "";
+          const campoDescritivo =
+            e.path && e.path.length > 0
+              ? `<b>Campo [${e.path.join(" > ")}]:</b> `
+              : "";
           return `${campoDescritivo}${e.message}`;
         })
         .join("<br/><br/>");
     }
 
-    return data.message || data.error || "Erro interno ao processar requisição.";
+    return (
+      data.message || data.error || "Erro interno ao processar requisição."
+    );
   };
 
   const removeOutraFixa = async (id) => {
@@ -194,7 +197,7 @@ export default function Despesas() {
             customClass: { popup: "mensagem-confirmacao" },
           });
         } catch (err) {
-         console.error("Erro ao remover item", err);
+          console.error("Erro ao remover item", err);
           Swal.fire({
             toast: false,
             position: "center",
@@ -235,7 +238,7 @@ export default function Despesas() {
           setOutrasVariaveis(data.despesasVariaveis.outrasVariaveis || []);
         }
       } catch (err) {
-       if (err.response && err.response.status !== 404) {
+        if (err.response && err.response.status !== 404) {
           console.error("Erro no fetchData", err);
           Swal.fire({
             toast: false,
@@ -283,13 +286,20 @@ export default function Despesas() {
 
   const handleSalvar = async () => {
     // Identifica o índice do primeiro item vazio
-    const indexFixaVazia = outrasFixas.findIndex(item => !item.nome || item.nome.trim() === "");
-    const indexVariavelVazia = outrasVariaveis.findIndex(item => !item.nome || item.nome.trim() === "");
+    const indexFixaVazia = outrasFixas.findIndex(
+      (item) => !item.nome || item.nome.trim() === "",
+    );
+    const indexVariavelVazia = outrasVariaveis.findIndex(
+      (item) => !item.nome || item.nome.trim() === "",
+    );
 
     if (indexFixaVazia !== -1 || indexVariavelVazia !== -1) {
-      let mensagem = "A descrição das despesas inseridas não pode ficar em branco.<br/><br/>";
-      if (indexFixaVazia !== -1) mensagem += `<b>Verifique:</b> Despesas Fixas (item ${indexFixaVazia + 1})<br/>`;
-      if (indexVariavelVazia !== -1) mensagem += `<b>Verifique:</b> Despesas Variáveis (item ${indexVariavelVazia + 1})`;
+      let mensagem =
+        "A descrição das despesas inseridas não pode ficar em branco.<br/><br/>";
+      if (indexFixaVazia !== -1)
+        mensagem += `<b>Verifique:</b> Despesas Fixas (item ${indexFixaVazia + 1})<br/>`;
+      if (indexVariavelVazia !== -1)
+        mensagem += `<b>Verifique:</b> Despesas Variáveis (item ${indexVariavelVazia + 1})`;
 
       return Swal.fire({
         toast: false,
@@ -323,9 +333,9 @@ export default function Despesas() {
       }
     } catch (err) {
       console.error("Erro ao processar requisição", err);
-      
+
       Swal.fire({
-        toast: false, 
+        toast: false,
         position: "center",
         icon: "error",
         iconColor: "var(--vermelho-destaque)",
@@ -339,17 +349,24 @@ export default function Despesas() {
       setIsLoading(false);
     }
   };
- 
+
   const handleEditar = async () => {
     if (!idDespesaSalva) return;
-    
-    const indexFixaVazia = outrasFixas.findIndex(item => !item.nome || item.nome.trim() === "");
-    const indexVariavelVazia = outrasVariaveis.findIndex(item => !item.nome || item.nome.trim() === "");
+
+    const indexFixaVazia = outrasFixas.findIndex(
+      (item) => !item.nome || item.nome.trim() === "",
+    );
+    const indexVariavelVazia = outrasVariaveis.findIndex(
+      (item) => !item.nome || item.nome.trim() === "",
+    );
 
     if (indexFixaVazia !== -1 || indexVariavelVazia !== -1) {
-      let mensagem = "A descrição das despesas inseridas não pode ficar em branco.<br/><br/>";
-      if (indexFixaVazia !== -1) mensagem += `<b>Verifique:</b> Despesas Fixas (item ${indexFixaVazia + 1})<br/>`;
-      if (indexVariavelVazia !== -1) mensagem += `<b>Verifique:</b> Despesas Variáveis (item ${indexVariavelVazia + 1})`;
+      let mensagem =
+        "A descrição das despesas inseridas não pode ficar em branco.<br/><br/>";
+      if (indexFixaVazia !== -1)
+        mensagem += `<b>Verifique:</b> Despesas Fixas (item ${indexFixaVazia + 1})<br/>`;
+      if (indexVariavelVazia !== -1)
+        mensagem += `<b>Verifique:</b> Despesas Variáveis (item ${indexVariavelVazia + 1})`;
 
       return Swal.fire({
         toast: false,
@@ -362,7 +379,7 @@ export default function Despesas() {
         confirmButtonColor: "var(--vermelho-destaque)",
       });
     }
-     
+
     setIsLoading(true);
     try {
       const payloadBruto = montarPayload();
@@ -378,11 +395,11 @@ export default function Despesas() {
         timer: 3000,
         customClass: { popup: "mensagem-confirmacao" },
       });
-   } catch (err) {
+    } catch (err) {
       console.error("Erro ao processar requisição", err);
-      
+
       Swal.fire({
-        toast: false, 
+        toast: false,
         position: "center",
         icon: "error",
         iconColor: "var(--vermelho-destaque)",
@@ -392,13 +409,12 @@ export default function Despesas() {
         confirmButtonColor: "var(--vermelho-destaque)",
         customClass: { popup: "mensagem-erro" },
       });
-    
     } finally {
       setIsLoading(false);
     }
   };
 
- const handleExcluir = async () => {
+  const handleExcluir = async () => {
     if (!idDespesaSalva) return;
 
     const result = await Swal.fire({
