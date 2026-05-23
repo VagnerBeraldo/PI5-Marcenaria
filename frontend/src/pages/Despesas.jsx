@@ -58,6 +58,27 @@ export default function Despesas() {
     );
   };
 
+  const extrairMensagensErro = (err) => {
+    const data = err.response?.data;
+    if (!data) return "Falha na comunicação com o servidor.";
+
+    // Intercepta a estrutura padrão de array do Zod (issues ou errors)
+    const listaErros = data.errors || data.issues;
+    if (Array.isArray(listaErros)) {
+      return listaErros
+        .map((e) => {
+          // Extrai o nó exato que falhou (ex: outrasFixas > 0 > nome)
+          const campoDescritivo = e.path && e.path.length > 0 
+            ? `<b>Campo [${e.path.join(" > ")}]:</b> ` 
+            : "";
+          return `${campoDescritivo}${e.message}`;
+        })
+        .join("<br/><br/>");
+    }
+
+    return data.message || data.error || "Erro interno ao processar requisição.";
+  };
+
   const removeOutraFixa = async (id) => {
     const result = await Swal.fire({
       title: "Excluir despesa?",
@@ -98,15 +119,16 @@ export default function Despesas() {
             customClass: { popup: "mensagem-confirmacao" },
           });
         } catch (err) {
-          console.error("Erro ao remover outra desp fixa", err);
+          console.error("Erro ao remover item", err);
           Swal.fire({
-            toast: true,
-            position: "top-end",
+            toast: false,
+            position: "center",
             icon: "error",
             iconColor: "var(--vermelho-destaque)",
             title: "Não foi possível remover o item",
-            showConfirmButton: false,
-            timer: 3000,
+            html: extrairMensagensErro(err),
+            showConfirmButton: true,
+            confirmButtonColor: "var(--vermelho-destaque)",
             customClass: { popup: "mensagem-erro" },
           });
         } finally {
@@ -172,15 +194,16 @@ export default function Despesas() {
             customClass: { popup: "mensagem-confirmacao" },
           });
         } catch (err) {
-          console.error("Erro ao remover outra desp variável", err);
+         console.error("Erro ao remover item", err);
           Swal.fire({
-            toast: true,
-            position: "top-end",
+            toast: false,
+            position: "center",
             icon: "error",
             iconColor: "var(--vermelho-destaque)",
             title: "Não foi possível remover o item",
-            showConfirmButton: false,
-            timer: 3000,
+            html: extrairMensagensErro(err),
+            showConfirmButton: true,
+            confirmButtonColor: "var(--vermelho-destaque)",
             customClass: { popup: "mensagem-erro" },
           });
         } finally {
@@ -212,8 +235,19 @@ export default function Despesas() {
           setOutrasVariaveis(data.despesasVariaveis.outrasVariaveis || []);
         }
       } catch (err) {
-        if (err.response && err.response.status !== 404) {
-          console.error("Erro no fatchData", err);
+       if (err.response && err.response.status !== 404) {
+          console.error("Erro no fetchData", err);
+          Swal.fire({
+            toast: false,
+            position: "center",
+            icon: "error",
+            iconColor: "var(--vermelho-destaque)",
+            title: "Erro ao carregar os dados",
+            html: extrairMensagensErro(err),
+            showConfirmButton: true,
+            confirmButtonColor: "var(--vermelho-destaque)",
+            customClass: { popup: "mensagem-erro" },
+          });
         }
       } finally {
         setIsLoading(false);
@@ -248,6 +282,27 @@ export default function Despesas() {
   });
 
   const handleSalvar = async () => {
+    // Identifica o índice do primeiro item vazio
+    const indexFixaVazia = outrasFixas.findIndex(item => !item.nome || item.nome.trim() === "");
+    const indexVariavelVazia = outrasVariaveis.findIndex(item => !item.nome || item.nome.trim() === "");
+
+    if (indexFixaVazia !== -1 || indexVariavelVazia !== -1) {
+      let mensagem = "A descrição das despesas inseridas não pode ficar em branco.<br/><br/>";
+      if (indexFixaVazia !== -1) mensagem += `<b>Verifique:</b> Despesas Fixas (item ${indexFixaVazia + 1})<br/>`;
+      if (indexVariavelVazia !== -1) mensagem += `<b>Verifique:</b> Despesas Variáveis (item ${indexVariavelVazia + 1})`;
+
+      return Swal.fire({
+        toast: false,
+        position: "center",
+        icon: "warning",
+        iconColor: "var(--vermelho-destaque)",
+        title: "Campos Obrigatórios",
+        html: mensagem,
+        showConfirmButton: true,
+        confirmButtonColor: "var(--vermelho-destaque)",
+      });
+    }
+
     setIsLoading(true);
     try {
       const payloadBruto = montarPayload();
@@ -267,24 +322,47 @@ export default function Despesas() {
         });
       }
     } catch (err) {
-      console.error("Erro ao salvar despesa", err);
+      console.error("Erro ao processar requisição", err);
+      
       Swal.fire({
-        toast: true,
-        position: "top-end",
+        toast: false, 
+        position: "center",
         icon: "error",
         iconColor: "var(--vermelho-destaque)",
-        title: "Erro ao salvar despesa",
-        showConfirmButton: false,
-        timer: 3000,
+        title: "Falha de Validação",
+        html: extrairMensagensErro(err),
+        showConfirmButton: true,
+        confirmButtonColor: "var(--vermelho-destaque)",
         customClass: { popup: "mensagem-erro" },
       });
     } finally {
       setIsLoading(false);
     }
   };
-
+ 
   const handleEditar = async () => {
     if (!idDespesaSalva) return;
+    
+    const indexFixaVazia = outrasFixas.findIndex(item => !item.nome || item.nome.trim() === "");
+    const indexVariavelVazia = outrasVariaveis.findIndex(item => !item.nome || item.nome.trim() === "");
+
+    if (indexFixaVazia !== -1 || indexVariavelVazia !== -1) {
+      let mensagem = "A descrição das despesas inseridas não pode ficar em branco.<br/><br/>";
+      if (indexFixaVazia !== -1) mensagem += `<b>Verifique:</b> Despesas Fixas (item ${indexFixaVazia + 1})<br/>`;
+      if (indexVariavelVazia !== -1) mensagem += `<b>Verifique:</b> Despesas Variáveis (item ${indexVariavelVazia + 1})`;
+
+      return Swal.fire({
+        toast: false,
+        position: "center",
+        icon: "warning",
+        iconColor: "var(--vermelho-destaque)",
+        title: "Campos Obrigatórios",
+        html: mensagem,
+        showConfirmButton: true,
+        confirmButtonColor: "var(--vermelho-destaque)",
+      });
+    }
+     
     setIsLoading(true);
     try {
       const payloadBruto = montarPayload();
@@ -300,24 +378,27 @@ export default function Despesas() {
         timer: 3000,
         customClass: { popup: "mensagem-confirmacao" },
       });
-    } catch (err) {
-      console.error("Erro ao editar despesa", err);
+   } catch (err) {
+      console.error("Erro ao processar requisição", err);
+      
       Swal.fire({
-        toast: true,
-        position: "top-end",
+        toast: false, 
+        position: "center",
         icon: "error",
         iconColor: "var(--vermelho-destaque)",
-        title: "Erro ao atualizar despesa",
-        showConfirmButton: false,
-        timer: 3000,
+        title: "Falha de Validação",
+        html: extrairMensagensErro(err), // Utiliza a função injetada acima
+        showConfirmButton: true,
+        confirmButtonColor: "var(--vermelho-destaque)",
         customClass: { popup: "mensagem-erro" },
       });
+    
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleExcluir = async () => {
+ const handleExcluir = async () => {
     if (!idDespesaSalva) return;
 
     const result = await Swal.fire({
@@ -363,13 +444,14 @@ export default function Despesas() {
       } catch (err) {
         console.error("Erro ao excluir despesa", err);
         Swal.fire({
-          toast: true,
-          position: "top-end",
+          toast: false,
+          position: "center",
           icon: "error",
           iconColor: "var(--vermelho-destaque)",
           title: "Erro ao excluir despesa",
-          showConfirmButton: false,
-          timer: 3000,
+          html: extrairMensagensErro(err),
+          showConfirmButton: true,
+          confirmButtonColor: "var(--vermelho-destaque)",
           customClass: { popup: "mensagem-erro" },
         });
       } finally {
@@ -499,7 +581,7 @@ export default function Despesas() {
             onChange={(e) => setImpostoPerc(Number(e.target.value))}
             placeholder="Ex.: 10"
             disabled={isLoading}
-            min="1"
+            min="0"
           />
         </div>
         <div className="form-group flex-2">
@@ -522,7 +604,7 @@ export default function Despesas() {
             onChange={(e) => setTaxaCartaoPerc(Number(e.target.value))}
             placeholder="Ex.: 3"
             disabled={isLoading}
-            min="1"
+            min="0"
           />
         </div>
         <div className="form-group flex-2">
