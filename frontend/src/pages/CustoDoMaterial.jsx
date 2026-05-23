@@ -713,11 +713,11 @@ export default function CustoDoMaterial() {
       <h1 className="nome-fantasia">GR Marcenaria</h1>
       <h1 className="titulo-pagina">Custo do Material</h1>
       <div className="form-group">
-        <h2 className="subtitulo">Nome do Projeto</h2>
+        <h2 className="subtitulo">Nome do Projeto *</h2>
         <div className="cotainer-nomeProjeto">
           <input
             type="text"
-            placeholder="Descreva o título do projeto"
+            placeholder="Nome do projeto completo ( * obrigatório)"
             className="nomeProjeto"
             value={nomeProjeto}
             onChange={(e) => {
