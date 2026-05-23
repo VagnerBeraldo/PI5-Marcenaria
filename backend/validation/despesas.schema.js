@@ -11,7 +11,10 @@ const itemSchema = z.object({
     .pipe(z.string().min(1, "Nome não pode ser vazio").max(255, "Nome muito longo")), 
   valor: z.coerce.number().min(0, "Valor não pode ser negativo")
 });
-
+extras: z.array(z.object({
+    descricao: z.string().transform(sanitizeHTML).pipe(z.string().min(1, "A descrição da despesa extra é obrigatória.")),
+    valor: z.coerce.number().min(0)
+}))
 const despesasSchema = z.object({
   faturamento: z.coerce.number().min(0),
   despesasFixas: z.object({
