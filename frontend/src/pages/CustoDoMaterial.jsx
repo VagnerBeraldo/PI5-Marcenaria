@@ -155,6 +155,25 @@ export default function CustoDoMaterial() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contextoGlobal.nomeProjetoGlobal, nomeProjeto]);
 
+  const extrairMensagensErro = (err) => {
+    const data = err.response?.data;
+    if (!data) return "Falha na comunicação com o servidor.";
+
+    const listaErros = data.errors || data.issues || data.detalhes;
+    if (Array.isArray(listaErros) && listaErros.length > 0) {
+      return listaErros
+        .map((e) => {
+          const path = e.path ? (Array.isArray(e.path) ? e.path.join(" > ") : e.path) : "";
+          const msg = e.message || e.msg || e.erro || JSON.stringify(e);
+          // O Zod retorna índices para arrays, ex: materiais > 0 > quantidade
+          return path ? `<b>Campo [${path}]:</b> ${msg}` : msg;
+        })
+        .join("<br/><br/>");
+    }
+
+    return data.error || data.message || "Erro interno ao processar requisição.";
+  };
+
   const subtotalMateriais = useMemo(() => {
     return materiais.reduce(
       (acc, item) =>
@@ -226,7 +245,12 @@ export default function CustoDoMaterial() {
 
         // 2. Se o projeto já existe no banco, força o salvamento automático da nova lista
         if (idProjetoSalvo) {
-          const payload = {
+
+          const materiaisPreenchidos = novaListaMateriais.filter(
+            (m) => m.material.trim() !== "" || m.quantidade !== "" || m.unidade_medida.trim() !== ""
+          );
+
+        const payload = {
             id_orcamento:
               contextoGlobal?.orcamento?.id_orcamento ||
               contextoGlobal?.orcamento?.id ||
@@ -234,7 +258,7 @@ export default function CustoDoMaterial() {
             nome_projeto: nomeProjeto,
             mao_de_obra: maoDeObra,
             instalacao: instalacao,
-            materiais: novaListaMateriais.map((m) => ({
+            materiais: materiaisPreenchidos.map((m) => ({
               material: m.material,
               quantidade: Number(m.quantidade) || 0,
               unidade_medida: m.unidade_medida,
@@ -289,21 +313,28 @@ export default function CustoDoMaterial() {
     }
   };
 
-  const montarPayload = () => ({
-    id_orcamento:
-      contextoGlobal?.orcamento?.id_orcamento ||
-      contextoGlobal?.orcamento?.id ||
-      null,
-    nome_projeto: nomeProjeto,
-    mao_de_obra: maoDeObra,
-    instalacao: instalacao,
-    materiais: materiais.map((m) => ({
-      material: m.material,
-      quantidade: Number(m.quantidade) || 0,
-      unidade_medida: m.unidade_medida,
-      valor_unitario: Number(m.valor_unitario) || 0,
-    })),
-  });
+ const montarPayload = () => {
+    // Filtra (descarta) as linhas que estão completamente em branco
+    const materiaisPreenchidos = materiais.filter(
+      (m) => m.material.trim() !== "" || m.quantidade !== "" || m.unidade_medida.trim() !== ""
+    );
+
+    return {
+      id_orcamento:
+        contextoGlobal?.orcamento?.id_orcamento ||
+        contextoGlobal?.orcamento?.id ||
+        null,
+      nome_projeto: nomeProjeto,
+      mao_de_obra: maoDeObra,
+      instalacao: instalacao,
+      materiais: materiaisPreenchidos.map((m) => ({
+        material: m.material,
+        quantidade: Number(m.quantidade) || 0,
+        unidade_medida: m.unidade_medida,
+        valor_unitario: Number(m.valor_unitario) || 0,
+      })),
+    };
+  };
 
   const limparFormulario = () => {
     setIdProjetoSalvo(null);
@@ -572,24 +603,37 @@ export default function CustoDoMaterial() {
   };
 
   const handleSalvar = async () => {
-    if (!nomeProjeto.trim()) {
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        title: "O nome do projeto é obrigatório.",
-        icon: "error",
-        iconColor: "var(--vermelho-destaque)",
-        timer: 3000,
-        customClass: { popup: "mensagem-erro" },
-        showConfirmButton: false,
+  if (!nomeProjeto || !nomeProjeto.trim()) {
+      return Swal.fire({
+        toast: false, position: "center", icon: "warning", iconColor: "var(--vermelho-destaque)",
+        title: "Nome Obrigatório", text: "O nome do projeto não pode ficar em branco.",
+        showConfirmButton: true, confirmButtonColor: "var(--vermelho-destaque)",
       });
-      return;
     }
+
+   // Validação Early Return isolada para itens parcialmente preenchidos
+    const materiaisPreenchidos = materiais.filter(
+      (m) => m.material.trim() !== "" || m.quantidade !== "" || m.unidade_medida.trim() !== ""
+    );
+
+    const indexInvalido = materiaisPreenchidos.findIndex(
+      (m) => !m.material.trim() || Number(m.quantidade) <= 0 || !m.unidade_medida.trim()
+    );
+
+    if (indexInvalido !== -1) {
+      return Swal.fire({
+        toast: false, position: "center", icon: "warning", iconColor: "var(--vermelho-destaque)",
+        title: "Material Inválido",
+        html: `Verifique os materiais adicionados.<br/>Nome, unidade e quantidade (maior que zero) são obrigatórios para os itens preenchidos.`,
+        showConfirmButton: true, confirmButtonColor: "var(--vermelho-destaque)",
+      });
+    }
+
     setIsLoading(true);
     try {
       const payload = montarPayload();
       const { data } = await api.post("/custos", payload);
-      // console.log("Resposta integral do servidor:", data);
+      
       setIdProjetoSalvo(data.id_projeto);
 
       atualizarContexto({
@@ -611,17 +655,14 @@ export default function CustoDoMaterial() {
         showConfirmButton: false,
         timer: 3000,
       });
-    } catch (err) {
+   } catch (err) {
       console.error("Erro ao salvar custo", err);
       Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "error",
-        iconColor: "var(--vermelho-destaque)",
-        title: "Erro ao salvar.",
+        toast: false, position: "center", icon: "error", iconColor: "var(--vermelho-destaque)",
+        title: "Falha de Validação",
+        html: extrairMensagensErro(err),
+        showConfirmButton: true, confirmButtonColor: "var(--vermelho-destaque)",
         customClass: { popup: "mensagem-erro" },
-        showConfirmButton: false,
-        timer: 3000,
       });
     } finally {
       setIsLoading(false);
@@ -629,7 +670,34 @@ export default function CustoDoMaterial() {
   };
 
   const handleEditar = async () => {
-    if (!idProjetoSalvo) return;
+   if (!idProjetoSalvo) return;
+    
+    if (!nomeProjeto || !nomeProjeto.trim()) {
+      return Swal.fire({
+        toast: false, position: "center", icon: "warning", iconColor: "var(--vermelho-destaque)",
+        title: "Nome Obrigatório", text: "O nome do projeto não pode ficar em branco.",
+        showConfirmButton: true, confirmButtonColor: "var(--vermelho-destaque)",
+      });
+    }
+
+  // Validação Early Return isolada para itens parcialmente preenchidos
+    const materiaisPreenchidos = materiais.filter(
+      (m) => m.material.trim() !== "" || m.quantidade !== "" || m.unidade_medida.trim() !== ""
+    );
+
+    const indexInvalido = materiaisPreenchidos.findIndex(
+      (m) => !m.material.trim() || Number(m.quantidade) <= 0 || !m.unidade_medida.trim()
+    );
+
+    if (indexInvalido !== -1) {
+      return Swal.fire({
+        toast: false, position: "center", icon: "warning", iconColor: "var(--vermelho-destaque)",
+        title: "Material Inválido",
+        html: `Verifique os materiais adicionados.<br/>Nome, unidade e quantidade (maior que zero) são obrigatórios para os itens preenchidos.`,
+        showConfirmButton: true, confirmButtonColor: "var(--vermelho-destaque)",
+      });
+    }
+
     setIsLoading(true);
     try {
       const payload = montarPayload();
@@ -644,16 +712,13 @@ export default function CustoDoMaterial() {
         showConfirmButton: false,
         timer: 3000,
       });
-    } catch (err) {
+   } catch (err) {
       console.error("Erro ao editar custo", err);
       Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "error",
-        iconColor: "var(--vermelho-destaque)",
-        title: "Erro ao editar custo",
-        showConfirmButton: false,
-        timer: 3000,
+        toast: false, position: "center", icon: "error", iconColor: "var(--vermelho-destaque)",
+        title: "Falha de Validação",
+        html: extrairMensagensErro(err),
+        showConfirmButton: true, confirmButtonColor: "var(--vermelho-destaque)",
         customClass: { popup: "mensagem-erro" },
       });
     } finally {
