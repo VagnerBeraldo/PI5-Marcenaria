@@ -23,7 +23,7 @@ const custoProjetoSchema = z.object({
     .pipe(z.string().min(1, "Nome do projeto é obrigatório")),
   mao_de_obra: z.coerce.number().min(0).optional().default(0),
   instalacao: z.coerce.number().min(0).optional().default(0),
-  materiais: z.array(materialItemSchema).min(1, "Insira pelo menos um material na tabela.")
+  materiais: z.array(materialItemSchema).optional().default([])
 });
 
 module.exports = {
