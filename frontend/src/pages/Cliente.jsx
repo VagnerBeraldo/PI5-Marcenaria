@@ -31,6 +31,21 @@ export default function Cliente() {
   const [cidade, setCidade] = useState("");
   const [estado, setEstado] = useState("");
 
+  const extrairMensagensErro = (err) => {
+    const data = err.response?.data;
+    if (!data) return "Falha na comunicação com o servidor.";
+
+    // Mapeia o objeto achatado devolvido pelo backend
+    if (data.detalhes && typeof data.detalhes === "object") {
+      return Object.entries(data.detalhes)
+        .map(([campo, mensagens]) => `<b>Campo [${campo.toUpperCase()}]:</b> ${mensagens[0]}`)
+        .join("<br/><br/>");
+    }
+
+    return data.error || data.message || "Erro de validação.";
+  };
+
+
   // --- BUSCA DE CEP (ViaCEP) ---
   const buscarCep = async () => {
     const cepLimpo = cep.replace(/\D/g, "");
@@ -239,20 +254,19 @@ export default function Cliente() {
 
   // --- SALVAR CLIENTE ---
   const handleSalvar = async () => {
-    if (!nome.trim()) {
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "error",
+   if (!nome || nome.trim() === "") {
+      return Swal.fire({
+        toast: false,
+        position: "center",
+        icon: "warning",
         iconColor: "var(--vermelho-destaque)",
-        text: "O nome é obrigatório",
-        showConfirmButton: false,
-        timer: 3000,
-        customClass: { popup: "mensagem-erro" },
+        title: "Campo Obrigatório",
+        text: "O Nome do Cliente / Empresa não pode ficar em branco.",
+        showConfirmButton: true,
+        confirmButtonColor: "var(--vermelho-destaque)",
       });
-      return;
     }
-
+   
     setIsSaving(true);
     try {
       // 1. Verificação de Nome Duplicado antes de salvar
@@ -309,19 +323,15 @@ export default function Cliente() {
       });
     } catch (err) {
       console.error("Erro ao salvar", err);
-      const detalhesErro = err.response?.data?.detalhes;
-      const mensagemAlerta =
-        detalhesErro && detalhesErro.length > 0
-          ? `Campo inválido: ${detalhesErro[0].path[0]} - ${detalhesErro[0].message}`
-          : "Não foi possível salvar o cliente. Verifique os dados.";
       Swal.fire({
-        toast: true,
-        position: "top-end",
+        toast: false,
+        position: "center",
         icon: "error",
         iconColor: "var(--vermelho-destaque)",
-        text: mensagemAlerta,
-        showConfirmButton: false,
-        timer: 3000,
+        title: "Falha de Validação",
+        html: extrairMensagensErro(err),
+        showConfirmButton: true,
+        confirmButtonColor: "var(--vermelho-destaque)",
         customClass: { popup: "mensagem-erro" },
       });
     } finally {
@@ -345,18 +355,17 @@ export default function Cliente() {
       return;
     }
 
-    if (!nome.trim()) {
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "error",
+   if (!nome || nome.trim() === "") {
+      return Swal.fire({
+        toast: false,
+        position: "center",
+        icon: "warning",
         iconColor: "var(--vermelho-destaque)",
-        text: "O nome é obrigatório",
-        showConfirmButton: false,
-        timer: 3000,
-        customClass: { popup: "mensagem-erro" },
+        title: "Campo Obrigatório",
+        text: "O Nome do Cliente / Empresa não pode ficar em branco.",
+        showConfirmButton: true,
+        confirmButtonColor: "var(--vermelho-destaque)",
       });
-      return;
     }
 
     setIsLoading(true);
@@ -411,21 +420,17 @@ export default function Cliente() {
         showConfirmButton: false,
         timer: 3000,
       });
-    } catch (err) {
+   } catch (err) {
       console.error("Erro ao editar", err);
-      const detalhesErro = err.response?.data?.detalhes;
-      const mensagemAlerta =
-        detalhesErro && detalhesErro.length > 0
-          ? `Campo inválido: ${detalhesErro[0].path[0]} - ${detalhesErro[0].message}`
-          : "Não foi possível editar o cliente. Verifique os dados.";
       Swal.fire({
-        toast: true,
-        position: "top-end",
+        toast: false,
+        position: "center",
         icon: "error",
         iconColor: "var(--vermelho-destaque)",
-        text: mensagemAlerta,
-        showConfirmButton: false,
-        timer: 3000,
+        title: "Falha de Validação",
+        html: extrairMensagensErro(err),
+        showConfirmButton: true,
+        confirmButtonColor: "var(--vermelho-destaque)",
         customClass: { popup: "mensagem-erro" },
       });
     } finally {
