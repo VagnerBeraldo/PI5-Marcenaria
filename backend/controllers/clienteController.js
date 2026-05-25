@@ -29,10 +29,13 @@ const criar = async (req, res) => {
     res.status(201).json({ id, ...dadosValidados }); 
   } catch (error) {
     if (error.name === 'ZodError') {
-      return res.status(400).json({ error: 'Erro de validação', detalhes: error.errors });
+      return res.status(400).json({ 
+        error: 'Erro de validação', 
+        detalhes: error.flatten().fieldErrors // Retorna os erros mapeados por campo
+      });
     }
-    console.error("Erro ao criar cliente:", error);
-    res.status(500).json({ error: 'Erro ao criar cliente.' });
+    console.error("Erro no processamento:", error);
+    res.status(500).json({ error: 'Erro interno do servidor.' });
   }
 };
 
@@ -44,10 +47,13 @@ const atualizar = async (req, res) => {
     res.status(204).send(); // 204 No Content
   } catch (error) {
     if (error.name === 'ZodError') {
-      return res.status(400).json({ error: 'Erro de validação', detalhes: error.errors });
+      return res.status(400).json({ 
+        error: 'Erro de validação', 
+        detalhes: error.flatten().fieldErrors // Retorna os erros mapeados por campo
+      });
     }
-    console.error("Erro ao atualizar cliente:", error);
-    res.status(500).json({ error: 'Erro ao atualizar cliente.' });
+    console.error("Erro no processamento:", error);
+    res.status(500).json({ error: 'Erro interno do servidor.' });
   }
 };
 
