@@ -14,8 +14,11 @@ const getCusto = async (req, res) => {
 const postCusto = async (req, res) => {
   try {
     const validacao = custoProjetoSchema.safeParse(req.body);
-    if (!validacao.success) {
-      return res.status(400).json({ error: 'Dados inválidos.', detalhes: validacao.error.format() });
+   if (!validacao.success) {
+      return res.status(400).json({ 
+        error: 'Dados inválidos.', 
+        detalhes: validacao.error.issues // Array plano com path e message
+      });
     }
     const resultado = await custoMaterialService.salvarCusto(validacao.data);
     res.status(201).json({ 
