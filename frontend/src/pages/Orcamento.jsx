@@ -55,6 +55,24 @@ export default function Orcamento() {
   const [energiaSalva, setEnergiaSalva] = useState(null);
   const [outrasVariaveisSalvas, setOutrasVariaveisSalvas] = useState(null);
 
+  const extrairMensagensErro = (err) => {
+    const data = err.response?.data;
+    if (!data) return "Falha na comunicação com o servidor.";
+
+    const listaErros = data.errors || data.issues || data.detalhes;
+    if (Array.isArray(listaErros) && listaErros.length > 0) {
+      return listaErros
+        .map((e) => {
+          const path = e.path ? (Array.isArray(e.path) ? e.path.join(" > ") : e.path) : "";
+          const msg = e.message || e.msg || e.erro || JSON.stringify(e);
+          return path ? `<b>Campo [${path}]:</b> ${msg}` : msg;
+        })
+        .join("<br/><br/>");
+    }
+
+    return data.error || data.message || "Erro interno ao processar requisição.";
+  };
+
   const buscarDespesasBase = async () => {
     try {
       const response = await api.get("/despesas");
@@ -246,9 +264,11 @@ export default function Orcamento() {
             precoManual !== null ? precoManual : novoPrecoArredondado;
           // ---------------------------------------------------
 
-          const payloadExtras = novosExtras.map((e) => ({
+         const extrasPreenchidos = novosExtras.filter(e => e.descricao.trim() !== "" || Number(e.valor) > 0);
+          
+          const payloadExtras = extrasPreenchidos.map((e) => ({
             descricao: e.descricao,
-            valor: Number(e.valor),
+            valor: Number(e.valor) || 0,
           }));
 
           const payload = {
@@ -288,17 +308,11 @@ export default function Orcamento() {
           customClass: { popup: "mensagem-confirmacao" },
         });
       } catch (err) {
-        {
-          console.error("Erro ao remover desp expra", err);
-        }
+        console.error("Erro ao remover despesa extra", err);
         Swal.fire({
-          toast: true,
-          position: "top-end",
-          icon: "error",
-          iconColor: "var(--vermelho-destaque)",
-          title: "Erro ao excluir extra no banco.",
-          showConfirmButton: false,
-          timer: 3000,
+          toast: false, position: "center", icon: "error", iconColor: "var(--vermelho-destaque)",
+          title: "Erro de Validação no Auto-Save", html: extrairMensagensErro(err),
+          showConfirmButton: true, confirmButtonColor: "var(--vermelho-destaque)",
           customClass: { popup: "mensagem-erro" },
         });
       } finally {
@@ -529,18 +543,25 @@ export default function Orcamento() {
   };
 
   const handleSalvar = async () => {
-    if (!nomeProjeto.trim()) {
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "error",
-        iconColor: "var(--vermelho-destaque)",
-        text: "O Nome do Serviço é obrigatório.",
-        showConfirmButton: false,
-        timer: 3000,
-        customClass: { popup: "mensagem-erro" },
+   if (!nomeProjeto || !nomeProjeto.trim()) {
+      return Swal.fire({
+        toast: false, position: "center", icon: "warning", iconColor: "var(--vermelho-destaque)",
+        title: "Campo Obrigatório", text: "O Nome do Serviço não pode ficar em branco.",
+        showConfirmButton: true, confirmButtonColor: "var(--vermelho-destaque)",
       });
-      return;
+    }
+
+    // Higienização e validação Early Return da lista de Extras
+    const extrasPreenchidos = extras.filter(e => e.descricao.trim() !== "" || Number(e.valor) > 0);
+    const indexInvalido = extrasPreenchidos.findIndex(e => !e.descricao.trim());
+    
+    if (indexInvalido !== -1) {
+      return Swal.fire({
+        toast: false, position: "center", icon: "warning", iconColor: "var(--vermelho-destaque)",
+        title: "Despesa Extra Inválida",
+        html: `A descrição é obrigatória para as despesas extras adicionadas.`,
+        showConfirmButton: true, confirmButtonColor: "var(--vermelho-destaque)",
+      });
     }
 
     setIsLoading(true);
@@ -555,19 +576,11 @@ export default function Orcamento() {
             (c) => c.nome.toLowerCase() === nomeCliente.trim().toLowerCase(),
           );
 
-          // Barra se o nome existir em OUTRO cliente (ID diferente) ou se o nome existir e não houver ID
-          if (
-            clienteConflitante &&
-            (!clienteId || clienteConflitante.id_cliente !== Number(clienteId))
-          ) {
+        // Barra se o nome existir um OUTRO cliente (ID diferente) ou se o nome existir e não houver ID
+        if (clienteConflitante && (!clienteId || clienteConflitante.id_cliente !== Number(clienteId))) {
             Swal.fire({
-              toast: true,
-              position: "top-end",
-              icon: "error",
-              iconColor: "var(--vermelho-destaque)",
-              text: "Já existe um cliente com esse nome",
-              showConfirmButton: false,
-              timer: 4000,
+              toast: true, position: "top-end", icon: "error", iconColor: "var(--vermelho-destaque)",
+              text: "Já existe um cliente com esse nome", showConfirmButton: false, timer: 4000,
               customClass: { popup: "mensagem-erro" },
             });
             setIsLoading(false);
@@ -599,12 +612,12 @@ export default function Orcamento() {
         return;
       }
 
-      const payloadExtras = extras.map((e) => ({
+     const payloadExtras = extrasPreenchidos.map((e) => ({
         descricao: e.descricao,
-        valor: Number(e.valor),
+        valor: Number(e.valor) || 0,
       }));
 
-      const payload = {
+     const payload = {
         id_cliente: clienteId ? Number(clienteId) : null,
         nome_cliente: nomeCliente,
         id_projeto: projetoId ? Number(projetoId) : null,
@@ -632,7 +645,6 @@ export default function Orcamento() {
       const novoIdCliente = response.data.id_cliente;
 
       setIdOrcamentoSalvo(novoId);
-
       setCustoFixoSalvo(custoFixoAtual);
       setEnergiaSalva(energiaAtual);
       setOutrasVariaveisSalvas(outrasVariaveisAtual);
@@ -654,16 +666,12 @@ export default function Orcamento() {
         showConfirmButton: false,
         timer: 3000,
       });
-    } catch (err) {
+   } catch (err) {
       console.error("Erro ao salvar orçamento", err);
       Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "error",
-        iconColor: "var(--vermelho-destaque)",
-        text: "Não foi possível salvar os dados.",
-        showConfirmButton: false,
-        timer: 3000,
+        toast: false, position: "center", icon: "error", iconColor: "var(--vermelho-destaque)",
+        title: "Falha de Validação", html: extrairMensagensErro(err),
+        showConfirmButton: true, confirmButtonColor: "var(--vermelho-destaque)",
         customClass: { popup: "mensagem-erro" },
       });
     } finally {
@@ -690,18 +698,24 @@ export default function Orcamento() {
       return;
     }
 
-    if (!nomeProjeto.trim()) {
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "error",
-        iconColor: "var(--vermelho-destaque)",
-        text: "O Nome do Serviço é obrigatório",
-        showConfirmButton: false,
-        timer: 3000,
-        customClass: { popup: "mensagem-erro" },
+   if (!nomeProjeto || !nomeProjeto.trim()) {
+      return Swal.fire({
+        toast: false, position: "center", icon: "warning", iconColor: "var(--vermelho-destaque)",
+        title: "Campo Obrigatório", text: "O Nome do Serviço / Projeto não pode ficar em branco.",
+        showConfirmButton: true, confirmButtonColor: "var(--vermelho-destaque)",
       });
-      return;
+    }
+
+    const extrasPreenchidos = extras.filter(e => e.descricao.trim() !== "" || Number(e.valor) > 0);
+    const indexInvalido = extrasPreenchidos.findIndex(e => !e.descricao.trim());
+    
+    if (indexInvalido !== -1) {
+      return Swal.fire({
+        toast: false, position: "center", icon: "warning", iconColor: "var(--vermelho-destaque)",
+        title: "Despesa Extra Inválida",
+        html: `A descrição é obrigatória para as despesas extras adicionadas.`,
+        showConfirmButton: true, confirmButtonColor: "var(--vermelho-destaque)",
+      });
     }
 
     setIsLoading(true);
@@ -737,9 +751,9 @@ export default function Orcamento() {
         }
       }
 
-      const payloadExtras = extras.map((e) => ({
+     const payloadExtras = extrasPreenchidos.map((e) => ({
         descricao: e.descricao,
-        valor: Number(e.valor),
+        valor: Number(e.valor) || 0,
       }));
 
       const payload = {
@@ -766,8 +780,8 @@ export default function Orcamento() {
       };
 
       await api.put(`/orcamentos/${idAtual}`, payload);
-      setIdOrcamentoSalvo(idAtual);
 
+      setIdOrcamentoSalvo(idAtual);
       setCustoFixoSalvo(custoFixoAtual);
       setEnergiaSalva(energiaAtual);
       setOutrasVariaveisSalvas(outrasVariaveisAtual);
@@ -782,16 +796,12 @@ export default function Orcamento() {
         showConfirmButton: false,
         timer: 3000,
       });
-    } catch (err) {
+   } catch (err) {
       console.error("Erro ao editar orçamento", err);
       Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "error",
-        iconColor: "var(--vermelho-destaque)",
-        text: "Não foi possível atualizar os dados.",
-        showConfirmButton: false,
-        timer: 3000,
+        toast: false, position: "center", icon: "error", iconColor: "var(--vermelho-destaque)",
+        title: "Falha de Validação", html: extrairMensagensErro(err),
+        showConfirmButton: true, confirmButtonColor: "var(--vermelho-destaque)",
         customClass: { popup: "mensagem-erro" },
       });
     } finally {
@@ -1076,7 +1086,7 @@ export default function Orcamento() {
           <h2 className="subtitulo">Dados do Serviço</h2>
           <div className="form-row">
             <div className="form-group flex-2">
-              <label className="titulo-input">Cliente</label>
+              <label className="titulo-input">Cliente *</label>
               <div className="container-lupa">
                 <input
                   type="text"
@@ -1096,7 +1106,7 @@ export default function Orcamento() {
                       });
                     }
                   }}
-                  placeholder="Nome do cliente..."
+                  placeholder="Nome do cliente (* obrigatório)"
                   disabled={isLoading}
                 />
                 <button
@@ -1112,7 +1122,7 @@ export default function Orcamento() {
           </div>
           <div className="form-row">
             <div className="form-group flex-2">
-              <label className="titulo-input">Nome do Serviço / Projeto</label>
+              <label className="titulo-input">Nome do Serviço *</label>
               <div className="container-lupa">
                 <input
                   type="text"
@@ -1122,7 +1132,7 @@ export default function Orcamento() {
                     setNomeProjeto(e.target.value);
                     atualizarContexto({ nomeProjetoGlobal: e.target.value });
                   }}
-                  placeholder="Ex: Cozinha Planejada"
+                  placeholder="Ex: Cozinha Planejada (* obrigatório)"
                   disabled={isLoading}
                 />
                 <button
