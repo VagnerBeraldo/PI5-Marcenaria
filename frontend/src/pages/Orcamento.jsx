@@ -1354,7 +1354,15 @@ export default function Orcamento() {
           </div>
           {desconto > 0 && (
             <div className="resumo-item">
-              <span>Valo com Desconto:</span>{" "}
+              <span>Desconto:</span>{" "}
+              <strong>
+                {formatMoney(precoSugerido * (desconto / 100))}
+              </strong>
+            </div>
+          )}
+          {desconto > 0 && (
+            <div className="resumo-item">
+              <span>Valor com Desconto:</span>{" "}
               <strong>
                 {formatMoney(precoSugerido - precoSugerido * (desconto / 100))}
               </strong>
@@ -1469,6 +1477,13 @@ export default function Orcamento() {
             <span>Valor do Orçamento:</span>
             <strong>{formatMoney(Math.ceil(precoSugerido / 5) * 5)}</strong>
           </div>
+          
+          {desconto > 0 && (
+            <div className="linha-valor">
+              <span>Desconto: ( {desconto}% )</span>
+              <strong>{formatMoney(precoSugerido * (desconto / 100))}</strong>
+            </div>
+          )}
           {desconto > 0 && (
             <div className="linha-valor">
               <span>Valor com Desconto:</span>
@@ -1482,6 +1497,7 @@ export default function Orcamento() {
               <strong>{formatMoney(entrada)}</strong>
             </div>
           )}
+          
           <div className="linha-valor destaque-saldo">
             <span>Saldo a pagar:</span>
             <strong>{formatMoney(precoFinalImpresso - entrada)}</strong>
