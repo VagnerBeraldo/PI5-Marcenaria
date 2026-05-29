@@ -188,7 +188,7 @@ export default function Orcamento() {
 
   const precoArredondado = useMemo(() => {
     const precoComDesconto = precoSugerido - precoSugerido * (desconto / 100);
-    return Math.ceil(precoComDesconto / 5) * 5;
+    return precoComDesconto;
   }, [precoSugerido, desconto]);
 
   const precoFinalImpresso =
@@ -259,7 +259,7 @@ export default function Orcamento() {
 
           const precoComDesconto =
             novoPrecoSugerido - novoPrecoSugerido * (desconto / 100);
-          const novoPrecoArredondado = Math.ceil(precoComDesconto / 5) * 5;
+          const novoPrecoArredondado = Math.ceil(precoComDesconto);
           const novoPrecoFinalImpresso =
             precoManual !== null ? precoManual : novoPrecoArredondado;
           // ---------------------------------------------------
@@ -1345,9 +1345,9 @@ export default function Orcamento() {
           <button className="imprimir" onClick={() => window.print()}>
             <Printer size={18} />
           </button>
-          <div className="resumo-item">
-            <span>Custo Total:</span> <strong>{formatMoney(custoTotal)}</strong>
-          </div>
+          {/* <div className="resumo-item">
+            <span>Custo Material:</span> <strong>{formatMoney(custoTotal)}</strong>
+          </div> */}
           <div className="resumo-item">
             <span>Preço Sugerido:</span>{" "}
             <strong>{formatMoney(precoSugerido)}</strong>
@@ -1356,21 +1356,22 @@ export default function Orcamento() {
             <div className="resumo-item">
               <span>Desconto:</span>{" "}
               <strong>
-                {formatMoney(precoSugerido * (desconto / 100))}
+                - {formatMoney(precoSugerido * (desconto / 100))}
               </strong>
             </div>
           )}
-          {desconto > 0 && (
+          
+          {/* {desconto > 0 && (
             <div className="resumo-item">
               <span>Valor com Desconto:</span>{" "}
               <strong>
                 {formatMoney(precoSugerido - precoSugerido * (desconto / 100))}
               </strong>
             </div>
-          )}
+          )} */}
 
           <div className="resumo-item destaque">
-            <span>Preço Fechado:</span>
+            <span>Valor Orçamento:</span>
             <input
               type="text"
               className="input-preco-fechado"
@@ -1379,6 +1380,13 @@ export default function Orcamento() {
             />
           </div>
 
+          {entrada > 0 && (
+            <div className="resumo-item">
+              <span>Entrada:</span>
+              <strong> - {formatMoney(entrada)}</strong>
+            </div>
+          )}
+          
           {entrada > 0 && (
             <div className="resumo-item destaque-saldo">
               <span>Saldo a Pagar:</span>
@@ -1475,26 +1483,26 @@ export default function Orcamento() {
         <div className="valores-impressao">
           <div className="linha-valor">
             <span>Valor do Orçamento:</span>
-            <strong>{formatMoney(Math.ceil(precoSugerido / 5) * 5)}</strong>
+            <strong>{formatMoney(precoSugerido)}</strong>
           </div>
           
           {desconto > 0 && (
             <div className="linha-valor">
               <span>Desconto: ( {desconto}% )</span>
-              <strong>{formatMoney(precoSugerido * (desconto / 100))}</strong>
+              <strong> - {formatMoney(precoSugerido * (desconto / 100))}</strong>
             </div>
           )}
-          {desconto > 0 && (
+          {/* {desconto > 0 && (
             <div className="linha-valor">
               <span>Valor com Desconto:</span>
               <strong>{formatMoney(precoFinalImpresso)}</strong>
             </div>
-          )}
+          )} */}
 
           {entrada > 0 && (
             <div className="linha-valor">
               <span>Entrada:</span>
-              <strong>{formatMoney(entrada)}</strong>
+              <strong> - {formatMoney(entrada)}</strong>
             </div>
           )}
           
