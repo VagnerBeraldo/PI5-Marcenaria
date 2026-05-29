@@ -1348,10 +1348,12 @@ export default function Orcamento() {
           {/* <div className="resumo-item">
             <span>Custo Material:</span> <strong>{formatMoney(custoTotal)}</strong>
           </div> */}
+          {desconto > 0 && (
           <div className="resumo-item">
             <span>Preço Sugerido:</span>{" "}
             <strong>{formatMoney(precoSugerido)}</strong>
           </div>
+          )}
           {desconto > 0 && (
             <div className="resumo-item">
               <span>Desconto:</span>{" "}
